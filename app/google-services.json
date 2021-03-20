@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "476556415062",
+    "firebase_url": "https://vladcord-7861b.firebaseio.com",
+    "project_id": "vladcord-7861b",
+    "storage_bucket": "vladcord-7861b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:476556415062:android:380cf0af5af28af04c6bf7",
+        "android_client_info": {
+          "package_name": "com.fpmi.vladcord"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "476556415062-ktpaebdfholebh6hs3hnmvhjpebgbcfi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fpmi.vladcord",
+            "certificate_hash": "cd51e8f299cefce9cc80db7a41c7bde0219236b5"
+          }
+        },
+        {
+          "client_id": "476556415062-65sop5vt49d4h21pamnm1jfv2ok6aj1h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChiDaRuo6Yt38WBOM5Wl2MLHe5hqjyiO8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "476556415062-65sop5vt49d4h21pamnm1jfv2ok6aj1h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
