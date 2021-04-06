@@ -1,12 +1,6 @@
 package com.fpmi.vladcord.ui.friends_list;
 
 
-import android.net.Uri;
-
-import com.fpmi.vladcord.ui.messages_list.Message;
-
-import java.util.List;
-
 public class Friend {
 
     public Friend(Friend friend) {
@@ -32,8 +26,8 @@ public class Friend {
 
     private String name;
     private String email;
-    private String urlAva;
     private String uID;
+    private String urlAva;
 
     public String getEmail() {
         return email;
@@ -49,6 +43,14 @@ public class Friend {
 
     public String getuID() {
         return uID;
+    }
+
+    public String getUrlAva() {
+        return urlAva;
+    }
+
+    public void setUrlAva(String urlAva) {
+        this.urlAva = urlAva;
     }
 
     public void setEmail(String email) {

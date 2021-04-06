@@ -5,13 +5,13 @@ import java.util.Date;
 public class Message {
     public String userName;
     public String textMessage;
-    private long messageTime;
+    private Date messageTime;
 
     public Message() {}
     public Message(String userName, String textMessage) {
         this.textMessage = textMessage;
         this.userName = userName;
-        this.messageTime = new Date().getTime();
+        this.messageTime = new Date();
     }
 
     public String getUserName() {
@@ -30,11 +30,11 @@ public class Message {
         this.textMessage = textMessage;
     }
 
-    public long getMessageTime() {
+    public Date getMessageTime() {
         return messageTime;
     }
 
-    public void setMessageTime(long messageTime) {
+    public void setMessageTime(Date messageTime) {
         this.messageTime = messageTime;
     }
 }

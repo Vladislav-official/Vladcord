@@ -14,18 +14,18 @@
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:id="@+id/name_user"
+        android:id="@+id/user_name"
         android:textStyle="normal|bold"/>
 
     <TextView
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:id="@+id/mail_user"
+        android:id="@+id/user_email"
         />
 
     <TextView
-        android:id="@+id/id_user"
+        android:id="@+id/user_id"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"

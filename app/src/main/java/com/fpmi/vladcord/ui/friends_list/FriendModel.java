@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.fpmi.vladcord.R;
@@ -21,39 +22,15 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.List;
 
 public class FriendModel {
-    private FirebaseListAdapter<Friend> adapter;
-    private DatabaseReference friendsRef;
+    private final DatabaseReference friendsRef;
 
     public FriendModel() {
         this.friendsRef = FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance()
                 .getCurrentUser().getUid()).child("Friends");
-        adapter = null;
 
     }
 
-    public void setAdapter(Activity activity) {
-        if(friendsRef == null){
-            return;
-        }
-        adapter = new FirebaseListAdapter<Friend>(activity, Friend.class, R.layout.list_friend,
-                this.friendsRef.orderByChild("name")) {
-            @Override
-            protected void populateView(View v, Friend model, int position) {
-                TextView name, uID, email;
-                ImageView friendAva;
-                name = v.findViewById(R.id.name_friend);
-                email = v.findViewById(R.id.mail_friend);
-                uID = v.findViewById(R.id.id_friend);
-                friendAva = v.findViewById(R.id.friend_avatar);
-                name.setText(model.getName());
-                email.setText(model.getEmail());
-                uID.setText(model.getuID());
-                friendAva.setImageURI(Uri.parse(model.getUrl()));
-            }
-        };
-    }
-
-    public void getDataFromDB(List<Friend> friendList)
+    public void getDataFromDB(List<Friend> friendList, FriendsAdapter adapter)
     {
         ValueEventListener vListener = new ValueEventListener() {
             @Override
@@ -66,6 +43,7 @@ public class FriendModel {
                     assert friend != null;
                     friendList.add(new Friend(friend));
                 }
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -76,7 +54,5 @@ public class FriendModel {
         friendsRef.addValueEventListener(vListener);
     }
 
-    public FirebaseListAdapter<Friend> getAdapter() {
-        return adapter;
-    }
+
 }

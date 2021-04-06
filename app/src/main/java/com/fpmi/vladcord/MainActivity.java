@@ -9,6 +9,9 @@ import android.widget.ImageView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.fpmi.vladcord.ui.User.User;
+import com.fpmi.vladcord.ui.User.UsersFragment;
+import com.fpmi.vladcord.ui.friends_list.FriendsFragment;
+import com.fpmi.vladcord.ui.messages_list.MessageFragment;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,11 +28,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 
-import hani.momanii.supernova_emoji_library.Actions.EmojIconActions;
-import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,11 +36,8 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     private static final int SIGN_IN_CODE = 1;
     private DrawerLayout activity_main;
-    private DrawerLayout fragment_friends;
-    private EmojiconEditText emojiconEditText;
-    private ImageView emojiButton, submitButton;
-    private EmojIconActions emojIconActions;
     private DrawerLayout drawer;
+    private User user;
 
 
     @Override
@@ -50,14 +46,14 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == SIGN_IN_CODE) {
             if (resultCode == RESULT_OK) {
                 Snackbar.make(activity_main, "Вы авторизованы", Snackbar.LENGTH_LONG).show();
+
             } else {
                 Snackbar.make(activity_main, "Вы не авторизованы", Snackbar.LENGTH_LONG).show();
                 finish();
             }
         }
-        User user = getCurUser();
-        FirebaseDatabase.getInstance().getReference("Users/".concat
-                (FirebaseAuth.getInstance().getCurrentUser().getUid())).setValue(user);
+
+
     }
 
     @Override
@@ -68,19 +64,15 @@ public class MainActivity extends AppCompatActivity {
 
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), SIGN_IN_CODE);
+            user = getCurUser();
+            FirebaseDatabase.getInstance().getReference("Users/".concat
+                    (FirebaseAuth.getInstance().getCurrentUser().getUid())).setValue(user);
         } else {
             Snackbar.make(activity_main, "Вы авторизованы", Snackbar.LENGTH_LONG).show();
         }
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        /*FloatingActionButton sendMess = findViewById(R.id.sendMess);
-        sendMess.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
+
         DrawerLayout drawer = findViewById(R.id.activity_main);
         NavigationView navigationView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
@@ -116,7 +108,9 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         int id = item.getItemId();
         if (id == R.id.signOut){
+
             startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), SIGN_IN_CODE);
+
         }
         return super.onOptionsItemSelected(item);
     }

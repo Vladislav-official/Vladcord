@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
     android:orientation="horizontal">
 
 
@@ -16,18 +16,18 @@
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:id="@+id/name_friend"
+        android:id="@+id/friend_name"
         android:textStyle="normal|bold"/>
 
     <TextView
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:id="@+id/mail_friend"
+        android:id="@+id/friend_email"
         />
 
     <TextView
-        android:id="@+id/id_friend"
+        android:id="@+id/friend_id"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
