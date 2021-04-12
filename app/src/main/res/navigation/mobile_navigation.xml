@@ -24,16 +24,16 @@
         android:label="@string/menu_slideshow"
         tools:layout="@layout/fragment_slideshow" />
 
-    <fragment
-        android:id="@+id/nav_friends"
-        android:name="com.fpmi.vladcord.ui.friends_list.FriendsFragment"
-        android:label="Friends"
-        tools:layout="@layout/fragment_friends" />
 
     <fragment
         android:id="@+id/nav_users"
         android:name="com.fpmi.vladcord.ui.User.UsersFragment"
         android:label="Users"
         tools:layout="@layout/fragment_users" />
+    <fragment
+        android:id="@+id/nav_friends"
+        android:name="com.fpmi.vladcord.ui.friends_list.FriendsFragmentMain"
+        android:label="Friends"
+        tools:layout="@layout/layout_friends" />
 
 </navigation>

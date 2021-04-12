@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.User.UsersFragment"
-    android:id="@+id/users_fragment">
+    tools:context=".ui.friends_request_list.FriendsReqFragment">
 
     <EditText
         android:id="@+id/search_input"
@@ -16,17 +15,15 @@
         app:layout_constraintStart_toStartOf="@+id/users_list"
         app:layout_constraintTop_toTopOf="parent" />
 
-
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/users_list"
+        android:id="@+id/friends_request_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/search_input"
+
+        android:layout_below="@+id/friends_request"
         android:divider="@android:color/transparent"
         android:dividerHeight="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        app:layout_constraintTop_toBottomOf="@+id/search_input" />
     <ProgressBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -34,6 +31,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/users_list" />
-
+        app:layout_constraintTop_toBottomOf="@id/friends_request_list" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,5 +1,5 @@
 package com.fpmi.vladcord.ui.friends_list;
 
-public interface RecycleItemClick {
+public interface RecycleFriendClick {
     void onClick(String friendId, String friendName);
 }

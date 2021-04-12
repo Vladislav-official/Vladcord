@@ -1,4 +1,4 @@
-package com.fpmi.vladcord.ui.friends_list;
+package com.fpmi.vladcord.ui.friends_request_list;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -19,8 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.fpmi.vladcord.R;
 import com.fpmi.vladcord.ui.User.RecycleUserClick;
 import com.fpmi.vladcord.ui.User.UsersAdapter;
-import com.fpmi.vladcord.ui.friends_request_list.FriendsReqAdapter;
-import com.fpmi.vladcord.ui.messages_list.MessageActivity;
+import com.fpmi.vladcord.ui.friends_list.Friend;
 import com.google.firebase.database.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -28,25 +27,27 @@ import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
-public class FriendsFragment extends Fragment {
+public class FriendsReqFragment extends Fragment {
 
-    private FriendsViewModel friendsViewModel;
+    private FriendsReqViewModel friendsViewModel;
     private RecyclerView vListOfFriends;
     private EditText friendSearch;
     private List<Friend> listOfFriends;
-    private FriendsAdapter friendsAdapter;
+    private FriendsReqAdapter friendsAdapter;
     private ProgressBar progressBar;
+    private FriendReqModel friendReqModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        View root = inflater.inflate(R.layout.friends_list, container, false);
+        View root = inflater.inflate(R.layout.friends_request_list, container, false);
         init(root, this.getActivity());
         initEventListeners(root, getActivity());
         return root;
 
-    }
 
+
+    }
 
 
 
@@ -63,21 +64,13 @@ public class FriendsFragment extends Fragment {
     }
     private void init(View root, Activity friendsActivity)
     {
-        friendsViewModel = new FriendsViewModel();
-        vListOfFriends =  root.findViewById(R.id.friends_list);
-        progressBar = root.findViewById(R.id.progress_bar);
+        friendsViewModel = new FriendsReqViewModel();
+        vListOfFriends =  root.findViewById(R.id.friends_request_list);
         friendSearch = root.findViewById(R.id.search_input);
+        progressBar = root.findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.VISIBLE);
         listOfFriends = new ArrayList<>();
-        friendsAdapter = new FriendsAdapter(new RecycleFriendClick() {
-            @Override
-            public void onClick(String friendId, String friendName) {
-                Intent intent = new Intent(friendsActivity, MessageActivity.class);
-                intent.putExtra("friendId", friendId);
-                intent.putExtra("friendName", friendName);
-                startActivity(intent);
-            }
-        }, friendsActivity, listOfFriends);
+        friendsAdapter = new FriendsReqAdapter(friendsActivity, listOfFriends, friendsViewModel.getFriendModel());
         vListOfFriends.setAdapter(friendsAdapter);
         vListOfFriends.setLayoutManager(new LinearLayoutManager(friendsActivity));
         friendsViewModel.getDataFromDB(listOfFriends, friendsAdapter, progressBar);
@@ -87,6 +80,7 @@ public class FriendsFragment extends Fragment {
     public void onResume() {
         super.onResume();
         friendsViewModel.getDataFromDB(listOfFriends, friendsAdapter, progressBar);
+
     }
 
 
@@ -106,27 +100,14 @@ public class FriendsFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start,
                                       int before, int count) {
                 if (s.length() != 0) {
-                    vListOfFriends.setAdapter(new FriendsAdapter(new RecycleFriendClick() {
-                        @Override
-                        public void onClick(String friendId, String friendName) {
-                            Intent intent = new Intent(friendsActivity, MessageActivity.class);
-                            intent.putExtra("friendId", friendId);
-                            intent.putExtra("friendName", friendName);
-                            startActivity(intent);
-                        }
-                    }, friendsActivity, friendsViewModel.sortFriends(listOfFriends, s.toString())));
+                    vListOfFriends.setAdapter(new FriendsReqAdapter(root.getContext(),
+                            friendsViewModel.sortFriends(listOfFriends, s.toString()), friendsViewModel.getFriendModel()));
                 } else {
-                    vListOfFriends.setAdapter(new FriendsAdapter(new RecycleFriendClick() {
-                        @Override
-                        public void onClick(String friendId, String friendName) {
-                            Intent intent = new Intent(friendsActivity, MessageActivity.class);
-                            intent.putExtra("friendId", friendId);
-                            intent.putExtra("friendName", friendName);
-                            startActivity(intent);
-                        }
-                    }, friendsActivity, friendsViewModel.sortFriends(listOfFriends, "")));
+                    vListOfFriends.setAdapter(new FriendsReqAdapter(root.getContext(),
+                            friendsViewModel.sortFriends(listOfFriends, ""), friendsViewModel.getFriendModel()));
                 }
             }
         });
     }
 }
+

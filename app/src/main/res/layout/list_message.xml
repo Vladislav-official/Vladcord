@@ -30,11 +30,13 @@
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:textColor="#fff"
-        android:textSize="18sp"
+        android:textSize="18dp"
+        android:background="@color/mine_message"
 
          />
 
         <TextView
+            android:background="@color/friend_message"
             android:id="@+id/message_date"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"

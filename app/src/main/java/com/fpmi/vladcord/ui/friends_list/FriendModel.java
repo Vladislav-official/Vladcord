@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.net.Uri;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -30,7 +31,7 @@ public class FriendModel {
 
     }
 
-    public void getDataFromDB(List<Friend> friendList, FriendsAdapter adapter)
+    public void getDataFromDB(List<Friend> friendList, FriendsAdapter adapter, ProgressBar progressBar)
     {
         ValueEventListener vListener = new ValueEventListener() {
             @Override
@@ -44,6 +45,7 @@ public class FriendModel {
                     friendList.add(new Friend(friend));
                 }
                 adapter.notifyDataSetChanged();
+                progressBar.setVisibility(View.GONE);
             }
 
             @Override

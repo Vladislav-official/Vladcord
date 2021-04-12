@@ -5,17 +5,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.Menu;
-import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.fpmi.vladcord.ui.User.User;
-import com.fpmi.vladcord.ui.User.UsersFragment;
-import com.fpmi.vladcord.ui.friends_list.FriendsFragment;
-import com.fpmi.vladcord.ui.messages_list.MessageFragment;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.annotations.Nullable;
 
@@ -28,11 +24,16 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import java.util.List;
+
+import me.fahmisdk6.avatarview.AvatarView;
 
 
 public class MainActivity extends AppCompatActivity {
 
-
+    private AvatarView user_avatar;
+    private TextView user_name;
+    private TextView user_email;
     private AppBarConfiguration mAppBarConfiguration;
     private static final int SIGN_IN_CODE = 1;
     private DrawerLayout activity_main;
@@ -62,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         activity_main = findViewById(R.id.activity_main);
 
+
+
+
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), SIGN_IN_CODE);
             user = getCurUser();
@@ -75,6 +79,16 @@ public class MainActivity extends AppCompatActivity {
 
         DrawerLayout drawer = findViewById(R.id.activity_main);
         NavigationView navigationView = findViewById(R.id.nav_view);
+
+
+        user_name = navigationView.getHeaderView(0).findViewById(R.id.user_main_name);
+        user_email = navigationView.getHeaderView(0).findViewById(R.id.user_main_email);
+        user_avatar = navigationView.getHeaderView(0).findViewById(R.id.user_main_avatar);
+
+        user_name.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+        user_email.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+        user_avatar.bind("userAvatar", "https://im0-tub-by.yandex.net/i?id=37805a40978d4f627f37dafa996381a8&n=13");
+
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(

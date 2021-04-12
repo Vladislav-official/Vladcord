@@ -35,18 +35,23 @@ public class MessageAdapter extends RecyclerView.Adapter {
     private final List<Message> messages;
     private final Context context;
     private MessageViewModel messageViewModel;
+    int friendColor;
+    int mineColor;
 
     MessageAdapter(Context context, List<Message> messages) {
         this.messages = messages;
         this.inflater = LayoutInflater.from(context);
         this.context = context;
         messageViewModel = new MessageViewModel();
+        friendColor = context.getResources().getColor(R.color.friend_message);
+        mineColor = context.getResources().getColor(R.color.mine_message);
     }
 
     private class ViewHolder extends RecyclerView.ViewHolder {
         TextView text;
         BubbleLayout bubbleLayout;
         TextView messageDate;
+
 
         ViewHolder(final View itemView) {
             super(itemView);
@@ -61,15 +66,15 @@ public class MessageAdapter extends RecyclerView.Adapter {
             if (FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(message.userName)) {
                 bubbleLayoutParams.removeRule(RelativeLayout.ALIGN_PARENT_LEFT);
                 bubbleLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                text.setBackgroundColor(0xB0C4DE);
-                messageDate.setBackgroundColor(0xB0C4DE);
+                text.setBackgroundColor(mineColor);
+                messageDate.setBackgroundColor(mineColor);
                 bubbleLayout.setArrowDirection(ArrowDirection.RIGHT);
 
             } else {
                 bubbleLayoutParams.removeRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                 bubbleLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-                text.setBackgroundColor(0x778899);
-                messageDate.setBackgroundColor(0x778899);
+                text.setBackgroundColor(friendColor);
+                messageDate.setBackgroundColor(friendColor);
                 bubbleLayout.setArrowDirection(ArrowDirection.LEFT);
             }
             bubbleLayout.setLayoutParams(bubbleLayoutParams);

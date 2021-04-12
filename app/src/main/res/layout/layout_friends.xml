@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.friends_list.FriendsFragmentMain">
+
+    <LinearLayout
+        android:id="@+id/friends_request"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/friends_list"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/button_friends_list"
+            app:layout_constraintEnd_toStartOf="@+id/friends_request_list"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Button
+            android:id="@+id/friends_request_list"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="@string/button_friends_requests_list" />
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/container_for_friends_lists"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/friends_request"
+        app:layout_constraintTop_toBottomOf="@+id/friends_request" />
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

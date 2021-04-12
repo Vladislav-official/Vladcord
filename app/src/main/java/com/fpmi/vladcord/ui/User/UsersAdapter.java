@@ -15,8 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.fpmi.vladcord.R;
 import com.fpmi.vladcord.ui.friends_list.Friend;
+import com.fpmi.vladcord.ui.friends_list.RecycleFriendClick;
 
 import java.util.List;
+
+import me.fahmisdk6.avatarview.AvatarView;
 
 public class UsersAdapter extends RecyclerView.Adapter {
 
@@ -24,17 +27,19 @@ public class UsersAdapter extends RecyclerView.Adapter {
     private final LayoutInflater inflater;
     private final List<User> users;
     private final Context context;
+    private RecycleUserClick mClickListener;
     private UsersViewModel usersViewModel;
 
-    UsersAdapter(Context context, List<User> users) {
+    UsersAdapter(RecycleUserClick recycleUserClick,Context context, List<User> users) {
         this.users = users;
+        mClickListener = recycleUserClick;
         this.inflater = LayoutInflater.from(context);
         this.context = context;
         usersViewModel = new UsersViewModel();
     }
 
     private class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView ava;
+        AvatarView ava;
         TextView name;
         TextView email;
         TextView id;
@@ -48,10 +53,10 @@ public class UsersAdapter extends RecyclerView.Adapter {
         }
 
         void bind(User user) {
+            this.ava.bind("user", user.getUrlAva());
             this.name.setText(user.getName());
             this.email.setText(user.getEmail());
             this.id.setText(user.getuID());
-            this.ava.setImageURI(Uri.parse(user.getUrlAva()));
         }
     }
 
@@ -60,17 +65,19 @@ public class UsersAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.list_user, parent, false);
+
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 TextView name = (TextView) v.findViewById(R.id.user_name);
                 TextView email = (TextView) v.findViewById(R.id.user_email);
                 TextView uID = (TextView) v.findViewById(R.id.user_id);
-                usersViewModel.addFriend(new User(name.getText().toString(),
-                        email.getText().toString(), uID.getText().toString(),
-                        Uri.parse(
-                                "https://im0-tub-by.yandex.net/i?id=37805a40978d4f627f37dafa996381a8&n=13")
-                                .toString()));
+                AvatarView avatarView = v.findViewById(R.id.user_avatar);
+                if (mClickListener != null) {
+                    mClickListener.onClick(new Friend(name.getText().toString(),
+                            email.getText().toString(), uID.getText().toString(),
+                            avatarView.toString()), v);
+                }
             }
         });
         return new ViewHolder(view);

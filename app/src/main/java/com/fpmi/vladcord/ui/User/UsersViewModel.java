@@ -1,5 +1,8 @@
 package com.fpmi.vladcord.ui.User;
 
+import android.view.View;
+import android.widget.ProgressBar;
+
 import androidx.lifecycle.ViewModel;
 
 import com.fpmi.vladcord.ui.friends_list.Friend;
@@ -16,8 +19,8 @@ public class UsersViewModel extends ViewModel {
         usersModel = new UsersModel();
     }
 
-    public void getDataFromDB(List<User> listOfUsers, UsersAdapter usersAdapter) {
-        usersModel.getDataFromDB(listOfUsers, usersAdapter);
+    public void getDataFromDB(List<User> listOfUsers, UsersAdapter usersAdapter, ProgressBar progressBar) {
+        usersModel.getDataFromDB(listOfUsers, usersAdapter,progressBar);
     }
 
 
@@ -31,7 +34,7 @@ public class UsersViewModel extends ViewModel {
         return help;
     }
 
-    public void addFriend(User friend) {
+    public void addFriend(Friend friend) {
         usersModel.addFriend(friend);
     }
 

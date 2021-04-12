@@ -7,7 +7,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="mine_message">#B0C4DE</color>
-    <color name="friend_message">#778899</color>
+    <color name="mine_message">#bd33a4</color>
+    <color name="friend_message">#8b008b</color>
     <color name="gray">#888888</color>
 </resources>

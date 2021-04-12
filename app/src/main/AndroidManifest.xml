@@ -9,11 +9,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Vladcord">
-        <activity
-            android:name=".ui.messages_list.MessageActivity">
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value=".ui.messages_list.MessageActivity"/>
+        <activity android:name=".ui.messages_list.MessageActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.messages_list.MessageActivity" />
         </activity>
         <activity
             android:name=".MainActivity"
