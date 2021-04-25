@@ -27,8 +27,11 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
-        SharedPreferences preferences = getSharedPreferences("PREFS", MODE_PRIVATE);
-        String currentUser = preferences.getString("current_user", "none");
+        SharedPreferences preferences1 = getSharedPreferences("PREFS", MODE_PRIVATE);
+        String currentUser = preferences1.getString("current_user", "none");
+        SharedPreferences preferences2 = getSharedPreferences("PREFSSTATUS", MODE_PRIVATE);
+        String currentStatus = preferences2.getString("current_status", "none");
+
         String user = remoteMessage.getData().get("user");
         String sented = remoteMessage.getData().get("sented");
 
@@ -36,7 +39,7 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
         System.out.println(currentUser);
         System.out.println(sented);
         if(firebaseUser != null && sented.equals(firebaseUser.getUid())){
-            if(!currentUser.equals(user)) {
+            if(!currentUser.equals(user) && currentStatus.equals("Mute")) {
                 sendNotification(remoteMessage);
             }
 

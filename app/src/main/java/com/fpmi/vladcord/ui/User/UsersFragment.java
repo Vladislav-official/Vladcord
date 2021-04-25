@@ -8,13 +8,11 @@ import android.text.TextWatcher;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -24,7 +22,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.fpmi.vladcord.R;
 import com.fpmi.vladcord.ui.friends_list.Friend;
-import com.fpmi.vladcord.ui.messages_list.MessageFragment;
 import com.google.firebase.database.annotations.Nullable;
 
 import java.util.ArrayList;

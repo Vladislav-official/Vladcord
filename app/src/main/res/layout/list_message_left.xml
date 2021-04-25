@@ -10,7 +10,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginTop="18dp"
-    app:bl_arrowDirection="top"
+    app:bl_arrowDirection="left"
     app:bl_arrowHeight="8dp"
     app:bl_arrowPosition="16dp"
     app:bl_arrowWidth="8dp"
@@ -31,7 +31,7 @@
         android:padding="10dp"
         android:textColor="#fff"
         android:textSize="18dp"
-        android:background="@color/mine_message"
+        android:background="@color/friend_message"
 
          />
 
@@ -45,5 +45,12 @@
             android:textColor="@color/gray" />
     </LinearLayout>
 </com.daasuu.bl.BubbleLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_seen"
+            android:visibility="gone"
+            android:layout_below="@id/bubble_layout"
+            />
 
 </RelativeLayout>

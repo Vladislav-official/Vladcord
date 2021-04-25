@@ -21,6 +21,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
@@ -29,18 +30,17 @@ import retrofit2.Response;
 
 public class MessageModel {
     private final DatabaseReference friendsRef;
-    private boolean isNotificationsOn;
-    private boolean isActivityHasFocus;
     private final String friendId;
+    private final String myId;
     private final Activity activity;
+    ValueEventListener seenListener;
     APIService apiService;
     boolean notify = false;
 
-    public MessageModel(String friendId, Activity activity, boolean isNotificationsOn) {
-        this.friendsRef = FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance()
-                .getCurrentUser().getUid()).child("Friends").child(friendId).child("Messages");
+    public MessageModel(String friendId, Activity activity) {
+        this.friendsRef = FirebaseDatabase.getInstance().getReference("Chats");
+        this.myId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         this.friendId = friendId;
-        this.isNotificationsOn = isNotificationsOn;
         this.activity = activity;
     }
 
@@ -57,19 +57,11 @@ public class MessageModel {
                 }
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         Message message = ds.getValue(Message.class);
-                        assert message != null;
-                        messageList.add(message);
-                    }
-                    Collections.sort(messageList, new Comparator<Message>() {
-                        @Override
-                        public int compare(Message o1, Message o2) {
-                            if (o1.getMessageTime().getTime() > o2.getMessageTime().getTime()) {
-                                return 1;
-                            } else if (o1.getMessageTime().getTime() < o2.getMessageTime().getTime())
-                                return -1;
-                            return 0;
+                        if((message.getReceiver().equals(friendId) && message.getSender().equals(myId)) ||
+                                (message.getReceiver().equals(myId) && message.getSender().equals(friendId))) {
+                            messageList.add(message);
                         }
-                    });
+                    }
                 adapter.notifyDataSetChanged();
             }
 
@@ -83,15 +75,11 @@ public class MessageModel {
 
 
     public void addMessage(Message message) {
-        if (!message.textMessage.equals("")) {
+        if (!message.getTextMessage().equals("")) {
             notify = true;
-            friendsRef.child(message.getMessageTime().toString())
-                    .setValue(message);
-            FirebaseDatabase.getInstance().getReference("Users").child(this.friendId).
-                    child("Friends").child(FirebaseAuth.getInstance()
-                    .getCurrentUser().getUid()).child("Messages").child(message.getMessageTime().toString()).setValue(message);
+            FirebaseDatabase.getInstance().getReference("Chats").push().setValue(message);
             apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
-            final String msg = message.textMessage;
+            final String msg = message.getTextMessage();
             sendNotification(friendId, FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), msg);
             updateToken(FirebaseInstanceId.getInstance().getToken());
         }
@@ -168,5 +156,27 @@ public class MessageModel {
         };
         databaseReference.addValueEventListener(valueEventListener);
     }
+    public void sendMessage(String userId){
+        seenListener = friendsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot: dataSnapshot.getChildren()){
+                    Message message = snapshot.getValue(Message.class);
+                    if(message.getReceiver().equals(myId) && message.getSender().equals(userId)){
+                        HashMap<String, Object> hashMap = new HashMap<>();
+                        hashMap.put("isseen", true);
+                        snapshot.getRef().updateChildren(hashMap);
+                    }
+                }
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+    public void removeSeen(){
+        friendsRef.removeEventListener(seenListener);
+    }
 }

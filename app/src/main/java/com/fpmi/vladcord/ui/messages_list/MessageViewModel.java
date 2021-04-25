@@ -11,6 +11,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.fpmi.vladcord.MainActivity;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
@@ -20,8 +21,8 @@ public class MessageViewModel extends ViewModel {
 
     public MessageViewModel() {
     }
-    public void setFriendId(String friendId, Activity activity, boolean isNotificationsOn){
-    messageModel = new MessageModel(friendId, activity, isNotificationsOn);
+    public void setFriendId(String friendId, Activity activity){
+    messageModel = new MessageModel(friendId, activity);
     }
     public void getDatatFromDB(List<Message> listOfMessages, MessageAdapter messageAdapter){
 
@@ -34,8 +35,13 @@ public void muteFriend(String status){
 public void getNotificationsStatus(MenuItem item){
         messageModel.getNotificationStatus(item);
 }
-
+public void sendMessage(String userId, ValueEventListener seenListener){
+messageModel.sendMessage(userId);
+}
     public void addMessage(Message message){
         messageModel.addMessage(message);
+    }
+    public void removeSeenListener(){
+        messageModel.removeSeen();
     }
 }

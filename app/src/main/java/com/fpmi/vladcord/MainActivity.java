@@ -1,16 +1,25 @@
 package com.fpmi.vladcord;
 
+import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.MenuItem;
 import android.view.Menu;
+import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.fpmi.vladcord.ui.User.User;
 import com.fpmi.vladcord.ui.messages_list.Message;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -19,6 +28,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.annotations.Nullable;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
+import com.google.firebase.storage.UploadTask;
 
 import androidx.annotation.NonNull;
 import androidx.core.view.GravityCompat;
@@ -31,6 +44,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import me.fahmisdk6.avatarview.AvatarView;
@@ -76,10 +90,6 @@ public class MainActivity extends AppCompatActivity {
                     });
                 }
 
-                user_name = navigationView.getHeaderView(0).findViewById(R.id.user_main_name);
-                user_email = navigationView.getHeaderView(0).findViewById(R.id.user_main_email);
-                user_avatar = navigationView.getHeaderView(0).findViewById(R.id.user_main_avatar);
-
                 user_name.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
                 user_email.setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
                 user_avatar.bind("userAvatar", "https://im0-tub-by.yandex.net/i?id=37805a40978d4f627f37dafa996381a8&n=13");
@@ -89,7 +99,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-
     }
 
     @Override
@@ -98,6 +107,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         activity_main = findViewById(R.id.activity_main);
         navigationView = findViewById(R.id.nav_view);
+        user_name = navigationView.getHeaderView(0).findViewById(R.id.user_main_name);
+        user_email = navigationView.getHeaderView(0).findViewById(R.id.user_main_email);
+        user_avatar = navigationView.getHeaderView(0).findViewById(R.id.user_main_avatar);
+
         drawer = new DrawerLayout(this.getBaseContext());
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), SIGN_IN_CODE);
@@ -106,10 +119,6 @@ public class MainActivity extends AppCompatActivity {
             Snackbar.make(activity_main, "Вы авторизованы", Snackbar.LENGTH_LONG).show();
             FirebaseDatabase.getInstance().getReference("Users/".concat
                     (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("Status").setValue("Online");
-            user_name = navigationView.getHeaderView(0).findViewById(R.id.user_main_name);
-            user_email = navigationView.getHeaderView(0).findViewById(R.id.user_main_email);
-            user_avatar = navigationView.getHeaderView(0).findViewById(R.id.user_main_avatar);
-
             user = getCurUser();
 
             user_name.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
@@ -136,6 +145,11 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
     }
+
+
+
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

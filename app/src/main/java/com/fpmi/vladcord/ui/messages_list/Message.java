@@ -1,17 +1,33 @@
 package com.fpmi.vladcord.ui.messages_list;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class Message {
-    public String userName;
-    public String textMessage;
+    private String sender;
+    private String receiver;
+    private String userName;
+    private String textMessage;
+    private boolean isseen;
     private Date messageTime;
 
     public Message() {}
-    public Message(String userName, String textMessage) {
-        this.textMessage = textMessage;
+
+    public Message(String sender, String receiver, String userName, String textMessage, boolean isseen) {
+        this.sender = sender;
+        this.receiver = receiver;
         this.userName = userName;
+        this.textMessage = textMessage;
         this.messageTime = new Date();
+        this.isseen = isseen;
+    }
+
+    public boolean isIsseen() {
+        return isseen;
+    }
+
+    public void setIsseen(boolean isseen) {
+        this.isseen = isseen;
     }
 
     public String getUserName() {
@@ -20,6 +36,22 @@ public class Message {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getSender() {
+        return sender;
+    }
+
+    public void setSender(String sender) {
+        this.sender = sender;
+    }
+
+    public String getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
     }
 
     public String getTextMessage() {
