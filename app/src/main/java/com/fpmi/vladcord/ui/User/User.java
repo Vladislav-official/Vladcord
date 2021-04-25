@@ -14,12 +14,14 @@ public class User {
     private String email;
     private String uID;
     private String urlAva;
+    private String status;
 
-    public User(String name, String email, String uID, String urlAva){
+    public User(String name, String email, String uID, String urlAva, String status){
         this.name = name;
         this.email = email;
         this.uID = uID;
         this.urlAva = urlAva;
+        this.status = status;
     }
 
     @Override
@@ -41,6 +43,7 @@ public class User {
         this.name = null;
         this.email = null;
         this.uID = null;
+        this.status = null;
     }
 
     public String getUrlAva() {
@@ -56,9 +59,16 @@ public class User {
         this.email = user.email;
         this.uID = user.uID;
         this.urlAva = user.urlAva;
+        this.status = user.status;
     }
 
+    public String getStatus() {
+        return status;
+    }
 
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     public String getName() {
         return name;

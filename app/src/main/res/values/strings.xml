@@ -22,5 +22,7 @@
     <string name="add_friend">Yes</string>
     <string name="not_add_friend">No</string>
     <string name="ask_add_friend">Add friend?</string>
+    <string name="mute_friend">Mute</string>
+    <string name="unmute_friend">Unmute</string>
     <string name="send_request_for_add_friend">Request send to friend</string>
 </resources>

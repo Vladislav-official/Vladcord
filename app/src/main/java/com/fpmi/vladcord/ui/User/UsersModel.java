@@ -42,7 +42,7 @@ public class UsersModel {
                         FirebaseAuth.getInstance().getCurrentUser().getUid(),
                         Uri.parse(
                                 "https://im0-tub-by.yandex.net/i?id=37805a40978d4f627f37dafa996381a8&n=13")
-                                .toString())))
+                                .toString(), "Online")))
                     {
                         listOfUsers.add(new User(user));
                     }
@@ -87,7 +87,6 @@ public class UsersModel {
                     assert friend != null;
                     list.add(new Friend(friend));
                 }
-                System.out.println(list.get(0).getName() + " " + friend.getName());
                 for(Friend r: list) {
                     if (r.getEmail().equals(friend.getEmail())) {
                         DatabaseReference addFriendRef = FirebaseDatabase.getInstance().getReference("Users").child(friend.getuID());

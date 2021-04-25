@@ -1,34 +1,42 @@
 package com.fpmi.vladcord.ui.messages_list;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
+import android.app.Activity;
+import android.app.Application;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 
-import com.firebase.ui.auth.AuthUI;
 import com.fpmi.vladcord.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.Objects;
-
-public class MessageActivity extends AppCompatActivity {
-
+public class MessageActivity extends AppCompatActivity implements
+        Application.ActivityLifecycleCallbacks {
+private String friendId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.message_activity);
+
+        FirebaseDatabase.getInstance().getReference("Users/".concat
+                (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("Status").setValue("Online");
         String friendId = getIntent().getStringExtra("friendId");
         String friendName = getIntent().getStringExtra("friendName");
+        this.friendId = friendId;
         setTitle(friendName);
         setupActionBar();
+
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, MessageFragment.newInstance(friendId))
                     .commitNow();
         }
     }
+
 
     private void setupActionBar() {
         ActionBar actionBar = getSupportActionBar();
@@ -37,17 +45,58 @@ public class MessageActivity extends AppCompatActivity {
         }
     }
 
+
+
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.massage_main, menu);
-        return true;
+    public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
+
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        int id = item.getItemId();
-        return super.onOptionsItemSelected(item);
+    public void onActivityStarted(@NonNull Activity activity) {
+
+    }
+
+    private void currentUser(String userid){
+        SharedPreferences.Editor editor = getSharedPreferences("PREFS", MODE_PRIVATE).edit();
+        editor.putString("current_user", userid);
+        editor.apply();
+    }
+
+    @Override
+    public void onActivityResumed(@NonNull Activity activity) {
+
+    }
+
+    @Override
+    public void onActivityPaused(@NonNull Activity activity) {
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        currentUser(friendId);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        currentUser("none");
+    }
+
+    @Override
+    public void onActivityStopped(@NonNull Activity activity) {
+
+    }
+
+    @Override
+    public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull Bundle outState) {
+
+    }
+
+    @Override
+    public void onActivityDestroyed(@NonNull Activity activity) {
+
     }
 }

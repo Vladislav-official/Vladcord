@@ -6,6 +6,11 @@
         android:orderInCategory="100"
         android:title="@string/delete_friend"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/muteNotifications"
+        android:orderInCategory="100"
+        android:title="@string/mute_friend"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/signOut"

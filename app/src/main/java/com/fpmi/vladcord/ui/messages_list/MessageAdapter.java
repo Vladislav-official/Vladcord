@@ -63,7 +63,7 @@ public class MessageAdapter extends RecyclerView.Adapter {
         void bind(Message message) {
             RelativeLayout.LayoutParams bubbleLayoutParams =
                     (RelativeLayout.LayoutParams)bubbleLayout.getLayoutParams();
-            if (FirebaseAuth.getInstance().getCurrentUser().getEmail().equals(message.userName)) {
+            if (FirebaseAuth.getInstance().getCurrentUser().getDisplayName().equals(message.userName)) {
                 bubbleLayoutParams.removeRule(RelativeLayout.ALIGN_PARENT_LEFT);
                 bubbleLayoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                 text.setBackgroundColor(mineColor);
