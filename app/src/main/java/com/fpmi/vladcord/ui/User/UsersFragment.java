@@ -56,7 +56,6 @@ public class UsersFragment extends Fragment {
         int MESSAGE_LIST = 2;
         if (requestCode == MESSAGE_LIST) {
             if (resultCode == RESULT_OK) {
-                System.out.println("NICE");
             }
         }
     }

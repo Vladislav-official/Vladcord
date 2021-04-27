@@ -175,14 +175,14 @@ private void currentNotificationsStatus(String status){
         int id = item.getItemId();
         switch (id){
             case R.id.muteNotifications:
-                if(item.getTitle().equals("Mute")) {
-                    messageViewModel.muteFriend("Unmute");
+                if(item.getTitle().equals(getString(R.string.mute_friend))) {
+                    messageViewModel.muteFriend(getString(R.string.unmute_friend));
                     item.setTitle(R.string.unmute_friend);
-                    currentNotificationsStatus("Unmute");
+                    currentNotificationsStatus(getString(R.string.unmute_friend));
                 }
                 else{
-                    messageViewModel.muteFriend("Mute");
-                    currentNotificationsStatus("Mute");
+                    messageViewModel.muteFriend(getString(R.string.mute_friend));
+                    currentNotificationsStatus(getString(R.string.mute_friend));
                     item.setTitle(R.string.mute_friend);
 
                 }

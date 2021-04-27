@@ -37,12 +37,7 @@ public class UsersModel {
 
                     User user = ds.getValue(User.class);
                     assert user != null;
-                    if(!user.equals(new User(FirebaseAuth.getInstance().getCurrentUser().getDisplayName(),
-                        FirebaseAuth.getInstance().getCurrentUser().getEmail(),
-                        FirebaseAuth.getInstance().getCurrentUser().getUid(),
-                        Uri.parse(
-                                "https://im0-tub-by.yandex.net/i?id=37805a40978d4f627f37dafa996381a8&n=13")
-                                .toString(), "Online")))
+                    if(!user.getuID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
                     {
                         listOfUsers.add(new User(user));
                     }
@@ -66,9 +61,7 @@ public class UsersModel {
                     .getCurrentUser().getUid())).setValue(new Friend(FirebaseAuth.getInstance().getCurrentUser().getDisplayName(),
                     FirebaseAuth.getInstance().getCurrentUser().getEmail(),
                     FirebaseAuth.getInstance().getCurrentUser().getUid(),
-                    Uri.parse(
-                            "https://im0-tub-by.yandex.net/i?id=37805a40978d4f627f37dafa996381a8&n=13")
-                            .toString()));
+                    friend.getUrl()));
         checkFriend(friend);
         }
 

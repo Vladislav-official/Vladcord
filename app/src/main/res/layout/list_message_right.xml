@@ -53,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/txt_seen"
-            android:text="Seen"/>
+            android:text="@string/seen_message"/>
 </LinearLayout>
 
 </RelativeLayout>

@@ -1,9 +1,11 @@
 package com.fpmi.vladcord.ui.friends_list;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -46,7 +48,7 @@ public class FriendsAdapter extends RecyclerView.Adapter {
             this.name.setText(friend.getName());
             this.email.setText(friend.getEmail());
             this.id.setText(friend.getuID());
-            this.ava.bind(friend.getName(),friend.getUrlAva());
+            this.ava.bind("friend_ava", friend.getUrlAva());
         }
     }
 

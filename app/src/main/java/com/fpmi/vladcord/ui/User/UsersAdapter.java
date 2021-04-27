@@ -2,6 +2,7 @@ package com.fpmi.vladcord.ui.User;
 
 import android.content.Context;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import com.fpmi.vladcord.R;
 import com.fpmi.vladcord.ui.friends_list.Friend;
 import com.fpmi.vladcord.ui.friends_list.RecycleFriendClick;
 
+import java.io.IOException;
 import java.util.List;
 
 import me.fahmisdk6.avatarview.AvatarView;
@@ -53,7 +55,7 @@ public class UsersAdapter extends RecyclerView.Adapter {
         }
 
         void bind(User user) {
-            this.ava.bind("user", user.getUrlAva());
+            this.ava.bind("user_ava",user.getUrlAva());
             this.name.setText(user.getName());
             this.email.setText(user.getEmail());
             this.id.setText(user.getuID());

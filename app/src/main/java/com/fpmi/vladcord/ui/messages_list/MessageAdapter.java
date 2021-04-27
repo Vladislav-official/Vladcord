@@ -80,10 +80,10 @@ public class MessageAdapter extends RecyclerView.Adapter {
         ((ViewHolder)holder).bind(message);
         if(position == messages.size() - 1){
             if(message.isIsseen()){
-                ((ViewHolder) holder).txtSeen.setText("Seen");
+                ((ViewHolder) holder).txtSeen.setText(R.string.seen_message);
             }
             else{
-                ((ViewHolder) holder).txtSeen.setText("Delivered");
+                ((ViewHolder) holder).txtSeen.setText(R.string.delivered);
             }
         }else{
             ((ViewHolder) holder).txtSeen.setText("");

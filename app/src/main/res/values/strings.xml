@@ -24,5 +24,17 @@
     <string name="ask_add_friend">Add friend?</string>
     <string name="mute_friend">Mute</string>
     <string name="unmute_friend">Unmute</string>
+    <string name="seen_message">✔</string>
     <string name="send_request_for_add_friend">Request send to friend</string>
+
+
+
+    <string name="last_seen">Last_seen </string>
+    <string name="you_logged">You are logged in</string>
+    <string name="you_not_logged">You are not logged in</string>
+    <string name="choose_image">Select an image</string>
+    <string name="has_rights_for_reading">Read permissions granted.</string>
+    <string name="hasnt_rights_for_reading">No read rights were granted.</string>
+    <string name="delivered">Delivered</string>
+    <string name="mute">Mute</string>
 </resources>

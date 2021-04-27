@@ -39,7 +39,7 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
         System.out.println(currentUser);
         System.out.println(sented);
         if(firebaseUser != null && sented.equals(firebaseUser.getUid())){
-            if(!currentUser.equals(user) && currentStatus.equals("Mute")) {
+            if(!currentUser.equals(user) && currentStatus.equals(getString(R.string.mute_friend))) {
                 sendNotification(remoteMessage);
             }
 
