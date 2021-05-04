@@ -1,7 +1,10 @@
 package com.fpmi.vladcord.ui.messages_list;
 
 import android.app.Activity;
+import android.text.format.DateFormat;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
@@ -33,6 +36,7 @@ public class MessageModel {
     private final String friendId;
     private final String myId;
     private final Activity activity;
+
     ValueEventListener seenListener;
     APIService apiService;
     boolean notify = false;
@@ -72,6 +76,7 @@ public class MessageModel {
         };
         friendsRef.addValueEventListener(vListener);
     }
+
 
 
     public void addMessage(Message message) {
@@ -130,7 +135,7 @@ public class MessageModel {
         FirebaseDatabase.getInstance().getReference("Users")
                 .child(currentUserId)
                 .child("Friends")
-                .child(friendId).child("NotificationsStatus").setValue(status);
+                .child(friendId).child("notificationStatus").setValue(status);
     }
 
     public void getNotificationStatus(MenuItem item){
@@ -138,7 +143,7 @@ public class MessageModel {
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users")
                 .child(currentUserId)
                 .child("Friends")
-                .child(friendId).child("NotificationsStatus");
+                .child(friendId).child("notificationStatus");
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

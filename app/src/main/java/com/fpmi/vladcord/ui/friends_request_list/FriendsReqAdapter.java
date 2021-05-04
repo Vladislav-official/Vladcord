@@ -13,27 +13,30 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.fpmi.vladcord.R;
+import com.fpmi.vladcord.ui.User.User;
 import com.fpmi.vladcord.ui.friends_list.Friend;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import me.fahmisdk6.avatarview.AvatarView;
 
 public class FriendsReqAdapter extends RecyclerView.Adapter {
 
 
-    private final List<Friend> friends;
+    private final List<User> friends;
     private final Context context;
     private final FriendReqModel friendReqModel;
 
-    public FriendsReqAdapter(Context context, List<Friend> friends, FriendReqModel friendReqModel) {
+    public FriendsReqAdapter(Context context, List<User> friends, FriendReqModel friendReqModel) {
         this.friends = friends;
         this.context = context;
         this.friendReqModel = friendReqModel;
     }
 
     private class ViewHolder extends RecyclerView.ViewHolder {
-        AvatarView ava;
+        CircleImageView ava;
         TextView name;
         TextView email;
         TextView id;
@@ -50,22 +53,22 @@ public class FriendsReqAdapter extends RecyclerView.Adapter {
             notAddFriend = itemView.findViewById(R.id.not_add_friend);
         }
 
-        void bind(Friend friend) {
+        void bind(User friend) {
 
             this.name.setText(friend.getName());
             this.email.setText(friend.getEmail());
             this.id.setText(friend.getuID());
-            this.ava.bind("friend_ava",friend.getUrlAva());
+            Picasso.get().load(friend.getUrlAva()).into(this.ava);
             addFriend.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    friendReqModel.addFriend(friend);
+                    friendReqModel.addFriend(friend.getuID());
                 }
             });
             notAddFriend.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    friendReqModel.deleteFriend(friend);
+                    friendReqModel.deleteFriend(friend.getuID());
                 }
             });
         }
@@ -82,7 +85,7 @@ public class FriendsReqAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        Friend friend = friends.get(position);
+        User friend = friends.get(position);
             ((ViewHolder)holder).bind(friend);
     }
 

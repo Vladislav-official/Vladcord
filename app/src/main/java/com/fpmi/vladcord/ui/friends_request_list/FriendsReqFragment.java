@@ -17,9 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.fpmi.vladcord.R;
-import com.fpmi.vladcord.ui.User.RecycleUserClick;
-import com.fpmi.vladcord.ui.User.UsersAdapter;
-import com.fpmi.vladcord.ui.friends_list.Friend;
+import com.fpmi.vladcord.ui.User.User;
 import com.google.firebase.database.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -32,7 +30,7 @@ public class FriendsReqFragment extends Fragment {
     private FriendsReqViewModel friendsViewModel;
     private RecyclerView vListOfFriends;
     private EditText friendSearch;
-    private List<Friend> listOfFriends;
+    private List<User> listOfFriends;
     private FriendsReqAdapter friendsAdapter;
     private ProgressBar progressBar;
     private FriendReqModel friendReqModel;
@@ -40,12 +38,10 @@ public class FriendsReqFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        View root = inflater.inflate(R.layout.friends_request_list, container, false);
+        View root = inflater.inflate(R.layout.fragment_friends_requests, container, false);
         init(root, this.getActivity());
         initEventListeners(root, getActivity());
         return root;
-
-
 
     }
 

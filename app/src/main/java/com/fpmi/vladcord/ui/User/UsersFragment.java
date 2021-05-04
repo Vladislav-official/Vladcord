@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.fpmi.vladcord.R;
 import com.fpmi.vladcord.ui.friends_list.Friend;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -38,7 +40,7 @@ public class UsersFragment extends Fragment {
     private List<User> listOfUsers;
     private UsersAdapter usersAdapter;
     private ProgressBar progressBar;
-    private Friend friendClicked;
+    private String friendClicked;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -70,16 +72,16 @@ public class UsersFragment extends Fragment {
         listOfUsers = new ArrayList<>();
         usersAdapter = new UsersAdapter(new RecycleUserClick() {
             @Override
-            public void onClick(Friend friend, View view) {
+            public void onClick(String friendId, View view) {
                 registerForContextMenu(view);
-                friendClicked = friend;
+                friendClicked = friendId;
 
             }
         }, usersActivity, listOfUsers);
         vListOfUsers.setAdapter(usersAdapter);
         vListOfUsers.setLayoutManager(new LinearLayoutManager(usersActivity));
+            usersViewModel.getDataFromDB(listOfUsers, usersAdapter, progressBar);
 
-        usersViewModel.getDataFromDB(listOfUsers, usersAdapter, progressBar);
     }
 
 
@@ -94,9 +96,10 @@ public class UsersFragment extends Fragment {
     public boolean onContextItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case ADDING_FRIEND:
-                Toast.makeText(getActivity(), R.string.send_request_for_add_friend, Toast.LENGTH_LONG)
-                        .show();
-                usersViewModel.addFriend(friendClicked);
+
+                    Toast.makeText(getActivity(), R.string.send_request_for_add_friend, Toast.LENGTH_LONG)
+                            .show();
+                    usersViewModel.addFriend(friendClicked);
                 return true;
         }
         return super.onContextItemSelected(item);
@@ -107,7 +110,6 @@ public class UsersFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        usersViewModel.getDataFromDB(listOfUsers, usersAdapter, progressBar);
     }
 
     private void initEventListeners(View root, Activity usersActivity)
@@ -129,9 +131,9 @@ public class UsersFragment extends Fragment {
 
                     vListOfUsers.setAdapter(new UsersAdapter(new RecycleUserClick() {
                         @Override
-                        public void onClick(Friend friend, View view) {
+                        public void onClick(String friendId, View view) {
                             registerForContextMenu(view);
-                            friendClicked = friend;
+                            friendClicked = friendId;
                         }
                     }, root.getContext(),
                             usersViewModel.sortUsers(listOfUsers, s.toString())));
@@ -139,9 +141,9 @@ public class UsersFragment extends Fragment {
                 else{
                     vListOfUsers.setAdapter(new UsersAdapter(new RecycleUserClick() {
                         @Override
-                        public void onClick(Friend friend, View view) {
+                        public void onClick(String friendId, View view) {
                             registerForContextMenu(view);
-                            friendClicked = friend;
+                            friendClicked = friendId;
                         }
                     }, root.getContext(),
                             usersViewModel.sortUsers(listOfUsers, "")));

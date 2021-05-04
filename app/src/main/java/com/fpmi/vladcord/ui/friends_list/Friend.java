@@ -3,69 +3,31 @@ package com.fpmi.vladcord.ui.friends_list;
 
 public class Friend {
 
-    public Friend(Friend friend) {
-        name = friend.name;
-        email = friend.email;
-        urlAva = friend.urlAva;
-        uID = friend.uID;
+    private String id;
+    private String notificationStatus;
+
+    public Friend(){
+        this.id = null;
+        this.notificationStatus = null;
+    }
+    public Friend(String friendId, String notificationStatus) {
+        this.id = friendId;
+        this.notificationStatus = notificationStatus;
     }
 
-    public Friend() {
-        name = null;
-        email = null;
-        urlAva = null;
-        uID = null;
+    public String getFriendId() {
+        return id;
     }
 
-    public Friend(String name, String email,  String uId, String url) {
-        this.name = name;
-        this.email = email;
-        this.uID = uId;
-        this.urlAva = url;
+    public void setFriendId(String friendId) {
+        this.id = friendId;
     }
 
-    private String name;
-    private String email;
-    private String uID;
-    private String urlAva;
-
-    public String getEmail() {
-        return email;
+    public String getNotificationStatus() {
+        return notificationStatus;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getUrl() {
-        return urlAva;
-    }
-
-    public String getuID() {
-        return uID;
-    }
-
-    public String getUrlAva() {
-        return urlAva;
-    }
-
-    public void setUrlAva(String urlAva) {
-        this.urlAva = urlAva;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setUrl(String url) {
-        this.urlAva = url;
-    }
-
-    public void setuID(String uID) {
-        this.uID = uID;
+    public void setNotificationStatus(String notificationStatus) {
+        this.notificationStatus = notificationStatus;
     }
 }

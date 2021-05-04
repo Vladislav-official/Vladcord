@@ -31,19 +31,19 @@ public class UsersModel {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot)
             {
-                if(listOfUsers.size() != 0) listOfUsers.clear();
-                for(DataSnapshot ds : dataSnapshot.getChildren())
-                {
+                if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+                    if (listOfUsers.size() != 0) listOfUsers.clear();
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
 
-                    User user = ds.getValue(User.class);
-                    assert user != null;
-                    if(!user.getuID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
-                    {
-                        listOfUsers.add(new User(user));
+                        User user = ds.getValue(User.class);
+                        assert user != null;
+                        if (!user.getuID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                            listOfUsers.add(new User(user));
+                        }
                     }
+                    progressBar.setVisibility(View.GONE);
+                    adapter.notifyDataSetChanged();
                 }
-                progressBar.setVisibility(View.GONE);
-                adapter.notifyDataSetChanged();
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -53,48 +53,32 @@ public class UsersModel {
         userRef.addValueEventListener(vListener);
     }
 
-    public void addFriend(Friend friend){
+    public void addFriend(String friendId){
+           DatabaseReference firebaseDatabase = FirebaseDatabase.getInstance()
+                    .getReference("Users").child(friendId).child("Friends")
+                   .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-            DatabaseReference addFriendRef = FirebaseDatabase.getInstance()
-                    .getReference("Users").child(friend.getuID());
-            addFriendRef.child("Friends_request/".concat(FirebaseAuth.getInstance()
-                    .getCurrentUser().getUid())).setValue(new Friend(FirebaseAuth.getInstance().getCurrentUser().getDisplayName(),
-                    FirebaseAuth.getInstance().getCurrentUser().getEmail(),
-                    FirebaseAuth.getInstance().getCurrentUser().getUid(),
-                    friend.getUrl()));
-        checkFriend(friend);
-        }
-
-    public void checkFriend( Friend friend)
-    {
-        DatabaseReference firebaseDatabase = FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance()
-                .getCurrentUser().getUid()).child("Friends");
-        List<Friend> list = new ArrayList<>();
-        ValueEventListener vListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
-            {
-                for(DataSnapshot ds : dataSnapshot.getChildren())
-                {
-                    Friend friend = ds.getValue(Friend.class);
-                    assert friend != null;
-                    list.add(new Friend(friend));
-                }
-                for(Friend r: list) {
-                    if (r.getEmail().equals(friend.getEmail())) {
-                        DatabaseReference addFriendRef = FirebaseDatabase.getInstance().getReference("Users").child(friend.getuID());
-                        addFriendRef.child("Friends_request/".concat(FirebaseAuth.getInstance()
-                                .getCurrentUser().getUid())).removeValue();
+                    ValueEventListener valueEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    Friend friend = snapshot.getValue(Friend.class);
+                    if(friend == null){
+                        FirebaseDatabase.getInstance()
+                                .getReference("Users").child(friendId).child("Friends_request")
+                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                .setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
                     }
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        };
-        firebaseDatabase.addValueEventListener(vListener);
-    }
+                }
+
+            };
+firebaseDatabase.addValueEventListener(valueEventListener);
+        }
+
+
 
 }

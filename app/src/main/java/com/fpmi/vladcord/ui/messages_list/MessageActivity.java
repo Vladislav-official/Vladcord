@@ -11,6 +11,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import hani.momanii.supernova_emoji_library.Actions.EmojIconActions;
@@ -46,7 +48,7 @@ private String friendId;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.message_activity);
         FirebaseDatabase.getInstance().getReference("Users/".concat
-                (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("Status").setValue("Online");
+                (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status").setValue("Online");
         String friendId = getIntent().getStringExtra("friendId");
         String friendName = getIntent().getStringExtra("friendName");
         this.friendId = friendId;
@@ -122,6 +124,18 @@ private void currentNotificationsStatus(String status){
     editor.putString("current_status", status);
     editor.apply();
 }
+
+    @Override
+    protected void onDestroy() {
+        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+            FirebaseDatabase.getInstance().getReference("Users/".concat
+                    (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status")
+                    .setValue(getString(R.string.last_seen) + " " + (DateFormat.format("HH:mm", (new Date().getTime())))
+                            + " " + DateFormat.format("dd:MM", (new Date().getTime())));
+        }
+        super.onDestroy();
+    }
+
     @Override
     public void onActivityResumed(@NonNull Activity activity) {
 

@@ -34,8 +34,8 @@ public class UsersViewModel extends ViewModel {
         return help;
     }
 
-    public void addFriend(Friend friend) {
-        usersModel.addFriend(friend);
+    public void addFriend(String friendId) {
+        usersModel.addFriend(friendId);
     }
 
     

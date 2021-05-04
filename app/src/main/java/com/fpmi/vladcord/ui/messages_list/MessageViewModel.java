@@ -5,6 +5,7 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -24,6 +25,7 @@ public class MessageViewModel extends ViewModel {
     public void setFriendId(String friendId, Activity activity){
     messageModel = new MessageModel(friendId, activity);
     }
+
     public void getDatatFromDB(List<Message> listOfMessages, MessageAdapter messageAdapter){
 
         messageModel.getDataFromDB(listOfMessages, messageAdapter);

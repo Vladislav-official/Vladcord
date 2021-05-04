@@ -30,21 +30,21 @@ public class FriendReqModel {
 
 
 
-    public void getDataFromDB(List<Friend> friendList, FriendsReqAdapter adapter, ProgressBar progressBar)
+    public void getDataFromDB(List<User> friendList, FriendsReqAdapter adapter, ProgressBar progressBar)
     {
+        List<String> friendsIds = new ArrayList<>();
         ValueEventListener vListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot)
             {
-                if(friendList.size() != 0)friendList.clear();
+                if(friendsIds.size() != 0)friendsIds.clear();
                 for(DataSnapshot ds : dataSnapshot.getChildren())
                 {
-                    Friend friend = ds.getValue(Friend.class);
+                    String friend = ds.getValue(String.class);
                     assert friend != null;
-                    friendList.add(new Friend(friend));
+                    friendsIds.add(friend);
                 }
-                adapter.notifyDataSetChanged();
-                progressBar.setVisibility(View.GONE);
+                getDataFromDBS2(friendList, adapter, progressBar, friendsIds);
             }
 
             @Override
@@ -54,25 +54,47 @@ public class FriendReqModel {
         };
         friendsRef.addValueEventListener(vListener);
     }
+    public void getDataFromDBS2(List<User> friendList, FriendsReqAdapter adapter, ProgressBar progressBar, List<String > friendIds){
+        FirebaseDatabase.getInstance().getReference("Users").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+            {
+                if(friendList.size() != 0) friendList.clear();
+                for(DataSnapshot ds : dataSnapshot.getChildren())
+                {
 
-    public void addFriend(Friend friend){
-        DatabaseReference addFriendRef = FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance()
-                .getCurrentUser().getUid());
-        addFriendRef.child("Friends/".concat(friend.getuID())).setValue(friend);
-        FirebaseDatabase.getInstance().getReference("Users").child(friend.getuID()).child("Friends/"
-                .concat(FirebaseAuth.getInstance()
-                        .getCurrentUser().getUid())).setValue(new Friend(FirebaseAuth.getInstance().getCurrentUser().getDisplayName(),
-                FirebaseAuth.getInstance().getCurrentUser().getEmail(),
-                FirebaseAuth.getInstance().getCurrentUser().getUid(),
-                Uri.parse(
-                        "https://im0-tub-by.yandex.net/i?id=37805a40978d4f627f37dafa996381a8&n=13")
-                        .toString()));
-        deleteFriend(friend);
+                    User user = ds.getValue(User.class);
+                    assert user != null;
+                    if(friendIds.contains(user.getuID()))
+                    {
+                        friendList.add(new User(user));
+                    }
+                }
+                progressBar.setVisibility(View.GONE);
+                adapter.notifyDataSetChanged();
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
     }
 
-    public void deleteFriend(Friend friend){
+
+
+    public void addFriend(String friendId){
         DatabaseReference addFriendRef = FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance()
                 .getCurrentUser().getUid());
-        addFriendRef.child("Friends_request/".concat(friend.getuID())).removeValue();
+        addFriendRef.child("Friends").child(friendId).setValue(new Friend(friendId, "Mute"));
+        FirebaseDatabase.getInstance().getReference("Users").child(friendId)
+                .child("Friends").child(FirebaseAuth.getInstance().getCurrentUser()
+                .getUid())
+                .setValue(new Friend(FirebaseAuth.getInstance().getCurrentUser().getUid(), "Mute"));
+        deleteFriend(friendId);
+    }
+
+    public void deleteFriend(String friendId){
+        DatabaseReference addFriendRef = FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance()
+                .getCurrentUser().getUid());
+        addFriendRef.child("Friends_request").child(friendId).removeValue();
     }
 }

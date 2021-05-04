@@ -20,7 +20,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FriendModel {
     private final DatabaseReference friendsRef;
@@ -31,21 +34,21 @@ public class FriendModel {
 
     }
 
-    public void getDataFromDB(List<Friend> friendList, FriendsAdapter adapter, ProgressBar progressBar)
+    public void getDataFromDB(List<User> friendList, FriendsAdapter adapter, ProgressBar progressBar)
     {
+        List<String> friendsIds = new ArrayList<>();
         ValueEventListener vListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot)
             {
-                if(friendList.size() != 0)friendList.clear();
+                if(friendsIds.size() != 0)friendsIds.clear();
                 for(DataSnapshot ds : dataSnapshot.getChildren())
                 {
                     Friend friend = ds.getValue(Friend.class);
-                    assert friend != null;
-                    friendList.add(new Friend(friend));
+                    friendsIds.add(friend.getFriendId());
                 }
-                adapter.notifyDataSetChanged();
-                progressBar.setVisibility(View.GONE);
+                getDataFromDBS2(friendList, adapter, progressBar, friendsIds);
+
             }
 
             @Override
@@ -55,6 +58,28 @@ public class FriendModel {
         };
         friendsRef.addValueEventListener(vListener);
     }
-
+    public void getDataFromDBS2(List<User> friendList, FriendsAdapter adapter, ProgressBar progressBar, List<String > friendIds){
+        FirebaseDatabase.getInstance().getReference("Users").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+            {
+                if(friendList.size() != 0) friendList.clear();
+                for(DataSnapshot ds : dataSnapshot.getChildren())
+                {
+                    User user = ds.getValue(User.class);
+                    assert user != null;
+                    if(friendIds.contains(user.getuID()))
+                    {
+                        friendList.add(new User(user));
+                    }
+                }
+                progressBar.setVisibility(View.GONE);
+                adapter.notifyDataSetChanged();
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+    }
 
 }

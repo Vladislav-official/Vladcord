@@ -15,13 +15,15 @@ public class User {
     private String uID;
     private String urlAva;
     private String status;
+    private String bio;
 
-    public User(String name, String email, String uID, String urlAva, String status){
+    public User(String name, String email, String uID, String urlAva, String status, String bio){
         this.name = name;
         this.email = email;
         this.uID = uID;
         this.urlAva = urlAva;
         this.status = status;
+        this.bio = bio;
     }
 
     @Override
@@ -31,6 +33,14 @@ public class User {
         User user = (User) o;
         return Objects.equals(email, user.email) &&
                 Objects.equals(uID, user.uID);
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
     }
 
     @Override
@@ -60,6 +70,7 @@ public class User {
         this.uID = user.uID;
         this.urlAva = user.urlAva;
         this.status = user.status;
+        this.bio = user.bio;
     }
 
     public String getStatus() {

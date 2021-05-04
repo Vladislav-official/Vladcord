@@ -19,12 +19,12 @@ public class FriendsReqViewModel extends ViewModel {
         friendModel = new FriendReqModel();
     }
 
-    public void getDataFromDB(List<Friend> list, FriendsReqAdapter friendsReqAdapter, ProgressBar progressBar){
+    public void getDataFromDB(List<User> list, FriendsReqAdapter friendsReqAdapter, ProgressBar progressBar){
         friendModel.getDataFromDB(list, friendsReqAdapter, progressBar);
     }
-    public List<Friend> sortFriends(List<Friend> listOfFriends, String string) {
-        List<Friend> resultListOfFriends = new ArrayList<>();
-        for(Friend r: listOfFriends){
+    public List<User> sortFriends(List<User> listOfFriends, String string) {
+        List<User> resultListOfFriends = new ArrayList<>();
+        for(User r: listOfFriends){
             if(r.getName().toLowerCase().contains(string.toLowerCase())){
                 resultListOfFriends.add(r);
             }

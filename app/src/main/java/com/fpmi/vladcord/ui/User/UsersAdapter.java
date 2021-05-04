@@ -17,10 +17,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.fpmi.vladcord.R;
 import com.fpmi.vladcord.ui.friends_list.Friend;
 import com.fpmi.vladcord.ui.friends_list.RecycleFriendClick;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import me.fahmisdk6.avatarview.AvatarView;
 
 public class UsersAdapter extends RecyclerView.Adapter {
@@ -41,7 +43,7 @@ public class UsersAdapter extends RecyclerView.Adapter {
     }
 
     private class ViewHolder extends RecyclerView.ViewHolder {
-        AvatarView ava;
+        CircleImageView ava;
         TextView name;
         TextView email;
         TextView id;
@@ -55,7 +57,9 @@ public class UsersAdapter extends RecyclerView.Adapter {
         }
 
         void bind(User user) {
-            this.ava.bind("user_ava",user.getUrlAva());
+            Picasso.get()
+                    .load(user.getUrlAva())
+                    .into(this.ava);
             this.name.setText(user.getName());
             this.email.setText(user.getEmail());
             this.id.setText(user.getuID());
@@ -74,11 +78,9 @@ public class UsersAdapter extends RecyclerView.Adapter {
                 TextView name = (TextView) v.findViewById(R.id.user_name);
                 TextView email = (TextView) v.findViewById(R.id.user_email);
                 TextView uID = (TextView) v.findViewById(R.id.user_id);
-                AvatarView avatarView = v.findViewById(R.id.user_avatar);
+                CircleImageView avatarView = v.findViewById(R.id.user_avatar);
                 if (mClickListener != null) {
-                    mClickListener.onClick(new Friend(name.getText().toString(),
-                            email.getText().toString(), uID.getText().toString(),
-                            avatarView.toString()), v);
+                    mClickListener.onClick(uID.getText().toString(), v);
                 }
             }
         });
