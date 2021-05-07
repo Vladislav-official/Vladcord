@@ -4,22 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-   tools:context=".MainActivity">
+    android:fitsSystemWindows="true"
+    tools:context=".ui.User.UserActivity">
+
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/Theme.Vladcord.AppBarOverlay"
-        android:fitsSystemWindows="true">
-
+        android:theme="@style/Theme.Vladcord.AppBarOverlay">
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar_main"
+            android:id="@+id/toolbar_users"
             android:layout_width="match_parent"
-
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:popupTheme="@style/Theme.Vladcord.PopupOverlay"
-            >
+            app:popupTheme="@style/Theme.Vladcord.PopupOverlay" >
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent">
@@ -32,11 +30,20 @@
                     android:layout_alignParentBottom="true"
                     android:gravity="center"
                     android:layout_marginLeft="10dp"
-                    android:text="Friends"
+                    android:text="@string/invite_friends"
                     android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                     android:textColor="#F8F8F8" />
                 <EditText
-                    android:id="@+id/search_input"
+                    android:id="@+id/search_name_input"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginRight="40dp"
+                    android:layout_toStartOf="@+id/search_view"
+                    android:src="@drawable/ic_baseline_search_24"
+                    android:visibility="gone" />
+                <EditText
+                    android:id="@+id/search_email_input"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_alignParentBottom="true"
@@ -56,9 +63,17 @@
                     android:src="@drawable/ic_baseline_search_24" />
             </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>
-
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_main" />
+    <include layout="@layout/content_users" />
 
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/button_tap"
+        android:text="Tap to choose friend to invite"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        android:layout_gravity="bottom|center"
+        />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

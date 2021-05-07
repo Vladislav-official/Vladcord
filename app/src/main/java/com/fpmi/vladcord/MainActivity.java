@@ -13,6 +13,7 @@
     import android.provider.MediaStore;
     import android.text.format.DateFormat;
     import android.view.Menu;
+    import android.view.MenuInflater;
     import android.view.MenuItem;
     import android.view.View;
     import android.widget.ProgressBar;
@@ -35,6 +36,7 @@
     import com.firebase.ui.auth.AuthUI;
     import com.fpmi.vladcord.ui.User.User;
     import com.fpmi.vladcord.ui.User.UserActivity;
+    import com.fpmi.vladcord.ui.friends_request_list.FriendReqActivity;
     import com.fpmi.vladcord.ui.profile.ProfileActivity;
     import com.google.android.gms.tasks.OnFailureListener;
     import com.google.android.gms.tasks.OnSuccessListener;
@@ -73,7 +75,9 @@ private NavController navController;
     private TextView user_email;
     private AppBarConfiguration mAppBarConfiguration;
     private static final int SIGN_IN_CODE = 1;
+        private static final int SIGN_IN_CODEIN = 3;
     private NavigationView navigationView;
+    private Toolbar toolbar;
     private DrawerLayout activity_main;
     private DrawerLayout drawer;
     private  User user = null;
@@ -87,6 +91,7 @@ private NavController navController;
                 Snackbar.make(activity_main, getString(R.string.you_logged), Snackbar.LENGTH_LONG).show();
                 if(FirebaseAuth.getInstance().getCurrentUser() != null){
                     this.setAndCheckCurUser();
+                    navController.navigate(R.id.nav_friends);
                 }
             } else {
                 Snackbar.make(activity_main, getString(R.string.you_not_logged), Snackbar.LENGTH_LONG).show();
@@ -94,8 +99,6 @@ private NavController navController;
                 finish();
             }
         }
-
-
     }
 
 
@@ -111,6 +114,7 @@ private NavController navController;
         user_name = navigationView.getHeaderView(0).findViewById(R.id.user_main_name);
         user_email = navigationView.getHeaderView(0).findViewById(R.id.user_main_email);
         user_avatar = navigationView.getHeaderView(0).findViewById(R.id.user_main_avatar);
+
         Activity mainActivity = this;
         user_avatar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,18 +135,14 @@ private NavController navController;
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().setIsSmartLockEnabled(false).build(), SIGN_IN_CODE);
         } else {
-            this.getCurUser();
-            Snackbar.make(activity_main, getString(R.string.you_logged), Snackbar.LENGTH_LONG).show();
+            this.setAndCheckCurUser();
             FirebaseDatabase.getInstance().getReference("Users/".concat
                     (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status").setValue("Online");
         }
 
-        Toolbar toolbar = findViewById(R.id.toolbar_main);
+        toolbar = findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
-
         DrawerLayout drawer = findViewById(R.id.activity_main);
-
-
 
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(
@@ -152,41 +152,10 @@ private NavController navController;
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+        navController.navigate(R.id.nav_friends);
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-
-
-
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        int id = item.getItemId();
-        if (id == R.id.signOut){
-            if(FirebaseAuth.getInstance().getCurrentUser() != null) {
-                FirebaseDatabase.getInstance().getReference("Users/".concat
-                        (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status")
-                        .setValue(getString(R.string.last_seen) + (DateFormat.format("HH:mm", (new Date().getTime())))
-                                + " " + DateFormat.format("dd:MM", (new Date().getTime())));
-            }
-            FirebaseAuth.getInstance().signOut();
-            startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().setIsSmartLockEnabled(false).build(), SIGN_IN_CODE);
-
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
 
     @Override
@@ -201,7 +170,14 @@ private NavController navController;
             if (drawer.isDrawerOpen(GravityCompat.START)) {
                 drawer.closeDrawer(GravityCompat.START);
             } else {
-                super.onBackPressed();
+                if(toolbar.findViewById(R.id.search_input).getVisibility() == View.VISIBLE){
+                    toolbar.findViewById(R.id.search_input).setVisibility(View.GONE);
+                    toolbar.findViewById(R.id.search_view).setVisibility(View.VISIBLE);
+                    toolbar.findViewById(R.id.title_toolbar).setVisibility(View.VISIBLE);
+                }
+                else {
+                    super.onBackPressed();
+                }
             }
     }
 
@@ -232,6 +208,9 @@ private NavController navController;
     protected void onResume() {
         if(FirebaseAuth.getInstance().getCurrentUser() != null){FirebaseDatabase.getInstance().getReference("Users/".concat
                 (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status").setValue("Online");}
+        else{
+            startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().setIsSmartLockEnabled(false).build(), SIGN_IN_CODE);
+        }
         super.onResume();
     }
 
@@ -269,9 +248,8 @@ private NavController navController;
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         User userD = snapshot.getValue(User.class);
-                        if(userD != null) {
+                        if(userD != null && userD.getuID() != null) {
                             user = userD;
-
                         }
                         else{
                             user = new User(FirebaseAuth.getInstance().getCurrentUser().getDisplayName(),
@@ -305,7 +283,14 @@ private NavController navController;
             int id = item.getItemId();
             switch(id) {
                 case R.id.nav_settings:
-                    startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                    Intent intent = new Intent(this, ProfileActivity.class);
+                    intent.putExtra("profileName", user.getName());
+                    intent.putExtra("profileAvatar", user.getUrlAva());
+                    intent.putExtra("profileStatus", user.getStatus());
+                    intent.putExtra("profileEmail", user.getEmail());
+                    intent.putExtra("profileBio", user.getBio());
+                    intent.putExtra("profileId", user.getuID());
+                    startActivity(intent);
                 break;
                 case R.id.nav_friends:
                     navController.navigate(R.id.nav_friends);
@@ -314,7 +299,7 @@ private NavController navController;
                     startActivity(new Intent(MainActivity.this, UserActivity.class));
                     break;
                 case R.id.nav_friends_request:
-                    navController.navigate(R.id.nav_friends_request);
+                    startActivity(new Intent(MainActivity.this, FriendReqActivity.class));
                     break;
             }
             return true;

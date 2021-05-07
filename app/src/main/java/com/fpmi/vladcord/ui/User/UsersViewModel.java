@@ -24,10 +24,20 @@ public class UsersViewModel extends ViewModel {
     }
 
 
-    public List<User> sortUsers(List<User> listOfUsers, String string) {
+    public List<User> sortNameUsers(List<User> listOfUsers, String string) {
         List<User> help = new ArrayList<>();
         for(User r: listOfUsers){
             if(r.getName().toLowerCase().contains(string.toLowerCase())){
+                help.add(r);
+            }
+        }
+        return help;
+    }
+
+    public List<User> sortEmailUsers(List<User> listOfUsers, String string) {
+        List<User> help = new ArrayList<>();
+        for(User r: listOfUsers){
+            if(r.getEmail().toLowerCase().contains(string.toLowerCase())){
                 help.add(r);
             }
         }

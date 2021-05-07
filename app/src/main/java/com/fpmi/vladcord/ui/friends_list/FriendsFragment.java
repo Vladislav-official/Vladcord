@@ -1,6 +1,7 @@
 package com.fpmi.vladcord.ui.friends_list;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -8,8 +9,12 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -19,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.fpmi.vladcord.R;
 import com.fpmi.vladcord.ui.User.User;
 import com.fpmi.vladcord.ui.messages_list.MessageActivity;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -30,17 +36,22 @@ public class FriendsFragment extends Fragment {
 
     private FriendsViewModel friendsViewModel;
     private RecyclerView vListOfFriends;
+    private TextView titleToolbar;
     private EditText friendSearch;
     private List<User> listOfFriends;
     private FriendsAdapter friendsAdapter;
     private ProgressBar progressBar;
+    private ImageView search_view;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_friends, container, false);
-        init(root, this.getActivity());
-        initEventListeners(root, getActivity());
+        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+            init(root, this.getActivity());
+            initEventListeners(root, getActivity());
+
+        }
         return root;
 
     }
@@ -60,11 +71,16 @@ public class FriendsFragment extends Fragment {
     }
     private void init(View root, Activity friendsActivity)
     {
+        search_view = friendsActivity.findViewById(R.id.search_view);
+        friendSearch = friendsActivity.findViewById(R.id.search_input);
+        titleToolbar = friendsActivity.findViewById(R.id.title_toolbar);
+
         friendsViewModel = new FriendsViewModel();
         vListOfFriends =  root.findViewById(R.id.friends_list);
         progressBar = root.findViewById(R.id.progress_bar);
-        friendSearch = root.findViewById(R.id.search_input);
+
         progressBar.setVisibility(View.VISIBLE);
+
         listOfFriends = new ArrayList<>();
         friendsAdapter = new FriendsAdapter(new RecycleFriendClick() {
             @Override
@@ -80,14 +96,18 @@ public class FriendsFragment extends Fragment {
         friendsViewModel.getDataFromDB(listOfFriends, friendsAdapter, progressBar);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        friendsViewModel.getDataFromDB(listOfFriends, friendsAdapter, progressBar);
-    }
-
-
     private void initEventListeners(View root, Activity friendsActivity) {
+        search_view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                search_view.setVisibility(View.GONE);
+                friendSearch.setVisibility(View.VISIBLE);
+                titleToolbar.setVisibility(View.GONE);
+                friendSearch.requestFocus();
+                InputMethodManager imm = (InputMethodManager) friendsActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(friendSearch, InputMethodManager.SHOW_IMPLICIT);
+            }
+        });
 
         friendSearch.addTextChangedListener(new TextWatcher() {
             @Override

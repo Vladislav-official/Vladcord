@@ -1,20 +1,20 @@
 package com.fpmi.vladcord.ui.friends_request_list;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.fpmi.vladcord.R;
 import com.fpmi.vladcord.ui.User.User;
@@ -23,9 +23,7 @@ import com.google.firebase.database.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.app.Activity.RESULT_OK;
-
-public class FriendsReqFragment extends Fragment {
+public class FriendReqActivity extends AppCompatActivity {
 
     private FriendsReqViewModel friendsViewModel;
     private RecyclerView vListOfFriends;
@@ -33,18 +31,25 @@ public class FriendsReqFragment extends Fragment {
     private List<User> listOfFriends;
     private FriendsReqAdapter friendsAdapter;
     private ProgressBar progressBar;
-    private FriendReqModel friendReqModel;
+    private Toolbar toolbar;
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-
-        View root = inflater.inflate(R.layout.activity_friends_requests, container, false);
-        init(root, this.getActivity());
-        initEventListeners(root, getActivity());
-        return root;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_friends_requests);
+        setupActionBar();
+        setTitle("Friend requests");
+        init(this);
+        initEventListeners(this);
 
     }
 
+    private void setupActionBar() {
+        ActionBar actionBar = getSupportActionBar();
+        if (null != actionBar) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+    }
 
 
     @Override
@@ -58,18 +63,23 @@ public class FriendsReqFragment extends Fragment {
             }
         }
     }
-    private void init(View root, Activity friendsActivity)
+    private void init(Activity friendsActivity)
     {
+        toolbar = (Toolbar) findViewById(R.id.toolbar_friends_requests);
         friendsViewModel = new FriendsReqViewModel();
-        vListOfFriends =  root.findViewById(R.id.friends_request_list);
-        friendSearch = root.findViewById(R.id.search_input);
-        progressBar = root.findViewById(R.id.progress_bar);
+        vListOfFriends =  findViewById(R.id.friends_request_list);
+        friendSearch = findViewById(R.id.search_input);
+        progressBar = findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.VISIBLE);
         listOfFriends = new ArrayList<>();
         friendsAdapter = new FriendsReqAdapter(friendsActivity, listOfFriends, friendsViewModel.getFriendModel());
         vListOfFriends.setAdapter(friendsAdapter);
         vListOfFriends.setLayoutManager(new LinearLayoutManager(friendsActivity));
         friendsViewModel.getDataFromDB(listOfFriends, friendsAdapter, progressBar);
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
     @Override
@@ -80,9 +90,9 @@ public class FriendsReqFragment extends Fragment {
     }
 
 
-    private void initEventListeners(View root, Activity friendsActivity) {
+    private void initEventListeners(Activity friendsActivity) {
 
-        friendSearch.addTextChangedListener(new TextWatcher() {
+        /*friendSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
             }
@@ -96,14 +106,13 @@ public class FriendsReqFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start,
                                       int before, int count) {
                 if (s.length() != 0) {
-                    vListOfFriends.setAdapter(new FriendsReqAdapter(root.getContext(),
+                    vListOfFriends.setAdapter(new FriendsReqAdapter(friendsActivity.getApplication().getApplicationContext(),
                             friendsViewModel.sortFriends(listOfFriends, s.toString()), friendsViewModel.getFriendModel()));
                 } else {
-                    vListOfFriends.setAdapter(new FriendsReqAdapter(root.getContext(),
+                    vListOfFriends.setAdapter(new FriendsReqAdapter(friendsActivity.getApplication().getApplicationContext(),
                             friendsViewModel.sortFriends(listOfFriends, ""), friendsViewModel.getFriendModel()));
                 }
             }
-        });
+        });*/
     }
 }
-

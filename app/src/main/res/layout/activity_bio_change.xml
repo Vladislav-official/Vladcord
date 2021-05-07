@@ -4,61 +4,50 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-   tools:context=".MainActivity">
+    tools:context=".ui.profile.BioChangeActivity">
+
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/Theme.Vladcord.AppBarOverlay"
-        android:fitsSystemWindows="true">
+        android:theme="@style/Theme.Vladcord.AppBarOverlay">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar_main"
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:popupTheme="@style/Theme.Vladcord.PopupOverlay"
-            >
+            app:popupTheme="@style/Theme.Vladcord.PopupOverlay" >
             <RelativeLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:layout_width="wrap_content"
                     android:id="@+id/title_toolbar"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentBottom="true"
-                    android:gravity="center"
-                    android:layout_marginLeft="10dp"
-                    android:text="Friends"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-                    android:textColor="#F8F8F8" />
-                <EditText
-                    android:id="@+id/search_input"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginRight="40dp"
-                    android:layout_toStartOf="@+id/search_view"
-                    android:src="@drawable/ic_baseline_search_24"
-                    android:visibility="gone" />
 
+                    android:gravity="center"
+                    android:text="Change Email"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                    android:textColor="#FFFFFF" />
                 <ImageView
-                    android:id="@+id/search_view"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
+                    android:layout_width="30dp"
+                    android:id="@+id/image_change_bio"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_check"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginRight="20dp"
-                    android:src="@drawable/ic_baseline_search_24" />
+                    android:layout_alignParentTop="true"
+                    android:layout_marginRight="15dp"
+
+                    android:layout_alignParentEnd="true"
+                    />
             </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_main" />
+    <include layout="@layout/content_bio_change" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

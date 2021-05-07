@@ -14,10 +14,34 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Vladcord">
         <activity
-            android:name=".ui.User.UserActivity">
+            android:name=".ui.profile.BioChangeActivity"
+            android:label="@string/title_activity_email_change"
+            android:theme="@style/Theme.Vladcord.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.messages_list.MessageActivity" />
+                android:value=".ui.profile.ProfileActivity" />
+        </activity>
+        <activity
+            android:name=".ui.profile.NameChangeActivity"
+            android:label="@string/title_activity_name_change"
+            android:theme="@style/Theme.Vladcord.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.profile.ProfileActivity" />
+        </activity>
+        <activity
+            android:name=".ui.friends_request_list.FriendReqActivity"
+            android:theme="@style/Theme.Vladcord.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+        <activity
+            android:name=".ui.User.UserActivity"
+            android:theme="@style/Theme.Vladcord.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
         </activity>
         <activity
             android:name=".ui.profile.ProfileActivity"
@@ -34,7 +58,6 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name"
             android:theme="@style/Theme.Vladcord.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

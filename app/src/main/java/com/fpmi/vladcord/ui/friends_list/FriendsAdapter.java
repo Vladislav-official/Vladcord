@@ -37,6 +37,8 @@ public class FriendsAdapter extends RecyclerView.Adapter {
     private final Context context;
     private String lastMessageText = "Default";
     private String lastMessageTimeText;
+    private String lastMessageSender;
+    private boolean lastMessageStatus;
     private String myId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
     public FriendsAdapter(RecycleFriendClick recycleFriendClick, Context context, List<User> friends) {
@@ -123,15 +125,34 @@ public class FriendsAdapter extends RecyclerView.Adapter {
                             (message.getReceiver().equals(myId) && message.getSender().equals(friendId))) {
                         lastMessageText = message.getTextMessage();
                         lastMessageTimeText = DateFormat.format("HH:mm", message.getMessageTime().getTime()).toString();
+                        lastMessageSender = message.getSender();
+                        lastMessageStatus = message.isIsseen();
                     }
                 }
                 if(!lastMessageText.equals("Default")) {
-                    lastMessage.setText(lastMessageText);
-                    lastMessageTime.setText(lastMessageTimeText);
+                    if(myId.equals(lastMessageSender)) {
+                        if(lastMessageStatus) {
+                            lastMessage.setText(lastMessageText);
+                            lastMessageTime.setText("✔" + "   "
+                                    + lastMessageTimeText);
+                            lastMessageText = "Default";
+                        }
+                        else{
+                            lastMessage.setText(lastMessageText);
+                            lastMessageTime.setText(lastMessageTimeText);
+                            lastMessageText = "Default";
+                        }
+                    }
+                    else{
+                        lastMessage.setText(lastMessageText);
+                        lastMessageTime.setText(lastMessageTimeText);
+                        lastMessageText = "Default";
+                    }
                 }
                 else{
                     lastMessage.setText("");
                     lastMessageTime.setText("");
+                    lastMessageText = "Default";
                 }
             }
 

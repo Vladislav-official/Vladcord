@@ -125,16 +125,7 @@ private void currentNotificationsStatus(String status){
     editor.apply();
 }
 
-    @Override
-    protected void onDestroy() {
-        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
-            FirebaseDatabase.getInstance().getReference("Users/".concat
-                    (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status")
-                    .setValue(getString(R.string.last_seen) + " " + (DateFormat.format("HH:mm", (new Date().getTime())))
-                            + " " + DateFormat.format("dd:MM", (new Date().getTime())));
-        }
-        super.onDestroy();
-    }
+
 
     @Override
     public void onActivityResumed(@NonNull Activity activity) {
