@@ -96,6 +96,7 @@ public class ProfileActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        setStatusOnline();
         init();
         initEventListeners();
 
@@ -363,5 +364,21 @@ public class ProfileActivity extends AppCompatActivity{
                     }
                 });
     }
-
+    @Override
+    protected void onPause() {
+        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+            setStatusOffline();
+        }
+        super.onPause();
+    }
+    public void setStatusOnline(){
+        FirebaseDatabase.getInstance().getReference("Users/".concat
+                (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status").setValue("Online");
+    }
+    public void setStatusOffline(){
+        FirebaseDatabase.getInstance().getReference("Users/".concat
+                (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status")
+                .setValue(getString(R.string.last_seen) + " " + (DateFormat.format("HH:mm", (new Date().getTime())))
+                        + " " + DateFormat.format("dd:MM", (new Date().getTime())));
+    }
 }

@@ -35,20 +35,20 @@ public class MessageModel {
     private final DatabaseReference friendsRef;
     private final String friendId;
     private final String myId;
-    private final Activity activity;
+    private final MessageViewModel messageViewModel;
 
     ValueEventListener seenListener;
     APIService apiService;
     boolean notify = false;
 
-    public MessageModel(String friendId, Activity activity) {
+    public MessageModel(String friendId, MessageViewModel messageViewModel) {
         this.friendsRef = FirebaseDatabase.getInstance().getReference("Chats");
         this.myId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         this.friendId = friendId;
-        this.activity = activity;
+        this.messageViewModel = messageViewModel;
     }
 
-    public void getDataFromDB(List<Message> messageList, MessageAdapter adapter)
+    public void getDataFromDB(List<Message> messageList)
     {
 
         ValueEventListener vListener = new ValueEventListener() {
@@ -66,7 +66,7 @@ public class MessageModel {
                             messageList.add(message);
                         }
                     }
-                adapter.notifyDataSetChanged();
+                messageViewModel.DataChanged();
             }
 
             @Override

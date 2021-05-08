@@ -5,11 +5,7 @@
     android:id="@+id/mobile_navigation"
     app:startDestination="@+id/nav_friends">
 
-    <fragment
-        android:id="@+id/nav_friends_request"
-        android:name="com.fpmi.vladcord.ui.friends_request_list.FriendsReqFragment"
-        android:label="Friends Requests"
-        tools:layout="@layout/activity_users" />
+
     <activity
         android:id="@+id/nav_settings"
         android:name="com.fpmi.vladcord.ui.profile.ProfileActivity"

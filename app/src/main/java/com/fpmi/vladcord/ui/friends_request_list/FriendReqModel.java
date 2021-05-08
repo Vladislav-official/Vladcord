@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import com.fpmi.vladcord.ui.User.User;
 import com.fpmi.vladcord.ui.friends_list.Friend;
 import com.fpmi.vladcord.ui.friends_list.FriendsAdapter;
+import com.fpmi.vladcord.ui.friends_list.FriendsViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -21,16 +22,22 @@ import java.util.List;
 
 public class FriendReqModel {
     private final DatabaseReference friendsRef;
+    private final FriendsReqViewModel friendsReqViewModel;
+
+    public FriendReqModel(FriendsReqViewModel friendsReqViewModel) {
+        this.friendsRef = FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance()
+                .getCurrentUser().getUid()).child("Friends_request");
+        this.friendsReqViewModel = friendsReqViewModel;
+
+    }
 
     public FriendReqModel() {
         this.friendsRef = FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance()
                 .getCurrentUser().getUid()).child("Friends_request");
-
+        this.friendsReqViewModel = null;
     }
 
-
-
-    public void getDataFromDB(List<User> friendList, FriendsReqAdapter adapter, ProgressBar progressBar)
+    public void getDataFromDB(List<User> friendList)
     {
         List<String> friendsIds = new ArrayList<>();
         ValueEventListener vListener = new ValueEventListener() {
@@ -44,7 +51,7 @@ public class FriendReqModel {
                     assert friend != null;
                     friendsIds.add(friend);
                 }
-                getDataFromDBS2(friendList, adapter, progressBar, friendsIds);
+                getDataFromDBS2(friendList, friendsIds);
             }
 
             @Override
@@ -54,7 +61,7 @@ public class FriendReqModel {
         };
         friendsRef.addValueEventListener(vListener);
     }
-    public void getDataFromDBS2(List<User> friendList, FriendsReqAdapter adapter, ProgressBar progressBar, List<String > friendIds){
+    public void getDataFromDBS2(List<User> friendList, List<String > friendIds){
         FirebaseDatabase.getInstance().getReference("Users").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot)
@@ -70,8 +77,7 @@ public class FriendReqModel {
                         friendList.add(new User(user));
                     }
                 }
-                progressBar.setVisibility(View.GONE);
-                adapter.notifyDataSetChanged();
+                friendsReqViewModel.DataChanged();
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {

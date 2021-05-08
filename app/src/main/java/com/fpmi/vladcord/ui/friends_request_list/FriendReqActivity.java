@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
@@ -18,9 +19,12 @@ import android.widget.ProgressBar;
 
 import com.fpmi.vladcord.R;
 import com.fpmi.vladcord.ui.User.User;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class FriendReqActivity extends AppCompatActivity {
@@ -38,6 +42,7 @@ public class FriendReqActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends_requests);
         setupActionBar();
+        setStatusOnline();
         setTitle("Friend requests");
         init(this);
         initEventListeners(this);
@@ -66,16 +71,19 @@ public class FriendReqActivity extends AppCompatActivity {
     private void init(Activity friendsActivity)
     {
         toolbar = (Toolbar) findViewById(R.id.toolbar_friends_requests);
-        friendsViewModel = new FriendsReqViewModel();
+
         vListOfFriends =  findViewById(R.id.friends_request_list);
         friendSearch = findViewById(R.id.search_input);
         progressBar = findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.VISIBLE);
         listOfFriends = new ArrayList<>();
-        friendsAdapter = new FriendsReqAdapter(friendsActivity, listOfFriends, friendsViewModel.getFriendModel());
+
+        friendsAdapter = new FriendsReqAdapter(friendsActivity, listOfFriends, new FriendReqModel());
         vListOfFriends.setAdapter(friendsAdapter);
         vListOfFriends.setLayoutManager(new LinearLayoutManager(friendsActivity));
-        friendsViewModel.getDataFromDB(listOfFriends, friendsAdapter, progressBar);
+
+        friendsViewModel = new FriendsReqViewModel(friendsAdapter, progressBar);
+        friendsViewModel.getDataFromDB(listOfFriends);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -85,7 +93,7 @@ public class FriendReqActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        friendsViewModel.getDataFromDB(listOfFriends, friendsAdapter, progressBar);
+        //friendsViewModel.getDataFromDB(listOfFriends);
 
     }
 
@@ -114,5 +122,23 @@ public class FriendReqActivity extends AppCompatActivity {
                 }
             }
         });*/
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+            setStatusOffline();
+        }
+
+    }
+    public void setStatusOnline(){
+        FirebaseDatabase.getInstance().getReference("Users/".concat
+                (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status").setValue("Online");
+    }
+    public void setStatusOffline(){
+        FirebaseDatabase.getInstance().getReference("Users/".concat
+                (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status")
+                .setValue(getString(R.string.last_seen) + " " + (DateFormat.format("HH:mm", (new Date().getTime())))
+                        + " " + DateFormat.format("dd:MM", (new Date().getTime())));
     }
 }

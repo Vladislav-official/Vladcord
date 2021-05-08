@@ -1,25 +1,29 @@
 package com.fpmi.vladcord.ui.friends_list;
 
-import android.app.Activity;
+import android.view.View;
 import android.widget.ProgressBar;
 
 import androidx.lifecycle.ViewModel;
-import androidx.recyclerview.widget.RecyclerView;
 
+import com.fpmi.vladcord.ui.FireChangeInterface;
 import com.fpmi.vladcord.ui.User.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FriendsViewModel extends ViewModel {
+public class FriendsViewModel extends ViewModel implements FireChangeInterface {
     private final FriendModel friendModel;
+    private ProgressBar progressBar;
+    private FriendsAdapter adapter;
 
-    public FriendsViewModel() {
-        friendModel = new FriendModel();
+    public FriendsViewModel( FriendsAdapter adapter, ProgressBar progressBar) {
+        friendModel = new FriendModel(this);
+        this.adapter = adapter;
+        this.progressBar = progressBar;
     }
 
-    public void getDataFromDB(List<User> listOfFriends, FriendsAdapter adapter, ProgressBar progressBar) {
-        friendModel.getDataFromDB(listOfFriends, adapter, progressBar);
+    public void getDataFromDB(List<User> listOfFriends){
+        friendModel.getDataFromDB(listOfFriends);
     }
 
     public List<User> sortFriends(List<User> listOfFriends, String string) {
@@ -33,6 +37,9 @@ public class FriendsViewModel extends ViewModel {
     }
 
 
-
-
+    @Override
+    public void DataChanged() {
+        adapter.notifyDataSetChanged();
+        progressBar.setVisibility(View.GONE);
+    }
 }

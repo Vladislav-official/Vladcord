@@ -12,23 +12,25 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.fpmi.vladcord.MainActivity;
+import com.fpmi.vladcord.ui.FireChangeInterface;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
-public class MessageViewModel extends ViewModel {
+public class MessageViewModel extends ViewModel implements FireChangeInterface {
 
     private MessageModel messageModel;
-
+private MessageAdapter adapter;
     public MessageViewModel() {
     }
-    public void setFriendId(String friendId, Activity activity){
-    messageModel = new MessageModel(friendId, activity);
+    public void setFriendId(String friendId, MessageAdapter adapter){
+    messageModel = new MessageModel(friendId, this);
+    this.adapter = adapter;
     }
 
-    public void getDatatFromDB(List<Message> listOfMessages, MessageAdapter messageAdapter){
+    public void getDatatFromDB(List<Message> listOfMessages){
 
-        messageModel.getDataFromDB(listOfMessages, messageAdapter);
+        messageModel.getDataFromDB(listOfMessages);
     }
 public void muteFriend(String status){
         messageModel.muteFriend(status);
@@ -45,5 +47,10 @@ messageModel.sendMessage(userId);
     }
     public void removeSeenListener(){
         messageModel.removeSeen();
+    }
+
+    @Override
+    public void DataChanged() {
+        adapter.notifyDataSetChanged();
     }
 }

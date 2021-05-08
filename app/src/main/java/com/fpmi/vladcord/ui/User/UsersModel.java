@@ -20,12 +20,14 @@ import java.util.List;
 //think about ListAdapter and diffUtil and ViewHolder
 public class UsersModel {
     private final DatabaseReference userRef;
+    private final UsersViewModel usersViewModel;
 
-    public UsersModel() {
+    public UsersModel(UsersViewModel usersViewModel) {
         this.userRef = FirebaseDatabase.getInstance().getReference("Users");
+        this.usersViewModel = usersViewModel;
     }
 
-    public  void getDataFromDB(List<User> listOfUsers, UsersAdapter adapter, ProgressBar progressBar)
+    public  void getDataFromDB(List<User> listOfUsers)
     {
         ValueEventListener vListener = new ValueEventListener() {
             @Override
@@ -36,13 +38,13 @@ public class UsersModel {
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
 
                         User user = ds.getValue(User.class);
-                        assert user != null;
-                        if (!user.getuID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                            listOfUsers.add(new User(user));
+                        if(user != null) {
+                            if (!user.getuID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                                listOfUsers.add(new User(user));
+                            }
                         }
                     }
-                    progressBar.setVisibility(View.GONE);
-                    adapter.notifyDataSetChanged();
+usersViewModel.DataChanged();
                 }
             }
             @Override

@@ -1,7 +1,7 @@
 package com.fpmi.vladcord.ui.friends_list;
 
 
-public class Friend {
+public class Friend{
 
     private String id;
     private String notificationStatus;

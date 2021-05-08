@@ -42,11 +42,12 @@ public class FriendsFragment extends Fragment {
     private FriendsAdapter friendsAdapter;
     private ProgressBar progressBar;
     private ImageView search_view;
-
+//Создание фрагмента в MainActivity
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_friends, container, false);
+        //Если пользователь не зарегестрирован, показываем пустой фрагмент
         if(FirebaseAuth.getInstance().getCurrentUser() != null) {
             init(root, this.getActivity());
             initEventListeners(root, getActivity());
@@ -69,19 +70,21 @@ public class FriendsFragment extends Fragment {
             }
         }
     }
-    private void init(View root, Activity friendsActivity)
-    {
+    //Инициализация Views, toolbar and others
+    private void init(View root, Activity friendsActivity) {
         search_view = friendsActivity.findViewById(R.id.search_view);
         friendSearch = friendsActivity.findViewById(R.id.search_input);
         titleToolbar = friendsActivity.findViewById(R.id.title_toolbar);
 
-        friendsViewModel = new FriendsViewModel();
+
         vListOfFriends =  root.findViewById(R.id.friends_list);
         progressBar = root.findViewById(R.id.progress_bar);
 
         progressBar.setVisibility(View.VISIBLE);
 
         listOfFriends = new ArrayList<>();
+        //Обработка клика на элемент из списка друзей, переопределена через интерфейс RecycleFriendClick
+        //В FriendsAdapter описан метод заполнения списка
         friendsAdapter = new FriendsAdapter(new RecycleFriendClick() {
             @Override
             public void onClick(String friendId, String friendName) {
@@ -93,10 +96,13 @@ public class FriendsFragment extends Fragment {
         }, friendsActivity, listOfFriends);
         vListOfFriends.setAdapter(friendsAdapter);
         vListOfFriends.setLayoutManager(new LinearLayoutManager(friendsActivity));
-        friendsViewModel.getDataFromDB(listOfFriends, friendsAdapter, progressBar);
+        friendsViewModel = new FriendsViewModel(friendsAdapter, progressBar);
+        //Инициализация события изменения списка друзей, а также получения их списка
+        friendsViewModel.getDataFromDB(listOfFriends);
     }
 
     private void initEventListeners(View root, Activity friendsActivity) {
+        //обработка событий нажатия на кнопку поиска, а также обработка ввода в поле поиска текста
         search_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -136,8 +136,7 @@ private NavController navController;
             startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().setIsSmartLockEnabled(false).build(), SIGN_IN_CODE);
         } else {
             this.setAndCheckCurUser();
-            FirebaseDatabase.getInstance().getReference("Users/".concat
-                    (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status").setValue("Online");
+            setStatusOnline();
         }
 
         toolbar = findViewById(R.id.toolbar_main);
@@ -185,10 +184,7 @@ private NavController navController;
     @Override
     protected void onPause() {
         if(FirebaseAuth.getInstance().getCurrentUser() != null) {
-            FirebaseDatabase.getInstance().getReference("Users/".concat
-                    (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status")
-                    .setValue(getString(R.string.last_seen) + (DateFormat.format("HH:mm", (new Date().getTime())))
-                            + " " + DateFormat.format("dd:MM", (new Date().getTime())));
+            setStatusOffline();
         }
         super.onPause();
     }
@@ -196,18 +192,14 @@ private NavController navController;
     @Override
     protected void onDestroy() {
         if(FirebaseAuth.getInstance().getCurrentUser() != null) {
-            FirebaseDatabase.getInstance().getReference("Users/".concat
-                    (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status")
-                    .setValue(getString(R.string.last_seen) + " " + (DateFormat.format("HH:mm", (new Date().getTime())))
-                            + " " + DateFormat.format("dd:MM", (new Date().getTime())));
+            setStatusOffline();
         }
         super.onDestroy();
     }
 
     @Override
     protected void onResume() {
-        if(FirebaseAuth.getInstance().getCurrentUser() != null){FirebaseDatabase.getInstance().getReference("Users/".concat
-                (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status").setValue("Online");}
+        if(FirebaseAuth.getInstance().getCurrentUser() != null){setStatusOnline();}
         else{
             startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().setIsSmartLockEnabled(false).build(), SIGN_IN_CODE);
         }
@@ -303,5 +295,15 @@ private NavController navController;
                     break;
             }
             return true;
+        }
+        public void setStatusOnline(){
+            FirebaseDatabase.getInstance().getReference("Users/".concat
+                    (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status").setValue("Online");
+        }
+        public void setStatusOffline(){
+            FirebaseDatabase.getInstance().getReference("Users/".concat
+                    (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status")
+                    .setValue(getString(R.string.last_seen) + " " + (DateFormat.format("HH:mm", (new Date().getTime())))
+                            + " " + DateFormat.format("dd:MM", (new Date().getTime())));
         }
     }

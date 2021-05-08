@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.format.DateFormat;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,9 +28,12 @@ import android.widget.Toast;
 
 import com.fpmi.vladcord.R;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class UserActivity extends AppCompatActivity {
@@ -59,8 +63,9 @@ public class UserActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_users);
+        setStatusOnline();
         Activity usersActivity = this;
-        init(usersActivity);
+            init(usersActivity);
         initEventListeners(usersActivity);
     }
 
@@ -75,8 +80,7 @@ public class UserActivity extends AppCompatActivity {
         }
     }
 
-    private void init(Activity usersActivity)
-    {
+    private void init(Activity usersActivity) {
 
         toolbar = (Toolbar) findViewById(R.id.toolbar_users);
         title_view = usersActivity.findViewById(R.id.title_toolbar);
@@ -86,7 +90,7 @@ public class UserActivity extends AppCompatActivity {
         buttonTap = findViewById(R.id.button_tap);
 
         listOfAddFriends = new ArrayList<>();
-        usersViewModel = new UsersViewModel();
+
         progressBar = findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.VISIBLE);
 
@@ -135,7 +139,8 @@ public class UserActivity extends AppCompatActivity {
         }, usersActivity, listOfUsers);
         vListOfUsers.setAdapter(usersAdapter);
         vListOfUsers.setLayoutManager(new LinearLayoutManager(usersActivity));
-        usersViewModel.getDataFromDB(listOfUsers, usersAdapter, progressBar);
+        usersViewModel = new UsersViewModel(usersAdapter, progressBar);
+        usersViewModel.getDataFromDB(listOfUsers);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -277,6 +282,23 @@ public class UserActivity extends AppCompatActivity {
         });
 
 
+    }
+    @Override
+    protected void onPause() {
+        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+            setStatusOffline();
+        }
+        super.onPause();
+    }
+    public void setStatusOnline(){
+        FirebaseDatabase.getInstance().getReference("Users/".concat
+                (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status").setValue("Online");
+    }
+    public void setStatusOffline(){
+        FirebaseDatabase.getInstance().getReference("Users/".concat
+                (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status")
+                .setValue(getString(R.string.last_seen) + " " + (DateFormat.format("HH:mm", (new Date().getTime())))
+                        + " " + DateFormat.format("dd:MM", (new Date().getTime())));
     }
 
 }

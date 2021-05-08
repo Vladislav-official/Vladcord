@@ -25,16 +25,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FriendModel {
+public class FriendModel{
     private final DatabaseReference friendsRef;
+    private final FriendsViewModel friendsViewModel;
+    public DatabaseReference getFriendsRef() {
+        return friendsRef;
+    }
 
-    public FriendModel() {
+    public FriendModel( FriendsViewModel friendsViewModel) {
         this.friendsRef = FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance()
                 .getCurrentUser().getUid()).child("Friends");
+        this.friendsViewModel = friendsViewModel;
 
     }
 
-    public void getDataFromDB(List<User> friendList, FriendsAdapter adapter, ProgressBar progressBar)
+    public void getDataFromDB(List<User> friendList)
     {
         List<String> friendsIds = new ArrayList<>();
         ValueEventListener vListener = new ValueEventListener() {
@@ -47,7 +52,7 @@ public class FriendModel {
                     Friend friend = ds.getValue(Friend.class);
                     friendsIds.add(friend.getFriendId());
                 }
-                getDataFromDBS2(friendList, adapter, progressBar, friendsIds);
+                getDataFromDBS2(friendList, friendsIds);
 
             }
 
@@ -58,7 +63,7 @@ public class FriendModel {
         };
         friendsRef.addValueEventListener(vListener);
     }
-    public void getDataFromDBS2(List<User> friendList, FriendsAdapter adapter, ProgressBar progressBar, List<String > friendIds){
+    public void getDataFromDBS2(List<User> friendList, List<String > friendIds){
         FirebaseDatabase.getInstance().getReference("Users").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot)
@@ -73,8 +78,7 @@ public class FriendModel {
                         friendList.add(new User(user));
                     }
                 }
-                progressBar.setVisibility(View.GONE);
-                adapter.notifyDataSetChanged();
+                friendsViewModel.DataChanged();
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {

@@ -32,14 +32,12 @@ public class UsersAdapter extends RecyclerView.Adapter {
     private final List<User> users;
     private final Context context;
     private RecycleUserClick mClickListener;
-    private UsersViewModel usersViewModel;
 
-    UsersAdapter(RecycleUserClick recycleUserClick,Context context, List<User> users) {
+    UsersAdapter(RecycleUserClick recycleUserClick, Context context, List<User> users) {
         this.users = users;
         mClickListener = recycleUserClick;
         this.inflater = LayoutInflater.from(context);
         this.context = context;
-        usersViewModel = new UsersViewModel();
     }
 
     private class ViewHolder extends RecyclerView.ViewHolder {

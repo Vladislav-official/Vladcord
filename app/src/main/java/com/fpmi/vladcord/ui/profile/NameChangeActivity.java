@@ -9,6 +9,7 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -19,6 +20,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.Date;
+
 public class NameChangeActivity extends AppCompatActivity {
 
     private ImageView changeName;
@@ -28,6 +31,7 @@ public class NameChangeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setStatusOnline();
         setContentView(R.layout.activity_name_change);
         Toolbar toolbar = findViewById(R.id.toolbar);
         changeName = findViewById(R.id.image_change_name);
@@ -68,5 +72,22 @@ public class NameChangeActivity extends AppCompatActivity {
         builder.setDisplayName(name);
         FirebaseAuth.getInstance().getCurrentUser().updateProfile(builder.build());
 
+    }
+    @Override
+    protected void onPause() {
+        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+            setStatusOffline();
+        }
+        super.onPause();
+    }
+    public void setStatusOnline(){
+        FirebaseDatabase.getInstance().getReference("Users/".concat
+                (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status").setValue("Online");
+    }
+    public void setStatusOffline(){
+        FirebaseDatabase.getInstance().getReference("Users/".concat
+                (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status")
+                .setValue(getString(R.string.last_seen) + " " + (DateFormat.format("HH:mm", (new Date().getTime())))
+                        + " " + DateFormat.format("dd:MM", (new Date().getTime())));
     }
 }

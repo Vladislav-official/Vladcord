@@ -71,7 +71,7 @@ private String friendId;
 
     private void init(String friendId) {
         messageViewModel = new MessageViewModel();
-        messageViewModel.setFriendId(friendId, this);
+
 
         submitButton = findViewById(R.id.submit_button);
         emojiconEditText = findViewById(R.id.message_text);
@@ -89,8 +89,8 @@ private String friendId;
         linearLayoutManager.setStackFromEnd(true);
 
         vListOfMessages.setLayoutManager(linearLayoutManager);
-
-        messageViewModel.getDatatFromDB(listOfMessages, messageAdapter);
+        messageViewModel.setFriendId(friendId, messageAdapter);
+        messageViewModel.getDatatFromDB(listOfMessages);
         sendMessage(friendId);
     }
 
@@ -146,6 +146,9 @@ private void currentNotificationsStatus(String status){
     @Override
     protected void onPause() {
         super.onPause();
+        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+            setStatusOffline();
+        }
         messageViewModel.removeSeenListener();
         currentUser("none");
     }
@@ -195,5 +198,16 @@ private void currentNotificationsStatus(String status){
 
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void setStatusOnline(){
+        FirebaseDatabase.getInstance().getReference("Users/".concat
+                (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status").setValue("Online");
+    }
+    public void setStatusOffline(){
+        FirebaseDatabase.getInstance().getReference("Users/".concat
+                (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status")
+                .setValue(getString(R.string.last_seen) + " " + (DateFormat.format("HH:mm", (new Date().getTime())))
+                        + " " + DateFormat.format("dd:MM", (new Date().getTime())));
     }
 }
