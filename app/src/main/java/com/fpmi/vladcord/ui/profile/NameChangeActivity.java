@@ -27,11 +27,12 @@ public class NameChangeActivity extends AppCompatActivity {
     private ImageView changeName;
     private EditText editText;
     private String name;
+    private ProfielModel profielModel = new ProfielModel();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStatusOnline();
+        profielModel.setStatusOnline();
         setContentView(R.layout.activity_name_change);
         Toolbar toolbar = findViewById(R.id.toolbar);
         changeName = findViewById(R.id.image_change_name);
@@ -54,7 +55,7 @@ public class NameChangeActivity extends AppCompatActivity {
                         Toast.makeText(NameChangeActivity.this, "Too long name", Toast.LENGTH_SHORT).show();
                     }
                     else{
-                        changeName(editText.getText().toString());
+                        profielModel.changeName(editText.getText().toString());
                         finish();
                     }
                 }
@@ -64,30 +65,13 @@ public class NameChangeActivity extends AppCompatActivity {
             }
         });
     }
-    public void changeName(String name) {
-        FirebaseDatabase.getInstance().getReference("Users")
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .child("name").setValue(name);
-        UserProfileChangeRequest.Builder builder = new UserProfileChangeRequest.Builder();
-        builder.setDisplayName(name);
-        FirebaseAuth.getInstance().getCurrentUser().updateProfile(builder.build());
 
-    }
     @Override
     protected void onPause() {
         if(FirebaseAuth.getInstance().getCurrentUser() != null) {
-            setStatusOffline();
+            profielModel.setStatusOffline(getString(R.string.last_seen));
         }
         super.onPause();
     }
-    public void setStatusOnline(){
-        FirebaseDatabase.getInstance().getReference("Users/".concat
-                (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status").setValue("Online");
-    }
-    public void setStatusOffline(){
-        FirebaseDatabase.getInstance().getReference("Users/".concat
-                (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status")
-                .setValue(getString(R.string.last_seen) + " " + (DateFormat.format("HH:mm", (new Date().getTime())))
-                        + " " + DateFormat.format("dd:MM", (new Date().getTime())));
-    }
+
 }

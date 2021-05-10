@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.text.format.DateFormat;
 import android.view.MenuItem;
 import android.widget.TextView;
 
@@ -13,8 +14,11 @@ import androidx.lifecycle.ViewModel;
 
 import com.fpmi.vladcord.MainActivity;
 import com.fpmi.vladcord.ui.FireChangeInterface;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Date;
 import java.util.List;
 
 public class MessageViewModel extends ViewModel implements FireChangeInterface {
@@ -42,6 +46,12 @@ public void getNotificationsStatus(MenuItem item){
 public void sendMessage(String userId, ValueEventListener seenListener){
 messageModel.sendMessage(userId);
 }
+    public void setStatusOnline(){
+        messageModel.setStatusOnline();
+    }
+    public void setStatusOffline(String status){
+        messageModel.setStatusOffline(status);
+    }
     public void addMessage(Message message){
         messageModel.addMessage(message);
     }

@@ -47,8 +47,7 @@ private String friendId;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.message_activity);
-        FirebaseDatabase.getInstance().getReference("Users/".concat
-                (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status").setValue("Online");
+
         String friendId = getIntent().getStringExtra("friendId");
         String friendName = getIntent().getStringExtra("friendName");
         this.friendId = friendId;
@@ -56,6 +55,7 @@ private String friendId;
         setupActionBar();
 
         init(friendId);
+        messageViewModel.setStatusOnline();
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -147,7 +147,7 @@ private void currentNotificationsStatus(String status){
     protected void onPause() {
         super.onPause();
         if(FirebaseAuth.getInstance().getCurrentUser() != null) {
-            setStatusOffline();
+            messageViewModel.setStatusOffline(getString(R.string.last_seen));
         }
         messageViewModel.removeSeenListener();
         currentUser("none");
@@ -200,14 +200,5 @@ private void currentNotificationsStatus(String status){
         return super.onOptionsItemSelected(item);
     }
 
-    public void setStatusOnline(){
-        FirebaseDatabase.getInstance().getReference("Users/".concat
-                (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status").setValue("Online");
-    }
-    public void setStatusOffline(){
-        FirebaseDatabase.getInstance().getReference("Users/".concat
-                (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status")
-                .setValue(getString(R.string.last_seen) + " " + (DateFormat.format("HH:mm", (new Date().getTime())))
-                        + " " + DateFormat.format("dd:MM", (new Date().getTime())));
-    }
+
 }

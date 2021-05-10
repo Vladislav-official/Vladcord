@@ -12,7 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FriendsViewModel extends ViewModel implements FireChangeInterface {
+    //экземпляр модели
     private final FriendModel friendModel;
+    //View которые будут меняться при изменении данных
     private ProgressBar progressBar;
     private FriendsAdapter adapter;
 
@@ -23,9 +25,10 @@ public class FriendsViewModel extends ViewModel implements FireChangeInterface {
     }
 
     public void getDataFromDB(List<User> listOfFriends){
+        //Здесь посылаем запрос в модель на инициализацию слушателя изменений в базе
         friendModel.getDataFromDB(listOfFriends);
     }
-
+//обычная сортировка по принципу включения части текста в имя пользователя
     public List<User> sortFriends(List<User> listOfFriends, String string) {
         List<User> resultListOfFriends = new ArrayList<>();
         for(User r: listOfFriends){
@@ -36,7 +39,7 @@ public class FriendsViewModel extends ViewModel implements FireChangeInterface {
         return resultListOfFriends;
     }
 
-
+//Переопределение интерфейса слушателя, срабатывает при изменении данных в базе пользователей
     @Override
     public void DataChanged() {
         adapter.notifyDataSetChanged();

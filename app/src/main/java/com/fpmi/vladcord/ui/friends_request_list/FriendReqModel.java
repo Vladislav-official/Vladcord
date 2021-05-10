@@ -1,11 +1,13 @@
 package com.fpmi.vladcord.ui.friends_request_list;
 
 import android.net.Uri;
+import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 
+import com.fpmi.vladcord.R;
 import com.fpmi.vladcord.ui.User.User;
 import com.fpmi.vladcord.ui.friends_list.Friend;
 import com.fpmi.vladcord.ui.friends_list.FriendsAdapter;
@@ -18,6 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class FriendReqModel {
@@ -102,5 +105,15 @@ public class FriendReqModel {
         DatabaseReference addFriendRef = FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance()
                 .getCurrentUser().getUid());
         addFriendRef.child("Friends_request").child(friendId).removeValue();
+    }
+    public void setStatusOnline(){
+        FirebaseDatabase.getInstance().getReference("Users/".concat
+                (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status").setValue("Online");
+    }
+    public void setStatusOffline(String status){
+        FirebaseDatabase.getInstance().getReference("Users/".concat
+                (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status")
+                .setValue(status + " " + (DateFormat.format("HH:mm", (new Date().getTime())))
+                        + " " + DateFormat.format("dd:MM", (new Date().getTime())));
     }
 }

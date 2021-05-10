@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.fpmi.vladcord.R;
 import com.fpmi.vladcord.ui.messages_list.Notifications.Client;
 import com.fpmi.vladcord.ui.messages_list.Notifications.Data;
 import com.fpmi.vladcord.ui.messages_list.Notifications.MyResponse;
@@ -24,6 +25,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -66,6 +68,7 @@ public class MessageModel {
                             messageList.add(message);
                         }
                     }
+                FirebaseDatabase.getInstance().getReference(".info/connected");
                 messageViewModel.DataChanged();
             }
 
@@ -183,5 +186,15 @@ public class MessageModel {
     }
     public void removeSeen(){
         friendsRef.removeEventListener(seenListener);
+    }
+    public void setStatusOnline(){
+        FirebaseDatabase.getInstance().getReference("Users/".concat
+                (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status").setValue("Online");
+    }
+    public void setStatusOffline(String status){
+        FirebaseDatabase.getInstance().getReference("Users/".concat
+                (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status")
+                .setValue(status + " " + (DateFormat.format("HH:mm", (new Date().getTime())))
+                        + " " + DateFormat.format("dd:MM", (new Date().getTime())));
     }
 }

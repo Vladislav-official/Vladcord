@@ -1,11 +1,13 @@
 package com.fpmi.vladcord.ui.User;
 
 import android.net.Uri;
+import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 
+import com.fpmi.vladcord.R;
 import com.fpmi.vladcord.ui.friends_list.Friend;
 import com.fpmi.vladcord.ui.friends_list.FriendModel;
 import com.google.firebase.auth.FirebaseAuth;
@@ -16,6 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 //think about ListAdapter and diffUtil and ViewHolder
 public class UsersModel {
@@ -80,7 +83,16 @@ usersViewModel.DataChanged();
             };
 firebaseDatabase.addValueEventListener(valueEventListener);
         }
-
+    public void setStatusOnline(){
+        FirebaseDatabase.getInstance().getReference("Users/".concat
+                (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status").setValue("Online");
+    }
+    public void setStatusOffline(String status){
+        FirebaseDatabase.getInstance().getReference("Users/".concat
+                (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status")
+                .setValue(status + " " + (DateFormat.format("HH:mm", (new Date().getTime())))
+                        + " " + DateFormat.format("dd:MM", (new Date().getTime())));
+    }
 
 
 }

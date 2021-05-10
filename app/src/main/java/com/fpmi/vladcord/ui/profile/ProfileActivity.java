@@ -4,9 +4,12 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -56,17 +59,19 @@ public class ProfileActivity extends AppCompatActivity{
     private Uri selectedImage;
     private String id;
     private FirebaseStorage storage;
-    private CircleImageView user_avatar;
     private StorageReference storageReference;
     private final int PICK_IMAGE_REQUEST = 2;
     private static final int SIGN_IN_CODE = 1;
     private static final int SIGN_IN_CODEIN = 3;
     private static final int STORAGE_PERMISSION_CODE = 911;
+    private ProfileViewModel profileViewModel;
 
     private TextView profileEmail;
     private TextView profileName;
     private TextView profileBio;
     private TextView bioDiscription;
+    private CircleImageView user_avatar;
+
     private Toolbar toolbar;
     private LinearLayout nameChangerLayout;
     private LinearLayout emailChangerLayout;
@@ -96,9 +101,10 @@ public class ProfileActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        setStatusOnline();
         init();
         initEventListeners();
+        profileViewModel.setStatusOnline();
+
 
 
 
@@ -193,7 +199,9 @@ public class ProfileActivity extends AppCompatActivity{
 
 
         id = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        getCurUser();
+        profileViewModel = new ProfileViewModel(id, profileEmail, profileName, profileBio,
+                bioDiscription, user_avatar, toolbar);
+        profileViewModel.getCurUser();
 
 
         setSupportActionBar(toolbar);
@@ -215,20 +223,44 @@ public class ProfileActivity extends AppCompatActivity{
         // Inflate the menu; this adds items to the action bar if it is present.
         int id = item.getItemId();
         if (id == R.id.signOut){
-            if(FirebaseAuth.getInstance().getCurrentUser() != null) {
-                FirebaseDatabase.getInstance().getReference("Users/".concat
-                        (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status")
-                        .setValue(getString(R.string.last_seen) + (DateFormat.format("HH:mm", (new Date().getTime())))
-                                + " " + DateFormat.format("dd:MM", (new Date().getTime())));
+            if(hasConnection(getApplicationContext())) {
+                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                    FirebaseDatabase.getInstance().getReference("Users/".concat
+                            (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status")
+                            .setValue(getString(R.string.last_seen) + (DateFormat.format("HH:mm", (new Date().getTime())))
+                                    + " " + DateFormat.format("dd:MM", (new Date().getTime())));
+                }
+                FirebaseAuth.getInstance().signOut();
+                finish();
             }
-            FirebaseAuth.getInstance().signOut();
-            finish();
+            else{
+                Toast.makeText(this, "No Internet Connection", Toast.LENGTH_SHORT).show();
+            }
         }
         return super.onOptionsItemSelected(item);
     }
-    
+
+    public static boolean hasConnection(final Context context)
+    {
+        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        if (wifiInfo != null && wifiInfo.isConnected())
+        {
+            return true;
+        }
+        wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        if (wifiInfo != null && wifiInfo.isConnected())
+        {
+            return true;
+        }
+        wifiInfo = cm.getActiveNetworkInfo();
+        if (wifiInfo != null && wifiInfo.isConnected())
+        {
+            return true;
+        }
+        return false;
+    }
     private void showFileChooser() {
-        requestStoragePermission();
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setType("image/*");
         intent.putExtra("crop", "true");
@@ -275,81 +307,53 @@ public class ProfileActivity extends AppCompatActivity{
     }
 
     private void uploadImage() {
+        if(hasConnection(getApplicationContext())) {
+            if (selectedImage != null) {
+                final ProgressDialog progressDialog = new ProgressDialog(this);
+                progressDialog.setTitle(getString(R.string.uploading) + "...");
+                progressDialog.show();
+                StorageReference ref = storageReference.child("Images").child("UsersAvs").child(id);
+                ref.putFile(selectedImage)
+                        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-        if(selectedImage != null)
-        {
-            final ProgressDialog progressDialog = new ProgressDialog(this);
-            progressDialog.setTitle(getString(R.string.uploading) + "...");
-            progressDialog.show();
-            StorageReference ref = storageReference.child("Images").child("UsersAvs").child(id);
-            ref.putFile(selectedImage)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-                            storageReference.child("Images").child("UsersAvs").child(id).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    Picasso.get()
-                                            .load(uri.toString())
-                                            .into(user_avatar);
-                                    FirebaseDatabase.getInstance().getReference("Users").child(id).child("urlAva").setValue(uri.toString());
-                                    //Handle whatever you're going to do with the URL here
-                                }
-                            });
-                            progressDialog.dismiss();
-                            Toast.makeText(ProfileActivity.this, getString(R.string.uploaded), Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            progressDialog.dismiss();
-                            Toast.makeText(ProfileActivity.this, getString(R.string.failed)+e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot
-                                    .getTotalByteCount());
-                            progressDialog.setMessage(getString(R.string.uploaded) +" "+(int)progress+"%");
-                        }
-                    });
+                                storageReference.child("Images").child("UsersAvs").child(id).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        Picasso.get()
+                                                .load(uri.toString())
+                                                .into(user_avatar);
+                                        FirebaseDatabase.getInstance().getReference("Users").child(id).child("urlAva").setValue(uri.toString());
+                                        //Handle whatever you're going to do with the URL here
+                                    }
+                                });
+                                progressDialog.dismiss();
+                                Toast.makeText(ProfileActivity.this, getString(R.string.uploaded), Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                progressDialog.dismiss();
+                                Toast.makeText(ProfileActivity.this, getString(R.string.failed) + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                                double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
+                                        .getTotalByteCount());
+                                progressDialog.setMessage(getString(R.string.uploaded) + " " + (int) progress + "%");
+                            }
+                        });
+            }
+        }
+        else{
+            Toast.makeText(this, "Photo will be download when connection will be available", Toast.LENGTH_SHORT).show();
         }
     }
-    public void getCurUser(){
-        FirebaseDatabase.getInstance().getReference("Users").child(id)
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        User userD = snapshot.getValue(User.class);
-                        if(userD != null) {
-                            profileName.setText(userD.getName());
-                            profileEmail.setText(userD.getEmail());
-                            Picasso.get()
-                                    .load(userD.getUrlAva())
-                                    .into(user_avatar);
-                            if(!userD.getBio().equals("")) {
-                                profileBio.setText(userD.getBio());
-                                bioDiscription.setText("Bio");
-                            }
-                            else{
-                                profileBio.setText("");
-                                profileBio.setHint("Bio");
-                                bioDiscription.setText("Add a few words about yourself");
-                            }
-                            toolbar.setTitle(userD.getName());
-                        }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-
-    }
     public void nameChange(){
         FirebaseDatabase.getInstance().getReference("Users").child(id).child("name")
                 .addValueEventListener(new ValueEventListener() {
@@ -367,18 +371,9 @@ public class ProfileActivity extends AppCompatActivity{
     @Override
     protected void onPause() {
         if(FirebaseAuth.getInstance().getCurrentUser() != null) {
-            setStatusOffline();
+            profileViewModel.setStatusOffline(getString(R.string.last_seen));
         }
         super.onPause();
     }
-    public void setStatusOnline(){
-        FirebaseDatabase.getInstance().getReference("Users/".concat
-                (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status").setValue("Online");
-    }
-    public void setStatusOffline(){
-        FirebaseDatabase.getInstance().getReference("Users/".concat
-                (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status")
-                .setValue(getString(R.string.last_seen) + " " + (DateFormat.format("HH:mm", (new Date().getTime())))
-                        + " " + DateFormat.format("dd:MM", (new Date().getTime())));
-    }
+
 }

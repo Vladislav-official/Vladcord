@@ -43,6 +43,7 @@
     import com.google.android.material.navigation.NavigationView;
     import com.google.android.material.snackbar.Snackbar;
     import com.google.firebase.auth.FirebaseAuth;
+    import com.google.firebase.auth.UserProfileChangeRequest;
     import com.google.firebase.database.DataSnapshot;
     import com.google.firebase.database.DatabaseError;
     import com.google.firebase.database.FirebaseDatabase;
@@ -82,7 +83,7 @@ private NavController navController;
     private DrawerLayout drawer;
     private  User user = null;
 
-
+    static boolean calledAlready = false;
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -95,8 +96,6 @@ private NavController navController;
                 }
             } else {
                 Snackbar.make(activity_main, getString(R.string.you_not_logged), Snackbar.LENGTH_LONG).show();
-                user = null;
-                finish();
             }
         }
     }
@@ -107,6 +106,19 @@ private NavController navController;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        if(!calledAlready) {
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+            calledAlready = true;
+        }
+
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().setIsSmartLockEnabled(false).build(), SIGN_IN_CODE);
+        } else {
+            this.setAndCheckCurUser();
+            setStatusOnline();
+        }
 
         activity_main = findViewById(R.id.activity_main);
         navigationView = findViewById(R.id.nav_view);
@@ -132,12 +144,7 @@ private NavController navController;
         });
 
         drawer = new DrawerLayout(this.getBaseContext());
-        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-            startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().setIsSmartLockEnabled(false).build(), SIGN_IN_CODE);
-        } else {
-            this.setAndCheckCurUser();
-            setStatusOnline();
-        }
+
 
         toolbar = findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
@@ -151,7 +158,7 @@ private NavController navController;
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
-        navController.navigate(R.id.nav_friends);
+        //navController.navigate(R.id.nav_friends);
         navigationView.setNavigationItemSelectedListener(this);
     }
 
@@ -200,9 +207,6 @@ private NavController navController;
     @Override
     protected void onResume() {
         if(FirebaseAuth.getInstance().getCurrentUser() != null){setStatusOnline();}
-        else{
-            startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().setIsSmartLockEnabled(false).build(), SIGN_IN_CODE);
-        }
         super.onResume();
     }
 
@@ -250,6 +254,9 @@ private NavController navController;
                                     "https://www.freepngimg.com/thumb/facebook/62681-flat-icons-face-computer-design-avatar-icon.png", "Online", "");
                             FirebaseDatabase.getInstance().getReference("Users/".concat
                                     (FirebaseAuth.getInstance().getCurrentUser().getUid())).setValue(user);
+                            UserProfileChangeRequest.Builder builder = new UserProfileChangeRequest.Builder();
+                            builder.setPhotoUri(Uri.parse("https://www.freepngimg.com/thumb/facebook/62681-flat-icons-face-computer-design-avatar-icon.png"));
+                            FirebaseAuth.getInstance().getCurrentUser().updateProfile(builder.build());
                         }
                         user_name.setText(user.getName());
                         user_email.setText(user.getEmail());
@@ -288,7 +295,8 @@ private NavController navController;
                     navController.navigate(R.id.nav_friends);
                     break;
                 case R.id.nav_users:
-                    startActivity(new Intent(MainActivity.this, UserActivity.class));
+                    Intent intent1 = new Intent(this, UserActivity.class);
+                    startActivity(intent1);
                     break;
                 case R.id.nav_friends_request:
                     startActivity(new Intent(MainActivity.this, FriendReqActivity.class));

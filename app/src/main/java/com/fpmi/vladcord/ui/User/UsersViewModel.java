@@ -1,5 +1,6 @@
 package com.fpmi.vladcord.ui.User;
 
+import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -8,8 +9,11 @@ import androidx.lifecycle.ViewModel;
 import com.fpmi.vladcord.ui.FireChangeInterface;
 import com.fpmi.vladcord.ui.friends_list.Friend;
 import com.fpmi.vladcord.ui.friends_list.FriendsAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 //think about ListAdapter and diffUtil and ViewHolder
 public class UsersViewModel extends ViewModel implements FireChangeInterface {
@@ -22,13 +26,18 @@ public class UsersViewModel extends ViewModel implements FireChangeInterface {
         usersModel = new UsersModel(this);
         this.progressBar = progressBar;
         this.adapter = usersAdapter;
-
     }
 
     public void getDataFromDB(List<User> listOfUsers){
         usersModel.getDataFromDB(listOfUsers);
     }
 
+    public void setStatusOnline(){
+        usersModel.setStatusOnline();
+    }
+    public void setStatusOffline(String status){
+        usersModel.setStatusOffline(status);
+    }
 
     public List<User> sortNameUsers(List<User> listOfUsers, String string) {
         List<User> help = new ArrayList<>();

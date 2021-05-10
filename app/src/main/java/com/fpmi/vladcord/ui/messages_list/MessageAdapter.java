@@ -1,6 +1,8 @@
 package com.fpmi.vladcord.ui.messages_list;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +17,12 @@ import com.daasuu.bl.ArrowDirection;
 import com.daasuu.bl.BubbleLayout;
 import com.fpmi.vladcord.R;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.sql.Connection;
 import java.util.List;
 
 public class MessageAdapter extends RecyclerView.Adapter {
@@ -83,7 +90,25 @@ public class MessageAdapter extends RecyclerView.Adapter {
                 ((ViewHolder) holder).txtSeen.setText(R.string.seen_message);
             }
             else{
-                ((ViewHolder) holder).txtSeen.setText(R.string.delivered);
+                ((ViewHolder) holder).txtSeen.setText("No connection\nDelivering...");
+                FirebaseDatabase.getInstance().getReference(".info/connected")
+                        .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        boolean connected = snapshot.getValue(Boolean.class);
+                        if(connected) {
+                            ((ViewHolder) holder).txtSeen.setText(R.string.delivered);
+                        }
+                        else{
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
             }
         }else{
             ((ViewHolder) holder).txtSeen.setText("");

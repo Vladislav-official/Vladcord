@@ -1,5 +1,6 @@
 package com.fpmi.vladcord.ui.friends_request_list;
 
+import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -10,8 +11,11 @@ import com.fpmi.vladcord.ui.User.User;
 import com.fpmi.vladcord.ui.friends_list.Friend;
 import com.fpmi.vladcord.ui.friends_list.FriendModel;
 import com.fpmi.vladcord.ui.friends_list.FriendsAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class FriendsReqViewModel extends ViewModel implements FireChangeInterface {
@@ -45,5 +49,11 @@ public class FriendsReqViewModel extends ViewModel implements FireChangeInterfac
     public void DataChanged() {
         progressBar.setVisibility(View.GONE);
         friendsReqAdapter.notifyDataSetChanged();
+    }
+    public void setStatusOnline(){
+        friendModel.setStatusOnline();
+    }
+    public void setStatusOffline(String status){
+        friendModel.setStatusOffline(status);
     }
 }

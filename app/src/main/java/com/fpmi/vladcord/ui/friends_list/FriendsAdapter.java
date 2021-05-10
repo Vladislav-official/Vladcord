@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.fpmi.vladcord.R;
+import com.fpmi.vladcord.ui.FireChangeInterface;
 import com.fpmi.vladcord.ui.User.User;
 import com.fpmi.vladcord.ui.messages_list.Message;
 import com.fpmi.vladcord.ui.messages_list.MessageModel;
@@ -31,23 +32,33 @@ import xyz.schwaab.avvylib.AvatarView;
 
 public class FriendsAdapter extends RecyclerView.Adapter {
 
-
+    //Текущий список друзей
     private final List<User> friends;
+    //Интерфейс, позволяющий обрабытывать клик непосредственно во фрагменте(нужно для открытия экрана сообщений)
     private RecycleFriendClick mClickListener;
     private final Context context;
+    private final FriendModel friendModel = new FriendModel();
+    //Данный блок нужен для отображения во фрагменте друзей, последнего написанного сообщения
     private String lastMessageText = "Default";
     private String lastMessageTimeText;
     private String lastMessageSender;
     private boolean lastMessageStatus;
-    private String myId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+    //
+    private String myId;
 
     public FriendsAdapter(RecycleFriendClick recycleFriendClick, Context context, List<User> friends) {
         this.friends = friends;
         this.mClickListener = recycleFriendClick;
         this.context = context;
+        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+            myId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        }
+        else{
+            myId = null;
+        }
     }
 
-    private class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder implements FireChangeInterface {
         CircleImageView ava;
         CircleImageView status;
         TextView name;
@@ -55,7 +66,7 @@ public class FriendsAdapter extends RecyclerView.Adapter {
         TextView id;
         TextView lastMessage;
         TextView timeLastMessage;
-
+        //Инициализация View, которые содержит элемент списка
         ViewHolder(final View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.friend_name);
@@ -66,7 +77,7 @@ public class FriendsAdapter extends RecyclerView.Adapter {
             lastMessage = itemView.findViewById(R.id.last_message);
             timeLastMessage = itemView.findViewById(R.id.time_of_last_message);
         }
-
+        //Изменение элементов списка, согласно базе
         void bind(User friend) {
             this.name.setText(friend.getName());
             this.email.setText(friend.getEmail());
@@ -78,7 +89,45 @@ public class FriendsAdapter extends RecyclerView.Adapter {
             else{
                 status.setVisibility(View.INVISIBLE);
             }
-            getLastMessage(friend.getuID(), lastMessage, timeLastMessage);
+            friendModel.getLastMessage(friend.getuID(), this);
+        }
+
+        @Override
+        public void DataChanged() {
+
+        }
+
+        @Override
+        public void DataChanged(Message message) {
+            lastMessageText = message.getTextMessage();
+            lastMessageTimeText = DateFormat.format("HH:mm", message.getMessageTime().getTime()).toString();
+            lastMessageSender = message.getSender();
+            lastMessageStatus = message.isIsseen();
+            if(!lastMessageText.equals("Default")) {
+                if(myId.equals(lastMessageSender)) {
+                    if(lastMessageStatus) {
+                        lastMessage.setText(lastMessageText);
+                        timeLastMessage.setText("✔" + "   "
+                                + lastMessageTimeText);
+                        lastMessageText = "Default";
+                    }
+                    else{
+                        lastMessage.setText(lastMessageText);
+                        timeLastMessage.setText(lastMessageTimeText);
+                        lastMessageText = "Default";
+                    }
+                }
+                else{
+                    lastMessage.setText(lastMessageText);
+                    timeLastMessage.setText(lastMessageTimeText);
+                    lastMessageText = "Default";
+                }
+            }
+            else{
+                lastMessage.setText("");
+                timeLastMessage.setText("");
+                lastMessageText = "Default";
+            }
         }
     }
 
@@ -87,6 +136,7 @@ public class FriendsAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.list_friend, parent, false);
+        //Реализация обработки клика непосредственно во фрагмента
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,7 +149,7 @@ public class FriendsAdapter extends RecyclerView.Adapter {
         });
         return new ViewHolder(view);
     }
-
+//Берется позиция внутри списка и инициализируется согласно списку из базы
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         User friend = friends.get(position);
@@ -111,57 +161,6 @@ public class FriendsAdapter extends RecyclerView.Adapter {
         return friends.size();
     }
 
-    public void getLastMessage(String friendId, TextView lastMessage, TextView lastMessageTime)
-    {
-        FirebaseDatabase.getInstance().getReference("Chats").addValueEventListener(new ValueEventListener() {
-
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
-            {
-
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    Message message = ds.getValue(Message.class);
-                    if((message.getReceiver().equals(friendId) && message.getSender().equals(myId)) ||
-                            (message.getReceiver().equals(myId) && message.getSender().equals(friendId))) {
-                        lastMessageText = message.getTextMessage();
-                        lastMessageTimeText = DateFormat.format("HH:mm", message.getMessageTime().getTime()).toString();
-                        lastMessageSender = message.getSender();
-                        lastMessageStatus = message.isIsseen();
-                    }
-                }
-                if(!lastMessageText.equals("Default")) {
-                    if(myId.equals(lastMessageSender)) {
-                        if(lastMessageStatus) {
-                            lastMessage.setText(lastMessageText);
-                            lastMessageTime.setText("✔" + "   "
-                                    + lastMessageTimeText);
-                            lastMessageText = "Default";
-                        }
-                        else{
-                            lastMessage.setText(lastMessageText);
-                            lastMessageTime.setText(lastMessageTimeText);
-                            lastMessageText = "Default";
-                        }
-                    }
-                    else{
-                        lastMessage.setText(lastMessageText);
-                        lastMessageTime.setText(lastMessageTimeText);
-                        lastMessageText = "Default";
-                    }
-                }
-                else{
-                    lastMessage.setText("");
-                    lastMessageTime.setText("");
-                    lastMessageText = "Default";
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
 }
 
 

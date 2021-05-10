@@ -63,10 +63,10 @@ public class UserActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_users);
-        setStatusOnline();
         Activity usersActivity = this;
-            init(usersActivity);
+        init(usersActivity);
         initEventListeners(usersActivity);
+        usersViewModel.setStatusOnline();
     }
 
 
@@ -286,19 +286,10 @@ public class UserActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         if(FirebaseAuth.getInstance().getCurrentUser() != null) {
-            setStatusOffline();
+            usersViewModel.setStatusOffline(getString(R.string.last_seen));
         }
         super.onPause();
     }
-    public void setStatusOnline(){
-        FirebaseDatabase.getInstance().getReference("Users/".concat
-                (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status").setValue("Online");
-    }
-    public void setStatusOffline(){
-        FirebaseDatabase.getInstance().getReference("Users/".concat
-                (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status")
-                .setValue(getString(R.string.last_seen) + " " + (DateFormat.format("HH:mm", (new Date().getTime())))
-                        + " " + DateFormat.format("dd:MM", (new Date().getTime())));
-    }
+
 
 }

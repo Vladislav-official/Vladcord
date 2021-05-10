@@ -36,11 +36,12 @@ public class BioChangeActivity extends AppCompatActivity {
     private ImageView changeBio;
     private EditText editText;
     private String bio;
+    private ProfielModel profielModel = new ProfielModel();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStatusOnline();
+        profielModel.setStatusOnline();
         setContentView(R.layout.activity_bio_change);
         Toolbar toolbar = findViewById(R.id.toolbar);
         changeBio = findViewById(R.id.image_change_bio);
@@ -56,32 +57,18 @@ public class BioChangeActivity extends AppCompatActivity {
         changeBio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                   changeBio(editText.getText().toString());
+                   profielModel.changeBio(editText.getText().toString());
                    finish();
             }
         });
     }
-    public void changeBio(String name) {
-        FirebaseDatabase.getInstance().getReference("Users")
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .child("bio").setValue(name);
-    }
+
     @Override
     protected void onPause() {
         if(FirebaseAuth.getInstance().getCurrentUser() != null) {
-            setStatusOffline();
+            profielModel.setStatusOffline(getString(R.string.last_seen));
         }
         super.onPause();
-    }
-    public void setStatusOnline(){
-        FirebaseDatabase.getInstance().getReference("Users/".concat
-                (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status").setValue("Online");
-    }
-    public void setStatusOffline(){
-        FirebaseDatabase.getInstance().getReference("Users/".concat
-                (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status")
-                .setValue(getString(R.string.last_seen) + " " + (DateFormat.format("HH:mm", (new Date().getTime())))
-                        + " " + DateFormat.format("dd:MM", (new Date().getTime())));
     }
 
 }

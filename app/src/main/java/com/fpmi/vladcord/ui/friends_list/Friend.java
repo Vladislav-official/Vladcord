@@ -2,7 +2,7 @@ package com.fpmi.vladcord.ui.friends_list;
 
 
 public class Friend{
-
+//Класс друг, содержащий id и статус аунтетификации
     private String id;
     private String notificationStatus;
 

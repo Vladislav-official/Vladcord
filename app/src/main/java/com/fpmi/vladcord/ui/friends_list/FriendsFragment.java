@@ -25,6 +25,7 @@ import com.fpmi.vladcord.R;
 import com.fpmi.vladcord.ui.User.User;
 import com.fpmi.vladcord.ui.messages_list.MessageActivity;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -33,25 +34,27 @@ import java.util.List;
 import static android.app.Activity.RESULT_OK;
 
 public class FriendsFragment extends Fragment {
-
+    //Список пользователей, его адаптер, а также экзэмпляр ViewModel
     private FriendsViewModel friendsViewModel;
+    private List<User> listOfFriends;
+    private FriendsAdapter friendsAdapter;
+    //Views
     private RecyclerView vListOfFriends;
     private TextView titleToolbar;
     private EditText friendSearch;
-    private List<User> listOfFriends;
-    private FriendsAdapter friendsAdapter;
     private ProgressBar progressBar;
     private ImageView search_view;
+
+
+
 //Создание фрагмента в MainActivity
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-
         View root = inflater.inflate(R.layout.fragment_friends, container, false);
         //Если пользователь не зарегестрирован, показываем пустой фрагмент
         if(FirebaseAuth.getInstance().getCurrentUser() != null) {
             init(root, this.getActivity());
             initEventListeners(root, getActivity());
-
         }
         return root;
 
@@ -72,17 +75,17 @@ public class FriendsFragment extends Fragment {
     }
     //Инициализация Views, toolbar and others
     private void init(View root, Activity friendsActivity) {
+        //Инициализация View из toolbar
         search_view = friendsActivity.findViewById(R.id.search_view);
         friendSearch = friendsActivity.findViewById(R.id.search_input);
         titleToolbar = friendsActivity.findViewById(R.id.title_toolbar);
 
-
         vListOfFriends =  root.findViewById(R.id.friends_list);
         progressBar = root.findViewById(R.id.progress_bar);
-
-        progressBar.setVisibility(View.VISIBLE);
-
         listOfFriends = new ArrayList<>();
+        //Делаем так, чтобы спинер был виден(будет скрыт при загрузке данных из базы)
+        progressBar.setVisibility(View.VISIBLE);
+        
         //Обработка клика на элемент из списка друзей, переопределена через интерфейс RecycleFriendClick
         //В FriendsAdapter описан метод заполнения списка
         friendsAdapter = new FriendsAdapter(new RecycleFriendClick() {
@@ -124,7 +127,7 @@ public class FriendsFragment extends Fragment {
             public void beforeTextChanged(CharSequence s, int start,
                                           int count, int after) {
             }
-
+//При изменении текста пользователь по сути проводит сортировку по текущему списку
             @Override
             public void onTextChanged(CharSequence s, int start,
                                       int before, int count) {

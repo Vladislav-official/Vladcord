@@ -30,7 +30,7 @@
 
     <string name="last_seen">Last_seen </string>
     <string name="you_logged">You are logged in</string>
-    <string name="you_not_logged">You are not logged in</string>
+    <string name="you_not_logged">You are not logged in, check your connection</string>
     <string name="choose_image">Select an image</string>
     <string name="has_rights_for_reading">Read permissions granted.</string>
     <string name="hasnt_rights_for_reading">No read rights were granted.</string>
