@@ -60,7 +60,11 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="add_friend">Add friend</string>
     <string name="invite_friends">Invite Friends</string>
+    <string name="create_group">Create Group</string>
     <string name="tap_to_choose_friend">Tap to choose friend to invite</string>
     <string name="title_activity_name_change">Change Name</string>
     <string name="title_activity_email_change">Change Email</string>
+    <string name="title_activity_group">GroupActivity</string>
+    <string name="title_activity_groups">GroupsActivity</string>
+    <string name="galochka">✔</string>
 </resources>

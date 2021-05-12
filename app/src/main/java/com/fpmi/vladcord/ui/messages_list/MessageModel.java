@@ -9,6 +9,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.fpmi.vladcord.R;
+import com.fpmi.vladcord.ui.friends_list.Friend;
+import com.fpmi.vladcord.ui.groups.Group;
 import com.fpmi.vladcord.ui.messages_list.Notifications.Client;
 import com.fpmi.vladcord.ui.messages_list.Notifications.Data;
 import com.fpmi.vladcord.ui.messages_list.Notifications.MyResponse;
@@ -23,6 +25,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -35,18 +38,23 @@ import retrofit2.Response;
 
 public class MessageModel {
     private final DatabaseReference friendsRef;
+    private final DatabaseReference groupRef;
     private final String friendId;
     private final String myId;
+    private final String groupName;
     private final MessageViewModel messageViewModel;
 
     ValueEventListener seenListener;
     APIService apiService;
     boolean notify = false;
 
-    public MessageModel(String friendId, MessageViewModel messageViewModel) {
+    public MessageModel(String friendId, MessageViewModel messageViewModel, String groupName) {
         this.friendsRef = FirebaseDatabase.getInstance().getReference("Chats");
+        this.groupRef = FirebaseDatabase.getInstance().getReference("Groups").child(groupName)
+                .child("Chat");
         this.myId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         this.friendId = friendId;
+        this.groupName = groupName;
         this.messageViewModel = messageViewModel;
     }
 
@@ -80,7 +88,31 @@ public class MessageModel {
         friendsRef.addValueEventListener(vListener);
     }
 
+    public void getGroupChatDataFromDB(List<Message> messageList)
+    {
 
+        ValueEventListener vListener = new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+            {
+                if(messageList.size() != 0){
+                    messageList.clear();
+                }
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    Message message = ds.getValue(Message.class);
+                    messageList.add(message);
+                }
+                messageViewModel.DataChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        groupRef.addValueEventListener(vListener);
+    }
 
     public void addMessage(Message message) {
         if (!message.getTextMessage().equals("")) {
@@ -164,13 +196,89 @@ public class MessageModel {
         };
         databaseReference.addValueEventListener(valueEventListener);
     }
+    public void getGroupNotificationStatus(MenuItem item){
+        String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users")
+                .child(currentUserId)
+                .child("Groups");
+        ValueEventListener valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot ds : snapshot.getChildren()) {
+                    Group group = ds.getValue(Group.class);
+                    if(group.getGroupName().equals(groupName)){
+                            item.setTitle(group.getGroupNotificationStatus());
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+
+        };
+        databaseReference.addValueEventListener(valueEventListener);
+    }
+    public void addGroupMessage(Message message){
+        if (!message.getTextMessage().equals("")) {
+            notify = true;
+            FirebaseDatabase.getInstance().getReference("Groups").child(groupName).
+                    child("Chat").push().setValue(message);
+            apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
+            final String msg = message.getTextMessage();
+
+            FirebaseDatabase.getInstance().getReference("Groups").child(groupName).child("Users")
+                    .addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+                {
+                    for(DataSnapshot ds : dataSnapshot.getChildren())
+                    {
+                        String friend = ds.getValue(String.class);
+                        if(!friend.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                            sendNotification(friend, FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), msg);
+                            updateToken(FirebaseInstanceId.getInstance().getToken());
+                        }
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            });
+
+        }
+    }
     public void sendMessage(String userId){
         seenListener = friendsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot: dataSnapshot.getChildren()){
                     Message message = snapshot.getValue(Message.class);
-                    if(message.getReceiver().equals(myId) && message.getSender().equals(userId)){
+                    if(message.getReceiver().equals(myId)){
+                        HashMap<String, Object> hashMap = new HashMap<>();
+                        hashMap.put("isseen", true);
+                        snapshot.getRef().updateChildren(hashMap);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+    public void sendGroupMessage(String userId){
+        seenListener = groupRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot: dataSnapshot.getChildren()){
+                    Message message = snapshot.getValue(Message.class);
+                    if(!message.getSender().equals(myId)){
                         HashMap<String, Object> hashMap = new HashMap<>();
                         hashMap.put("isseen", true);
                         snapshot.getRef().updateChildren(hashMap);

@@ -14,6 +14,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Vladcord">
         <activity
+            android:name=".ui.groups.GroupsActivity"
+            android:label="@string/title_activity_groups"
+            android:theme="@style/Theme.Vladcord.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+        <activity
+            android:name=".ui.groups.GroupAddActivity"
+            android:label="@string/title_activity_group"
+            android:theme="@style/Theme.Vladcord.NoActionBar" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+        <activity
             android:name=".ui.profile.BioChangeActivity"
             android:label="@string/title_activity_email_change"
             android:theme="@style/Theme.Vladcord.NoActionBar">

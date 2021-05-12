@@ -1,33 +1,20 @@
     package com.fpmi.vladcord;
 
-    import android.Manifest;
     import android.app.Activity;
-    import android.app.ProgressDialog;
     import android.content.Intent;
-    import android.content.pm.PackageManager;
-    import android.database.Cursor;
-    import android.graphics.Bitmap;
-    import android.graphics.BitmapFactory;
     import android.net.Uri;
     import android.os.Bundle;
-    import android.provider.MediaStore;
     import android.text.format.DateFormat;
-    import android.view.Menu;
-    import android.view.MenuInflater;
     import android.view.MenuItem;
     import android.view.View;
     import android.widget.ProgressBar;
     import android.widget.TextView;
-    import android.widget.Toast;
 
     import androidx.annotation.NonNull;
     import androidx.appcompat.app.AppCompatActivity;
     import androidx.appcompat.widget.Toolbar;
-    import androidx.core.app.ActivityCompat;
-    import androidx.core.content.ContextCompat;
     import androidx.core.view.GravityCompat;
     import androidx.drawerlayout.widget.DrawerLayout;
-    import androidx.loader.content.CursorLoader;
     import androidx.navigation.NavController;
     import androidx.navigation.Navigation;
     import androidx.navigation.ui.AppBarConfiguration;
@@ -37,9 +24,9 @@
     import com.fpmi.vladcord.ui.User.User;
     import com.fpmi.vladcord.ui.User.UserActivity;
     import com.fpmi.vladcord.ui.friends_request_list.FriendReqActivity;
+    import com.fpmi.vladcord.ui.groups.GroupAddActivity;
+    import com.fpmi.vladcord.ui.groups.GroupsActivity;
     import com.fpmi.vladcord.ui.profile.ProfileActivity;
-    import com.google.android.gms.tasks.OnFailureListener;
-    import com.google.android.gms.tasks.OnSuccessListener;
     import com.google.android.material.navigation.NavigationView;
     import com.google.android.material.snackbar.Snackbar;
     import com.google.firebase.auth.FirebaseAuth;
@@ -49,20 +36,11 @@
     import com.google.firebase.database.FirebaseDatabase;
     import com.google.firebase.database.ValueEventListener;
     import com.google.firebase.database.annotations.Nullable;
-    import com.google.firebase.storage.FirebaseStorage;
-    import com.google.firebase.storage.OnProgressListener;
-    import com.google.firebase.storage.StorageReference;
-    import com.google.firebase.storage.UploadTask;
     import com.squareup.picasso.Picasso;
 
-    import java.io.IOException;
-    import java.io.InputStream;
-    import java.net.HttpURLConnection;
-    import java.net.URL;
     import java.util.Date;
 
     import de.hdodenhof.circleimageview.CircleImageView;
-    import xyz.schwaab.avvylib.AvatarView;
 
 
     public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
@@ -300,6 +278,12 @@ private NavController navController;
                     break;
                 case R.id.nav_friends_request:
                     startActivity(new Intent(MainActivity.this, FriendReqActivity.class));
+                    break;
+                case R.id.nav_group_creation:
+                    startActivity(new Intent(MainActivity.this, GroupAddActivity.class));
+                    break;
+                case R.id.nav_groups:
+                    startActivity(new Intent(MainActivity.this, GroupsActivity.class));
                     break;
             }
             return true;

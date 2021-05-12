@@ -108,7 +108,6 @@ public class UserActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 for(int i = 0; i < listOfAddFriends.size(); ++i){
-                    usersViewModel.addFriend(listOfAddFriends.get(i));
                     vlistOfAddFriends.get(i).findViewById(R.id.user_chosed).setVisibility(View.GONE);
                 }
                 Toast.makeText(usersActivity, R.string.send_request_for_add_friend, Toast.LENGTH_LONG)

@@ -33,7 +33,7 @@ public class UsersAdapter extends RecyclerView.Adapter {
     private final Context context;
     private RecycleUserClick mClickListener;
 
-    UsersAdapter(RecycleUserClick recycleUserClick, Context context, List<User> users) {
+    public UsersAdapter(RecycleUserClick recycleUserClick, Context context, List<User> users) {
         this.users = users;
         mClickListener = recycleUserClick;
         this.inflater = LayoutInflater.from(context);

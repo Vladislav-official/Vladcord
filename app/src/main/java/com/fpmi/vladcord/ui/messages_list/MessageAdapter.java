@@ -51,10 +51,12 @@ public class MessageAdapter extends RecyclerView.Adapter {
         BubbleLayout bubbleLayout;
         TextView messageDate;
         TextView txtSeen;
+        TextView messageSender;
 
 
         ViewHolder(final View itemView) {
             super(itemView);
+            messageSender = itemView.findViewById(R.id.message_sender);
             text = itemView.findViewById(R.id.message_text_friend);
             bubbleLayout = itemView.findViewById(R.id.bubble_layout);
             messageDate = itemView.findViewById(R.id.message_date);
@@ -64,6 +66,7 @@ public class MessageAdapter extends RecyclerView.Adapter {
         void bind(Message message) {
             this.text.setText(message.getTextMessage());
             this.messageDate.setText(DateFormat.format("HH:mm", message.getMessageTime()));
+            this.messageSender.setText(message.getUserName());
         }
     }
 

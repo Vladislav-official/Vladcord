@@ -33,6 +33,9 @@ import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
 public class MessageActivity extends AppCompatActivity implements
         Application.ActivityLifecycleCallbacks {
 private String friendId;
+
+    private String  privateMessage;
+
     private MessageViewModel messageViewModel;
     private ImageView submitButton, emojiButton;
     private EmojIconActions emojIconActions;
@@ -50,6 +53,9 @@ private String friendId;
 
         String friendId = getIntent().getStringExtra("friendId");
         String friendName = getIntent().getStringExtra("friendName");
+        privateMessage = getIntent().getStringExtra("privateMessage");
+
+
         this.friendId = friendId;
         setTitle(friendName);
         setupActionBar();
@@ -60,9 +66,16 @@ private String friendId;
             @Override
             public void onClick(View view) {
                 if(emojiconEditText.getText() != null) {
-                    messageViewModel.addMessage(new Message(FirebaseAuth.getInstance().getCurrentUser()
-                            .getUid(), friendId, FirebaseAuth.getInstance().getCurrentUser()
-                            .getDisplayName(), emojiconEditText.getText().toString(), false));
+                    if(privateMessage.equals("true")) {
+                        messageViewModel.addMessage(new Message(FirebaseAuth.getInstance().getCurrentUser()
+                                .getUid(), friendId, FirebaseAuth.getInstance().getCurrentUser()
+                                .getDisplayName(), emojiconEditText.getText().toString(), false));
+                    }
+                    else{
+                        messageViewModel.addGroupMessage(new Message(FirebaseAuth.getInstance().getCurrentUser()
+                                .getUid(), null, FirebaseAuth.getInstance().getCurrentUser()
+                                .getDisplayName(), emojiconEditText.getText().toString(), false));
+                    }
                     emojiconEditText.setText("");
                 }
             }
@@ -89,8 +102,13 @@ private String friendId;
         linearLayoutManager.setStackFromEnd(true);
 
         vListOfMessages.setLayoutManager(linearLayoutManager);
-        messageViewModel.setFriendId(friendId, messageAdapter);
-        messageViewModel.getDatatFromDB(listOfMessages);
+        messageViewModel.setChat(friendId, messageAdapter, getIntent().getStringExtra("groupName"));
+        if(privateMessage.equals("true")) {
+            messageViewModel.getDatatFromDB(listOfMessages);
+        }
+        else{
+            messageViewModel.getGroupChatDataFromDB(listOfMessages);
+        }
         sendMessage(friendId);
     }
 
@@ -101,7 +119,12 @@ private String friendId;
         }
     }
     private void sendMessage(String userId){
-        messageViewModel.sendMessage(userId, seenListener);
+        if(privateMessage.equals("true")) {
+            messageViewModel.sendMessage(userId, seenListener);
+        }
+        else{
+            messageViewModel.sendGroupMessage(userId, seenListener);
+        }
     }
 
     @Override
@@ -172,7 +195,12 @@ private void currentNotificationsStatus(String status){
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.massage_main, menu);
-        messageViewModel.getNotificationsStatus(menu.findItem(R.id.muteNotifications));
+        if(privateMessage.equals("true")) {
+            messageViewModel.getNotificationsStatus(menu.findItem(R.id.muteNotifications));
+        }
+        else{
+            messageViewModel.getGroupNotificationsStatus(menu.findItem(R.id.muteNotifications));
+        }
         currentNotificationsStatus(menu.findItem(R.id.muteNotifications).getTitle().toString());
         return true;
     }

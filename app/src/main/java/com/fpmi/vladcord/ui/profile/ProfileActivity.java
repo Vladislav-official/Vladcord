@@ -13,6 +13,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.firebase.ui.auth.AuthUI;
 import com.fpmi.vladcord.ui.User.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -89,9 +90,7 @@ public class ProfileActivity extends AppCompatActivity{
         }
         if (requestCode == SIGN_IN_CODE) {
             if (resultCode == RESULT_OK) {
-                startActivityForResult(this.getParentActivityIntent(), SIGN_IN_CODEIN);
-
-            } else {
+                getParent().recreate();
                 finish();
             }
         }
@@ -231,7 +230,7 @@ public class ProfileActivity extends AppCompatActivity{
                                     + " " + DateFormat.format("dd:MM", (new Date().getTime())));
                 }
                 FirebaseAuth.getInstance().signOut();
-                finish();
+                startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().setIsSmartLockEnabled(false).build(), SIGN_IN_CODE);
             }
             else{
                 Toast.makeText(this, "No Internet Connection", Toast.LENGTH_SHORT).show();

@@ -90,10 +90,12 @@ public class FriendsFragment extends Fragment {
         //В FriendsAdapter описан метод заполнения списка
         friendsAdapter = new FriendsAdapter(new RecycleFriendClick() {
             @Override
-            public void onClick(String friendId, String friendName) {
+            public void onClick(String friendId, String friendName, String groupName) {
                 Intent intent = new Intent(friendsActivity, MessageActivity.class);
                 intent.putExtra("friendId", friendId);
                 intent.putExtra("friendName", friendName);
+                intent.putExtra("privateMessage", "true");
+                intent.putExtra("groupName", groupName);
                 startActivity(intent);
             }
         }, friendsActivity, listOfFriends);
@@ -134,20 +136,23 @@ public class FriendsFragment extends Fragment {
                 if (s.length() != 0) {
                     vListOfFriends.setAdapter(new FriendsAdapter(new RecycleFriendClick() {
                         @Override
-                        public void onClick(String friendId, String friendName) {
+                        public void onClick(String friendId, String friendName, String groupName) {
                             Intent intent = new Intent(friendsActivity, MessageActivity.class);
                             intent.putExtra("friendId", friendId);
                             intent.putExtra("friendName", friendName);
+                            intent.putExtra("privateMessage", "true");
                             startActivity(intent);
                         }
                     }, friendsActivity, friendsViewModel.sortFriends(listOfFriends, s.toString())));
                 } else {
                     vListOfFriends.setAdapter(new FriendsAdapter(new RecycleFriendClick() {
                         @Override
-                        public void onClick(String friendId, String friendName) {
+                        public void onClick(String friendId, String friendName, String groupName) {
                             Intent intent = new Intent(friendsActivity, MessageActivity.class);
                             intent.putExtra("friendId", friendId);
                             intent.putExtra("friendName", friendName);
+                            intent.putExtra("privateMessage", "true");
+                            intent.putExtra("groupName", groupName);
                             startActivity(intent);
                         }
                     }, friendsActivity, friendsViewModel.sortFriends(listOfFriends, "")));

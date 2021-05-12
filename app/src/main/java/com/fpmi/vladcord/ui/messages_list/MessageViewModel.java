@@ -27,14 +27,16 @@ public class MessageViewModel extends ViewModel implements FireChangeInterface {
 private MessageAdapter adapter;
     public MessageViewModel() {
     }
-    public void setFriendId(String friendId, MessageAdapter adapter){
-    messageModel = new MessageModel(friendId, this);
+    public void setChat(String friendId, MessageAdapter adapter, String groupName){
+    messageModel = new MessageModel(friendId, this, groupName);
     this.adapter = adapter;
     }
 
     public void getDatatFromDB(List<Message> listOfMessages){
-
         messageModel.getDataFromDB(listOfMessages);
+    }
+    public void getGroupChatDataFromDB(List<Message> list){
+        messageModel.getGroupChatDataFromDB(list);
     }
 public void muteFriend(String status){
         messageModel.muteFriend(status);
@@ -43,9 +45,15 @@ public void muteFriend(String status){
 public void getNotificationsStatus(MenuItem item){
         messageModel.getNotificationStatus(item);
 }
+    public void getGroupNotificationsStatus(MenuItem item){
+        messageModel.getGroupNotificationStatus(item);
+    }
 public void sendMessage(String userId, ValueEventListener seenListener){
 messageModel.sendMessage(userId);
 }
+    public void sendGroupMessage(String userId, ValueEventListener seenListener){
+        messageModel.sendGroupMessage(userId);
+    }
     public void setStatusOnline(){
         messageModel.setStatusOnline();
     }
@@ -55,8 +63,12 @@ messageModel.sendMessage(userId);
     public void addMessage(Message message){
         messageModel.addMessage(message);
     }
+    public void addGroupMessage(Message message){
+        messageModel.addGroupMessage(message);
+    }
     public void removeSeenListener(){
         messageModel.removeSeen();
+
     }
 
     @Override

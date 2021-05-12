@@ -89,7 +89,9 @@ public class FriendsAdapter extends RecyclerView.Adapter {
             else{
                 status.setVisibility(View.INVISIBLE);
             }
-            friendModel.getLastMessage(friend.getuID(), this);
+            if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+                friendModel.getLastMessage(friend.getuID(), this);
+            }
         }
 
         @Override
@@ -99,34 +101,33 @@ public class FriendsAdapter extends RecyclerView.Adapter {
 
         @Override
         public void DataChanged(Message message) {
-            lastMessageText = message.getTextMessage();
-            lastMessageTimeText = DateFormat.format("HH:mm", message.getMessageTime().getTime()).toString();
-            lastMessageSender = message.getSender();
-            lastMessageStatus = message.isIsseen();
-            if(!lastMessageText.equals("Default")) {
-                if(myId.equals(lastMessageSender)) {
-                    if(lastMessageStatus) {
-                        lastMessage.setText(lastMessageText);
-                        timeLastMessage.setText("✔" + "   "
-                                + lastMessageTimeText);
-                        lastMessageText = "Default";
-                    }
-                    else{
+            if (message != null) {
+                lastMessageText = message.getTextMessage();
+                lastMessageTimeText = DateFormat.format("HH:mm", message.getMessageTime().getTime()).toString();
+                lastMessageSender = message.getSender();
+                lastMessageStatus = message.isIsseen();
+                if (!lastMessageText.equals("Default")) {
+                    if (myId.equals(lastMessageSender)) {
+                        if (lastMessageStatus) {
+                            lastMessage.setText(lastMessageText);
+                            timeLastMessage.setText("✔" + "   "
+                                    + lastMessageTimeText);
+                            lastMessageText = "Default";
+                        } else {
+                            lastMessage.setText(lastMessageText);
+                            timeLastMessage.setText(lastMessageTimeText);
+                            lastMessageText = "Default";
+                        }
+                    } else {
                         lastMessage.setText(lastMessageText);
                         timeLastMessage.setText(lastMessageTimeText);
                         lastMessageText = "Default";
                     }
-                }
-                else{
-                    lastMessage.setText(lastMessageText);
-                    timeLastMessage.setText(lastMessageTimeText);
+                } else {
+                    lastMessage.setText("");
+                    timeLastMessage.setText("");
                     lastMessageText = "Default";
                 }
-            }
-            else{
-                lastMessage.setText("");
-                timeLastMessage.setText("");
-                lastMessageText = "Default";
             }
         }
     }
@@ -143,7 +144,7 @@ public class FriendsAdapter extends RecyclerView.Adapter {
                 TextView uID = (TextView) v.findViewById(R.id.friend_id);
                 TextView name = v.findViewById(R.id.friend_name);
                 if (mClickListener != null) {
-                    mClickListener.onClick(uID.getText().toString(), name.getText().toString());
+                    mClickListener.onClick(uID.getText().toString(), name.getText().toString(), "");
                 }
             }
         });
