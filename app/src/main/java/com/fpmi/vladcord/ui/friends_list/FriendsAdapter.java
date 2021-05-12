@@ -1,34 +1,25 @@
 package com.fpmi.vladcord.ui.friends_list;
 
 import android.content.Context;
-import android.net.Uri;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.fpmi.vladcord.R;
-import com.fpmi.vladcord.ui.FireChangeInterface;
+import com.fpmi.vladcord.ui.FirebaseChangeInterface;
 import com.fpmi.vladcord.ui.User.User;
 import com.fpmi.vladcord.ui.messages_list.Message;
-import com.fpmi.vladcord.ui.messages_list.MessageModel;
-import com.fpmi.vladcord.ui.messages_list.MessageViewModel;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import xyz.schwaab.avvylib.AvatarView;
 
 public class FriendsAdapter extends RecyclerView.Adapter {
 
@@ -50,15 +41,14 @@ public class FriendsAdapter extends RecyclerView.Adapter {
         this.friends = friends;
         this.mClickListener = recycleFriendClick;
         this.context = context;
-        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             myId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        }
-        else{
+        } else {
             myId = null;
         }
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder implements FireChangeInterface {
+    class ViewHolder extends RecyclerView.ViewHolder implements FirebaseChangeInterface {
         CircleImageView ava;
         CircleImageView status;
         TextView name;
@@ -66,6 +56,7 @@ public class FriendsAdapter extends RecyclerView.Adapter {
         TextView id;
         TextView lastMessage;
         TextView timeLastMessage;
+
         //Инициализация View, которые содержит элемент списка
         ViewHolder(final View itemView) {
             super(itemView);
@@ -77,19 +68,21 @@ public class FriendsAdapter extends RecyclerView.Adapter {
             lastMessage = itemView.findViewById(R.id.last_message);
             timeLastMessage = itemView.findViewById(R.id.time_of_last_message);
         }
+
         //Изменение элементов списка, согласно базе
         void bind(User friend) {
             this.name.setText(friend.getName());
             this.email.setText(friend.getEmail());
             this.id.setText(friend.getuID());
             Picasso.get().load(friend.getUrlAva()).into(this.ava);
-            if(friend.getStatus().equals("Online")){
+            if (friend.getStatus().equals("Online")) {
                 status.setVisibility(View.VISIBLE);
-            }
-            else{
+            } else {
                 status.setVisibility(View.INVISIBLE);
             }
-            friendModel.getLastMessage(friend.getuID(), this);
+            if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                friendModel.getLastMessage(friend.getuID(), this);
+            }
         }
 
         @Override
@@ -99,34 +92,33 @@ public class FriendsAdapter extends RecyclerView.Adapter {
 
         @Override
         public void DataChanged(Message message) {
-            lastMessageText = message.getTextMessage();
-            lastMessageTimeText = DateFormat.format("HH:mm", message.getMessageTime().getTime()).toString();
-            lastMessageSender = message.getSender();
-            lastMessageStatus = message.isIsseen();
-            if(!lastMessageText.equals("Default")) {
-                if(myId.equals(lastMessageSender)) {
-                    if(lastMessageStatus) {
-                        lastMessage.setText(lastMessageText);
-                        timeLastMessage.setText("✔" + "   "
-                                + lastMessageTimeText);
-                        lastMessageText = "Default";
-                    }
-                    else{
+            if (message != null) {
+                lastMessageText = message.getTextMessage();
+                lastMessageTimeText = DateFormat.format("HH:mm", message.getMessageTime().getTime()).toString();
+                lastMessageSender = message.getSender();
+                lastMessageStatus = message.isIsseen();
+                if (!lastMessageText.equals("Default")) {
+                    if (myId.equals(lastMessageSender)) {
+                        if (lastMessageStatus) {
+                            lastMessage.setText(lastMessageText);
+                            timeLastMessage.setText("✔" + "   "
+                                    + lastMessageTimeText);
+                            lastMessageText = "Default";
+                        } else {
+                            lastMessage.setText(lastMessageText);
+                            timeLastMessage.setText(lastMessageTimeText);
+                            lastMessageText = "Default";
+                        }
+                    } else {
                         lastMessage.setText(lastMessageText);
                         timeLastMessage.setText(lastMessageTimeText);
                         lastMessageText = "Default";
                     }
-                }
-                else{
-                    lastMessage.setText(lastMessageText);
-                    timeLastMessage.setText(lastMessageTimeText);
+                } else {
+                    lastMessage.setText("");
+                    timeLastMessage.setText("");
                     lastMessageText = "Default";
                 }
-            }
-            else{
-                lastMessage.setText("");
-                timeLastMessage.setText("");
-                lastMessageText = "Default";
             }
         }
     }
@@ -143,17 +135,18 @@ public class FriendsAdapter extends RecyclerView.Adapter {
                 TextView uID = (TextView) v.findViewById(R.id.friend_id);
                 TextView name = v.findViewById(R.id.friend_name);
                 if (mClickListener != null) {
-                    mClickListener.onClick(uID.getText().toString(), name.getText().toString());
+                    mClickListener.onClick(uID.getText().toString(), name.getText().toString(), "");
                 }
             }
         });
         return new ViewHolder(view);
     }
-//Берется позиция внутри списка и инициализируется согласно списку из базы
+
+    //Берется позиция внутри списка и инициализируется согласно списку из базы
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         User friend = friends.get(position);
-        ((ViewHolder)holder).bind(friend);
+        ((ViewHolder) holder).bind(friend);
     }
 
     @Override

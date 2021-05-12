@@ -1,15 +1,16 @@
 package com.fpmi.vladcord.ui.friends_list;
 
 
-public class Friend{
-//Класс друг, содержащий id и статус аунтетификации
+public class Friend {
+    //Класс друг, содержащий id и статус аунтетификации
     private String id;
     private String notificationStatus;
 
-    public Friend(){
+    public Friend() {
         this.id = null;
         this.notificationStatus = null;
     }
+
     public Friend(String friendId, String notificationStatus) {
         this.id = friendId;
         this.notificationStatus = notificationStatus;

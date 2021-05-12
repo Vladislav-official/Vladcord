@@ -11,7 +11,8 @@ public class Message {
     private boolean isseen;
     private Date messageTime;
 
-    public Message() {}
+    public Message() {
+    }
 
     public Message(String sender, String receiver, String userName, String textMessage, boolean isseen) {
         this.sender = sender;

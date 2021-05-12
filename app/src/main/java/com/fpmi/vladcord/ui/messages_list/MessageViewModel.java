@@ -1,66 +1,96 @@
 package com.fpmi.vladcord.ui.messages_list;
 
-import android.app.Activity;
-import android.app.Notification;
-import android.app.PendingIntent;
-import android.content.Intent;
-import android.text.format.DateFormat;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.fpmi.vladcord.MainActivity;
-import com.fpmi.vladcord.ui.FireChangeInterface;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
+import com.fpmi.vladcord.ui.FirebaseChangeInterface;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.Date;
 import java.util.List;
 
-public class MessageViewModel extends ViewModel implements FireChangeInterface {
+public class MessageViewModel extends ViewModel implements FirebaseChangeInterface {
 
     private MessageModel messageModel;
-private MessageAdapter adapter;
+    private MessageAdapter adapter;
+
     public MessageViewModel() {
-    }
-    public void setFriendId(String friendId, MessageAdapter adapter){
-    messageModel = new MessageModel(friendId, this);
-    this.adapter = adapter;
+        messageModel = new MessageModel();
     }
 
-    public void getDatatFromDB(List<Message> listOfMessages){
+    public void setChat(String friendId, MessageAdapter adapter, String groupName) {
+        messageModel = new MessageModel(friendId, this, groupName);
+        this.adapter = adapter;
+    }
 
+    public void getDatatFromDB(List<Message> listOfMessages) {
         messageModel.getDataFromDB(listOfMessages);
     }
-public void muteFriend(String status){
-        messageModel.muteFriend(status);
-}
 
-public void getNotificationsStatus(MenuItem item){
+    public void getGroupChatDataFromDB(List<Message> list) {
+        messageModel.getGroupChatDataFromDB(list);
+    }
+
+    public void muteFriend(String status) {
+        messageModel.muteFriend(status);
+    }
+
+    public void muteGroup(String status) {
+        messageModel.muteGroup(status);
+    }
+
+    public void getNotificationsStatus(MenuItem item) {
         messageModel.getNotificationStatus(item);
-}
-public void sendMessage(String userId, ValueEventListener seenListener){
-messageModel.sendMessage(userId);
-}
-    public void setStatusOnline(){
+    }
+
+    public void getGroupNotificationsStatus(MenuItem item) {
+        messageModel.getGroupNotificationStatus(item);
+    }
+
+    public void sendMessage(String userId, ValueEventListener seenListener) {
+        messageModel.sendMessage(userId);
+    }
+
+    public void sendGroupMessage(String userId, ValueEventListener seenListener) {
+        messageModel.sendGroupMessage(userId);
+    }
+
+    public void setStatusOnline() {
         messageModel.setStatusOnline();
     }
-    public void setStatusOffline(String status){
+
+    public void setStatusOffline(String status) {
         messageModel.setStatusOffline(status);
     }
-    public void addMessage(Message message){
+
+    public void addMessage(Message message) {
         messageModel.addMessage(message);
     }
-    public void removeSeenListener(){
+
+    public void addGroupMessage(Message message) {
+        messageModel.addGroupMessage(message);
+    }
+
+    public void removeSeenListener() {
         messageModel.removeSeen();
+
+    }
+
+    public void deleteChat() {
+        messageModel.deleteChat();
+    }
+
+    public void leaveGroupChat() {
+        messageModel.leaveGroupChat();
     }
 
     @Override
     public void DataChanged() {
         adapter.notifyDataSetChanged();
+    }
+
+    public void getSender(TextView textView, String id) {
+        messageModel.getSender(textView, id);
     }
 }

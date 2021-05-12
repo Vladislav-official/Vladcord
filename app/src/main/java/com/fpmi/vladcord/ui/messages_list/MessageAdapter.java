@@ -51,10 +51,12 @@ public class MessageAdapter extends RecyclerView.Adapter {
         BubbleLayout bubbleLayout;
         TextView messageDate;
         TextView txtSeen;
+        TextView messageSender;
 
 
         ViewHolder(final View itemView) {
             super(itemView);
+            messageSender = itemView.findViewById(R.id.message_sender);
             text = itemView.findViewById(R.id.message_text_friend);
             bubbleLayout = itemView.findViewById(R.id.bubble_layout);
             messageDate = itemView.findViewById(R.id.message_date);
@@ -64,6 +66,7 @@ public class MessageAdapter extends RecyclerView.Adapter {
         void bind(Message message) {
             this.text.setText(message.getTextMessage());
             this.messageDate.setText(DateFormat.format("HH:mm", message.getMessageTime()));
+            messageViewModel.getSender(messageSender, message.getSender());
         }
     }
 
@@ -72,10 +75,9 @@ public class MessageAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
-        if(viewType == MSG_TYPE_RIGHT) {
+        if (viewType == MSG_TYPE_RIGHT) {
             view = LayoutInflater.from(context).inflate(R.layout.list_message_right, parent, false);
-        }
-        else{
+        } else {
             view = LayoutInflater.from(context).inflate(R.layout.list_message_left, parent, false);
         }
         return new ViewHolder(view);
@@ -84,33 +86,31 @@ public class MessageAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Message message = messages.get(position);
-        ((ViewHolder)holder).bind(message);
-        if(position == messages.size() - 1){
-            if(message.isIsseen()){
+        ((ViewHolder) holder).bind(message);
+        if (position == messages.size() - 1) {
+            if (message.isIsseen()) {
                 ((ViewHolder) holder).txtSeen.setText(R.string.seen_message);
-            }
-            else{
+            } else {
                 ((ViewHolder) holder).txtSeen.setText("No connection\nDelivering...");
                 FirebaseDatabase.getInstance().getReference(".info/connected")
                         .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        boolean connected = snapshot.getValue(Boolean.class);
-                        if(connected) {
-                            ((ViewHolder) holder).txtSeen.setText(R.string.delivered);
-                        }
-                        else{
-                        }
-                    }
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                boolean connected = snapshot.getValue(Boolean.class);
+                                if (connected) {
+                                    ((ViewHolder) holder).txtSeen.setText(R.string.delivered);
+                                } else {
+                                }
+                            }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
-                });
+                            }
+                        });
 
             }
-        }else{
+        } else {
             ((ViewHolder) holder).txtSeen.setText("");
         }
     }
@@ -122,10 +122,9 @@ public class MessageAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemViewType(int position) {
-        if(messages.get(position).getSender().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+        if (messages.get(position).getSender().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
             return MSG_TYPE_RIGHT;
-        }
-        else{
+        } else {
             return MSG_TYPE_LEFT;
         }
     }

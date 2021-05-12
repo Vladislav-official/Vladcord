@@ -1,24 +1,17 @@
 package com.fpmi.vladcord.ui.friends_request_list;
 
-import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.ProgressBar;
 
 import androidx.lifecycle.ViewModel;
 
-import com.fpmi.vladcord.ui.FireChangeInterface;
+import com.fpmi.vladcord.ui.FirebaseChangeInterface;
 import com.fpmi.vladcord.ui.User.User;
-import com.fpmi.vladcord.ui.friends_list.Friend;
-import com.fpmi.vladcord.ui.friends_list.FriendModel;
-import com.fpmi.vladcord.ui.friends_list.FriendsAdapter;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-public class FriendsReqViewModel extends ViewModel implements FireChangeInterface {
+public class FriendsReqViewModel extends ViewModel implements FirebaseChangeInterface {
     private final FriendReqModel friendModel;
     private FriendsReqAdapter friendsReqAdapter;
     private ProgressBar progressBar;
@@ -29,18 +22,20 @@ public class FriendsReqViewModel extends ViewModel implements FireChangeInterfac
         this.progressBar = progressBar;
     }
 
-    public void getDataFromDB(List<User> list){
+    public void getDataFromDB(List<User> list) {
         friendModel.getDataFromDB(list);
     }
+
     public List<User> sortFriends(List<User> listOfFriends, String string) {
         List<User> resultListOfFriends = new ArrayList<>();
-        for(User r: listOfFriends){
-            if(r.getName().toLowerCase().contains(string.toLowerCase())){
+        for (User r : listOfFriends) {
+            if (r.getName().toLowerCase().contains(string.toLowerCase())) {
                 resultListOfFriends.add(r);
             }
         }
         return resultListOfFriends;
     }
+
     public FriendReqModel getFriendModel() {
         return friendModel;
     }
@@ -50,10 +45,12 @@ public class FriendsReqViewModel extends ViewModel implements FireChangeInterfac
         progressBar.setVisibility(View.GONE);
         friendsReqAdapter.notifyDataSetChanged();
     }
-    public void setStatusOnline(){
+
+    public void setStatusOnline() {
         friendModel.setStatusOnline();
     }
-    public void setStatusOffline(String status){
+
+    public void setStatusOffline(String status) {
         friendModel.setStatusOffline(status);
     }
 }

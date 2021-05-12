@@ -47,7 +47,7 @@ public class BioChangeActivity extends AppCompatActivity {
         changeBio = findViewById(R.id.image_change_bio);
         editText = findViewById(R.id.edit_bio);
         bio = getIntent().getStringExtra("profileBio");
-        if(!bio.equals("")){
+        if (!bio.equals("")) {
             editText.setText(bio);
         }
         setSupportActionBar(toolbar);
@@ -57,15 +57,15 @@ public class BioChangeActivity extends AppCompatActivity {
         changeBio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                   profielModel.changeBio(editText.getText().toString());
-                   finish();
+                profielModel.changeBio(editText.getText().toString());
+                finish();
             }
         });
     }
 
     @Override
     protected void onPause() {
-        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             profielModel.setStatusOffline(getString(R.string.last_seen));
         }
         super.onPause();

@@ -15,11 +15,12 @@ public class MyFirebaseService extends FirebaseInstanceIdService {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         String refreshToken = FirebaseInstanceId.getInstance().getToken();
-        if(refreshToken != null){
+        if (refreshToken != null) {
             updateToken(refreshToken);
         }
     }
-    private  void updateToken(String refreshToken){
+
+    private void updateToken(String refreshToken) {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Tokens");

@@ -13,6 +13,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.firebase.ui.auth.AuthUI;
 import com.fpmi.vladcord.ui.User.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -55,11 +56,12 @@ import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ProfileActivity extends AppCompatActivity{
+public class ProfileActivity extends AppCompatActivity {
     private Uri selectedImage;
     private String id;
     private FirebaseStorage storage;
     private StorageReference storageReference;
+    public final Activity activity = getParent();
     private final int PICK_IMAGE_REQUEST = 2;
     private static final int SIGN_IN_CODE = 1;
     private static final int SIGN_IN_CODEIN = 3;
@@ -89,9 +91,8 @@ public class ProfileActivity extends AppCompatActivity{
         }
         if (requestCode == SIGN_IN_CODE) {
             if (resultCode == RESULT_OK) {
-                startActivityForResult(this.getParentActivityIntent(), SIGN_IN_CODEIN);
-
-            } else {
+                recreate();
+                setResult(RESULT_OK, null);
                 finish();
             }
         }
@@ -106,18 +107,15 @@ public class ProfileActivity extends AppCompatActivity{
         profileViewModel.setStatusOnline();
 
 
-
-
-
-
     }
-    void initEventListeners(){
+
+    void initEventListeners() {
         Activity activity = this;
         nameChangerLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 nameChange();
-                Intent intent = new Intent(ProfileActivity.this ,NameChangeActivity.class);
+                Intent intent = new Intent(ProfileActivity.this, NameChangeActivity.class);
                 intent.putExtra("profileName", profileName.getText());
                 startActivity(intent);
             }
@@ -152,8 +150,7 @@ public class ProfileActivity extends AppCompatActivity{
                         }
                     });
                     dialog.show();
-                }
-                else{
+                } else {
                     Toast.makeText(ProfileActivity.this,
                             "You've already verify email",
                             Toast.LENGTH_SHORT).show();
@@ -165,7 +162,7 @@ public class ProfileActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 nameChange();
-                Intent intent = new Intent(ProfileActivity.this , BioChangeActivity.class);
+                Intent intent = new Intent(ProfileActivity.this, BioChangeActivity.class);
                 intent.putExtra("profileBio", profileBio.getText());
                 startActivity(intent);
 
@@ -178,9 +175,9 @@ public class ProfileActivity extends AppCompatActivity{
             }
         });
     }
-    void init(){
-        toolbar = (Toolbar) findViewById(R.id.toolbar_profile);
 
+    void init() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar_profile);
 
 
         user_avatar = findViewById(R.id.user_avatar);
@@ -222,8 +219,8 @@ public class ProfileActivity extends AppCompatActivity{
     public boolean onOptionsItemSelected(MenuItem item) {
         // Inflate the menu; this adds items to the action bar if it is present.
         int id = item.getItemId();
-        if (id == R.id.signOut){
-            if(hasConnection(getApplicationContext())) {
+        if (id == R.id.signOut) {
+            if (hasConnection(getApplicationContext())) {
                 if (FirebaseAuth.getInstance().getCurrentUser() != null) {
                     FirebaseDatabase.getInstance().getReference("Users/".concat
                             (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status")
@@ -231,35 +228,31 @@ public class ProfileActivity extends AppCompatActivity{
                                     + " " + DateFormat.format("dd:MM", (new Date().getTime())));
                 }
                 FirebaseAuth.getInstance().signOut();
-                finish();
-            }
-            else{
+                startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().setIsSmartLockEnabled(false).build(), SIGN_IN_CODE);
+            } else {
                 Toast.makeText(this, "No Internet Connection", Toast.LENGTH_SHORT).show();
             }
         }
         return super.onOptionsItemSelected(item);
     }
 
-    public static boolean hasConnection(final Context context)
-    {
-        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+    public static boolean hasConnection(final Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        if (wifiInfo != null && wifiInfo.isConnected())
-        {
+        if (wifiInfo != null && wifiInfo.isConnected()) {
             return true;
         }
         wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-        if (wifiInfo != null && wifiInfo.isConnected())
-        {
+        if (wifiInfo != null && wifiInfo.isConnected()) {
             return true;
         }
         wifiInfo = cm.getActiveNetworkInfo();
-        if (wifiInfo != null && wifiInfo.isConnected())
-        {
+        if (wifiInfo != null && wifiInfo.isConnected()) {
             return true;
         }
         return false;
     }
+
     private void showFileChooser() {
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setType("image/*");
@@ -270,7 +263,7 @@ public class ProfileActivity extends AppCompatActivity{
     }
 
     private String getRealPathFromURI(Uri contentUri) {
-        String[] proj = { MediaStore.Images.Media.DATA };
+        String[] proj = {MediaStore.Images.Media.DATA};
         CursorLoader loader = new CursorLoader(getApplicationContext(), contentUri, proj, null, null, null);
         Cursor cursor = loader.loadInBackground();
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
@@ -307,7 +300,7 @@ public class ProfileActivity extends AppCompatActivity{
     }
 
     private void uploadImage() {
-        if(hasConnection(getApplicationContext())) {
+        if (hasConnection(getApplicationContext())) {
             if (selectedImage != null) {
                 final ProgressDialog progressDialog = new ProgressDialog(this);
                 progressDialog.setTitle(getString(R.string.uploading) + "...");
@@ -348,13 +341,12 @@ public class ProfileActivity extends AppCompatActivity{
                             }
                         });
             }
-        }
-        else{
+        } else {
             Toast.makeText(this, "Photo will be download when connection will be available", Toast.LENGTH_SHORT).show();
         }
     }
 
-    public void nameChange(){
+    public void nameChange() {
         FirebaseDatabase.getInstance().getReference("Users").child(id).child("name")
                 .addValueEventListener(new ValueEventListener() {
                     @Override
@@ -368,9 +360,10 @@ public class ProfileActivity extends AppCompatActivity{
                     }
                 });
     }
+
     @Override
     protected void onPause() {
-        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             profileViewModel.setStatusOffline(getString(R.string.last_seen));
         }
         super.onPause();

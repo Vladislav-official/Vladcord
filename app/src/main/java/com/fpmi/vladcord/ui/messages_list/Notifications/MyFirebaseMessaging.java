@@ -38,8 +38,8 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         System.out.println(currentUser);
         System.out.println(sented);
-        if(firebaseUser != null && sented.equals(firebaseUser.getUid())){
-            if(!currentUser.equals(user) && currentStatus.equals(getString(R.string.mute_friend))) {
+        if (firebaseUser != null && sented.equals(firebaseUser.getUid())) {
+            if (!currentUser.equals(user) && currentStatus.equals(getString(R.string.mute_friend))) {
                 sendNotification(remoteMessage);
             }
 
@@ -47,7 +47,7 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
 
     }
 
-    private void sendNotification(RemoteMessage remoteMessage){
+    private void sendNotification(RemoteMessage remoteMessage) {
         String user = remoteMessage.getData().get("user");
         String title = remoteMessage.getData().get("title");
         String body = remoteMessage.getData().get("body");
@@ -62,7 +62,6 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
         PendingIntent contentIntent = PendingIntent.getActivity(this,
                 j, intent,
                 PendingIntent.FLAG_ONE_SHOT);
-
 
 
         NotificationManager notificationManager = (NotificationManager)
@@ -86,11 +85,11 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
 
 
         int i = 0;
-        if(j > 0){
+        if (j > 0) {
             i = j;
         }
         notificationManager.notify(
-                i , notificationBuilder.build());
+                i, notificationBuilder.build());
 
     }
 }

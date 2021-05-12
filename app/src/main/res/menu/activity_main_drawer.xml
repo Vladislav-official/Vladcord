@@ -15,8 +15,17 @@
             android:title="Friend requests" />
         <item
             android:id="@+id/nav_users"
-            android:icon="@mipmap/friend_adding"
+            android:icon="@drawable/ic_baseline_person_add_24"
             android:title="@string/invite_friends" />
+
+        <item
+            android:id="@+id/nav_group_creation"
+            android:icon="@drawable/ic_baseline_group_add_24"
+            android:title="Create Group" />
+        <item
+            android:id="@+id/nav_groups"
+            android:icon="@drawable/ic_baseline_people_alt_24"
+            android:title="Groups" />
         <item
             android:id="@+id/nav_settings"
             android:icon="@mipmap/ic_action_settings"

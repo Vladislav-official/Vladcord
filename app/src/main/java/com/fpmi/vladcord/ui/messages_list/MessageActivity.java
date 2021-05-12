@@ -11,20 +11,16 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.format.DateFormat;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.fpmi.vladcord.R;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import hani.momanii.supernova_emoji_library.Actions.EmojIconActions;
@@ -32,7 +28,10 @@ import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
 
 public class MessageActivity extends AppCompatActivity implements
         Application.ActivityLifecycleCallbacks {
-private String friendId;
+    private String friendId;
+
+    private String privateMessage;
+
     private MessageViewModel messageViewModel;
     private ImageView submitButton, emojiButton;
     private EmojIconActions emojIconActions;
@@ -50,8 +49,15 @@ private String friendId;
 
         String friendId = getIntent().getStringExtra("friendId");
         String friendName = getIntent().getStringExtra("friendName");
+        privateMessage = getIntent().getStringExtra("privateMessage");
+
+
         this.friendId = friendId;
-        setTitle(friendName);
+        if (privateMessage.equals("true")) {
+            setTitle(friendName);
+        } else {
+            setTitle(getIntent().getStringExtra("groupName"));
+        }
         setupActionBar();
 
         init(friendId);
@@ -59,10 +65,16 @@ private String friendId;
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(emojiconEditText.getText() != null) {
-                    messageViewModel.addMessage(new Message(FirebaseAuth.getInstance().getCurrentUser()
-                            .getUid(), friendId, FirebaseAuth.getInstance().getCurrentUser()
-                            .getDisplayName(), emojiconEditText.getText().toString(), false));
+                if (emojiconEditText.getText() != null) {
+                    if (privateMessage.equals("true")) {
+                        messageViewModel.addMessage(new Message(FirebaseAuth.getInstance().getCurrentUser()
+                                .getUid(), friendId, FirebaseAuth.getInstance().getCurrentUser()
+                                .getDisplayName(), emojiconEditText.getText().toString(), false));
+                    } else {
+                        messageViewModel.addGroupMessage(new Message(FirebaseAuth.getInstance().getCurrentUser()
+                                .getUid(), null, FirebaseAuth.getInstance().getCurrentUser()
+                                .getDisplayName(), emojiconEditText.getText().toString(), false));
+                    }
                     emojiconEditText.setText("");
                 }
             }
@@ -89,8 +101,12 @@ private String friendId;
         linearLayoutManager.setStackFromEnd(true);
 
         vListOfMessages.setLayoutManager(linearLayoutManager);
-        messageViewModel.setFriendId(friendId, messageAdapter);
-        messageViewModel.getDatatFromDB(listOfMessages);
+        messageViewModel.setChat(friendId, messageAdapter, getIntent().getStringExtra("groupName"));
+        if (privateMessage.equals("true")) {
+            messageViewModel.getDatatFromDB(listOfMessages);
+        } else {
+            messageViewModel.getGroupChatDataFromDB(listOfMessages);
+        }
         sendMessage(friendId);
     }
 
@@ -100,8 +116,13 @@ private String friendId;
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
-    private void sendMessage(String userId){
-        messageViewModel.sendMessage(userId, seenListener);
+
+    private void sendMessage(String userId) {
+        if (privateMessage.equals("true")) {
+            messageViewModel.sendMessage(userId, seenListener);
+        } else {
+            messageViewModel.sendGroupMessage(userId, seenListener);
+        }
     }
 
     @Override
@@ -114,17 +135,17 @@ private String friendId;
 
     }
 
-    private void currentUser(String userid){
+    private void currentUser(String userid) {
         SharedPreferences.Editor editor = getSharedPreferences("PREFS", MODE_PRIVATE).edit();
         editor.putString("current_user", userid);
         editor.apply();
     }
-private void currentNotificationsStatus(String status){
-    SharedPreferences.Editor editor = getSharedPreferences("PREFSSTATUS", MODE_PRIVATE).edit();
-    editor.putString("current_status", status);
-    editor.apply();
-}
 
+    private void currentNotificationsStatus(String status) {
+        SharedPreferences.Editor editor = getSharedPreferences("PREFSSTATUS", MODE_PRIVATE).edit();
+        editor.putString("current_status", status);
+        editor.apply();
+    }
 
 
     @Override
@@ -146,7 +167,7 @@ private void currentNotificationsStatus(String status){
     @Override
     protected void onPause() {
         super.onPause();
-        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             messageViewModel.setStatusOffline(getString(R.string.last_seen));
         }
         messageViewModel.removeSeenListener();
@@ -171,8 +192,16 @@ private void currentNotificationsStatus(String status){
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.massage_main, menu);
-        messageViewModel.getNotificationsStatus(menu.findItem(R.id.muteNotifications));
+        if (privateMessage.equals("true")) {
+            getMenuInflater().inflate(R.menu.message_main, menu);
+        } else {
+            getMenuInflater().inflate(R.menu.message_main_group, menu);
+        }
+        if (privateMessage.equals("true")) {
+            messageViewModel.getNotificationsStatus(menu.findItem(R.id.muteNotifications));
+        } else {
+            messageViewModel.getGroupNotificationsStatus(menu.findItem(R.id.muteNotifications));
+        }
         currentNotificationsStatus(menu.findItem(R.id.muteNotifications).getTitle().toString());
         return true;
     }
@@ -181,21 +210,34 @@ private void currentNotificationsStatus(String status){
     public boolean onOptionsItemSelected(MenuItem item) {
         // Inflate the menu; this adds items to the action bar if it is present.
         int id = item.getItemId();
-        switch (id){
+        switch (id) {
             case R.id.muteNotifications:
-                if(item.getTitle().equals(getString(R.string.mute_friend))) {
-                    messageViewModel.muteFriend(getString(R.string.unmute_friend));
+                if (item.getTitle().equals(getString(R.string.mute_friend))) {
+                    if (privateMessage.equals("true")) {
+                        messageViewModel.muteFriend(getString(R.string.unmute_friend));
+                    } else {
+                        messageViewModel.muteGroup(getString(R.string.unmute_friend));
+                    }
                     item.setTitle(R.string.unmute_friend);
                     currentNotificationsStatus(getString(R.string.unmute_friend));
-                }
-                else{
-                    messageViewModel.muteFriend(getString(R.string.mute_friend));
+                } else {
+                    if (privateMessage.equals("true")) {
+                        messageViewModel.muteFriend(getString(R.string.mute_friend));
+                    } else {
+                        messageViewModel.muteGroup(getString(R.string.mute_friend));
+                    }
                     currentNotificationsStatus(getString(R.string.mute_friend));
                     item.setTitle(R.string.mute_friend);
 
                 }
                 break;
-
+            case R.id.action_leave:
+                if (privateMessage.equals("true")) {
+                    messageViewModel.deleteChat();
+                } else {
+                    messageViewModel.leaveGroupChat();
+                }
+                finish();
         }
         return super.onOptionsItemSelected(item);
     }

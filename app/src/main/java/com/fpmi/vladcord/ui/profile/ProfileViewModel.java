@@ -1,29 +1,24 @@
 package com.fpmi.vladcord.ui.profile;
 
-import android.text.format.DateFormat;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
-import com.fpmi.vladcord.R;
-import com.fpmi.vladcord.ui.FireChangeInterface;
+import androidx.lifecycle.ViewModel;
+
+import com.fpmi.vladcord.ui.FirebaseChangeInterface;
 import com.fpmi.vladcord.ui.User.User;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
-
-import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ProfileViewModel implements FireChangeInterface {
+public class ProfileViewModel extends ViewModel implements FirebaseChangeInterface {
 
-    private String id;
-    private TextView profileEmail;
-    private TextView profileName;
-    private TextView profileBio;
-    private TextView bioDiscription;
-    private CircleImageView user_avatar;
-    private androidx.appcompat.widget.Toolbar toolbar;
+    private final String id;
+    private final TextView profileEmail;
+    private final TextView profileName;
+    private final TextView profileBio;
+    private final TextView bioDiscription;
+    private final CircleImageView user_avatar;
+    private final androidx.appcompat.widget.Toolbar toolbar;
     private final ProfielModel profielModel;
 
     public String getId() {
@@ -42,7 +37,7 @@ public class ProfileViewModel implements FireChangeInterface {
         profielModel = new ProfielModel(this);
     }
 
-    public void getCurUser(){
+    public void getCurUser() {
         profielModel.getCurUser();
     }
 
@@ -59,21 +54,22 @@ public class ProfileViewModel implements FireChangeInterface {
         Picasso.get()
                 .load(user.getUrlAva())
                 .into(user_avatar);
-        if(!user.getBio().equals("")) {
+        if (!user.getBio().equals("")) {
             profileBio.setText(user.getBio());
             bioDiscription.setText("Bio");
-        }
-        else{
+        } else {
             profileBio.setText("");
             profileBio.setHint("Bio");
             bioDiscription.setText("Add a few words about yourself");
         }
         toolbar.setTitle(user.getName());
     }
-    public void setStatusOnline(){
+
+    public void setStatusOnline() {
         profielModel.setStatusOnline();
     }
-    public void setStatusOffline(String lastSeen){
+
+    public void setStatusOffline(String lastSeen) {
         profielModel.setStatusOffline(lastSeen);
     }
 }

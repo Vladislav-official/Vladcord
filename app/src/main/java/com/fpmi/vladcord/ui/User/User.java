@@ -17,7 +17,7 @@ public class User {
     private String status;
     private String bio;
 
-    public User(String name, String email, String uID, String urlAva, String status, String bio){
+    public User(String name, String email, String uID, String urlAva, String status, String bio) {
         this.name = name;
         this.email = email;
         this.uID = uID;
@@ -48,7 +48,7 @@ public class User {
         return Objects.hash(email, uID);
     }
 
-    public User(){
+    public User() {
         this.urlAva = null;
         this.name = null;
         this.email = null;
@@ -64,7 +64,7 @@ public class User {
         this.urlAva = urlAva;
     }
 
-    public User(User user){
+    public User(User user) {
         this.name = user.name;
         this.email = user.email;
         this.uID = user.uID;

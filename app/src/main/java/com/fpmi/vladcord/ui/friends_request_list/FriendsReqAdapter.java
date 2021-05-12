@@ -86,7 +86,7 @@ public class FriendsReqAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         User friend = friends.get(position);
-            ((ViewHolder)holder).bind(friend);
+        ((ViewHolder) holder).bind(friend);
     }
 
     @Override

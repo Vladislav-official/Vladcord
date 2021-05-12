@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FriendModel{
+public class FriendModel {
     //Путь в базе данных к нужным нам данным
     private final DatabaseReference friendsRef;
     //Экземпляр ViewModel для оповещения об изменении
@@ -43,18 +43,16 @@ public class FriendModel{
         this.friendsViewModel = friendsViewModel;
 
     }
+
     //Создание слушателя, onDataChange будет срабатывать каждый раз, как база будет меняться
     //Тут из базы берутся id пользователй, являющихся друзьями текущему пользователю
-    public void getDataFromDB(List<User> friendList)
-    {
+    public void getDataFromDB(List<User> friendList) {
         List<String> friendsIds = new ArrayList<>();
         ValueEventListener vListener = new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
-            {
-                if(friendsIds.size() != 0)friendsIds.clear();
-                for(DataSnapshot ds : dataSnapshot.getChildren())
-                {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (friendsIds.size() != 0) friendsIds.clear();
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     Friend friend = ds.getValue(Friend.class);
                     friendsIds.add(friend.getFriendId());
                 }
@@ -69,49 +67,49 @@ public class FriendModel{
         };
         friendsRef.addValueEventListener(vListener);
     }
+
     //Тут через полученный выше список id пользователй, происходит считывание их данных
-    public void getDataFromDBS2(List<User> friendList, List<String > friendIds){
+    public void getDataFromDBS2(List<User> friendList, List<String> friendIds) {
         FirebaseDatabase.getInstance().getReference("Users").addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
-            {
-                if(friendList.size() != 0) friendList.clear();
-                for(DataSnapshot ds : dataSnapshot.getChildren())
-                {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (friendList.size() != 0) friendList.clear();
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     User user = ds.getValue(User.class);
                     assert user != null;
-                    if(friendIds.contains(user.getuID()))
-                    {
+                    if (friendIds.contains(user.getuID())) {
                         friendList.add(new User(user));
                     }
                 }
                 //Сообщаем модели, что список изменился
                 friendsViewModel.DataChanged();
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
     }
+
     //Чтение последнего написаннного сообщения из базы
-    public void getLastMessage(String friendId, FriendsAdapter.ViewHolder viewHolder)
-    {
+    public void getLastMessage(String friendId, FriendsAdapter.ViewHolder viewHolder) {
         FirebaseDatabase.getInstance().getReference("Chats").addValueEventListener(new ValueEventListener() {
 
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
-            {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Message messageR = new Message();
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     Message message = ds.getValue(Message.class);
-                    if((message.getReceiver().equals(friendId) &&
+                    if ((message.getReceiver().equals(friendId) &&
                             message.getSender().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) ||
                             (message.getReceiver().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                     && message.getSender().equals(friendId))) {
                         messageR = message;
                     }
                 }
-                viewHolder.DataChanged(messageR);
+                if (messageR.getSender() != null) {
+                    viewHolder.DataChanged(messageR);
+                }
             }
 
             @Override

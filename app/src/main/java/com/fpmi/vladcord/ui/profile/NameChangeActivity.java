@@ -38,7 +38,7 @@ public class NameChangeActivity extends AppCompatActivity {
         changeName = findViewById(R.id.image_change_name);
         editText = findViewById(R.id.edit_name);
         name = getIntent().getStringExtra("profileName");
-        if(!name.equals("")){
+        if (!name.equals("")) {
             editText.setText(name);
         }
         setSupportActionBar(toolbar);
@@ -48,18 +48,16 @@ public class NameChangeActivity extends AppCompatActivity {
         changeName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!editText.getText().equals("")){
-                    if(editText.getText().length() < 5){
+                if (!editText.getText().equals("")) {
+                    if (editText.getText().length() < 5) {
                         Toast.makeText(NameChangeActivity.this, "Too short name", Toast.LENGTH_SHORT).show();
-                    } else if (editText.getText().length() > 21){
+                    } else if (editText.getText().length() > 21) {
                         Toast.makeText(NameChangeActivity.this, "Too long name", Toast.LENGTH_SHORT).show();
-                    }
-                    else{
+                    } else {
                         profielModel.changeName(editText.getText().toString());
                         finish();
                     }
-                }
-                else{
+                } else {
                     Toast.makeText(NameChangeActivity.this, "Empty field", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -68,7 +66,7 @@ public class NameChangeActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             profielModel.setStatusOffline(getString(R.string.last_seen));
         }
         super.onPause();

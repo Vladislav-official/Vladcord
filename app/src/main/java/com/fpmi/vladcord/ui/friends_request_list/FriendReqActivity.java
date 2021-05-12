@@ -38,6 +38,7 @@ public class FriendReqActivity extends AppCompatActivity {
     private EditText friendSearch;
     private ProgressBar progressBar;
     private Toolbar toolbar;
+
     //Создание экрана
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,14 +49,13 @@ public class FriendReqActivity extends AppCompatActivity {
 
     }
 
-    private void init(Activity friendsActivity)
-    {
+    private void init(Activity friendsActivity) {
 
 
         setTitle("Friend requests");
         toolbar = (Toolbar) findViewById(R.id.toolbar_friends_requests);
 
-        vListOfFriends =  findViewById(R.id.friends_request_list);
+        vListOfFriends = findViewById(R.id.friends_request_list);
         friendSearch = findViewById(R.id.search_input);
         progressBar = findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.VISIBLE);
@@ -107,10 +107,11 @@ public class FriendReqActivity extends AppCompatActivity {
             }
         });*/
     }
+
     @Override
     protected void onPause() {
         super.onPause();
-        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             friendsViewModel.setStatusOffline(getString(R.string.last_seen));
         }
 

@@ -25,32 +25,37 @@ public class ProfielModel {
     public ProfielModel(ProfileViewModel profileViewModel) {
         this.profileViewModel = profileViewModel;
     }
-    public void getCurUser(){
+
+    public void getCurUser() {
         FirebaseDatabase.getInstance().getReference("Users").child(profileViewModel.getId())
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         User userD = snapshot.getValue(User.class);
-                        if(userD != null) {
+                        if (userD != null) {
                             profileViewModel.DataChanged(userD);
                         }
                     }
+
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
 
                     }
                 });
     }
-    public void setStatusOnline(){
+
+    public void setStatusOnline() {
         FirebaseDatabase.getInstance().getReference("Users/".concat
                 (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status").setValue("Online");
     }
-    public void setStatusOffline(String lastSeen){
+
+    public void setStatusOffline(String lastSeen) {
         FirebaseDatabase.getInstance().getReference("Users/".concat
                 (FirebaseAuth.getInstance().getCurrentUser().getUid())).child("status")
                 .setValue(lastSeen + " " + (DateFormat.format("HH:mm", (new Date().getTime())))
                         + " " + DateFormat.format("dd:MM", (new Date().getTime())));
     }
+
     public void changeName(String name) {
         FirebaseDatabase.getInstance().getReference("Users")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
@@ -60,6 +65,7 @@ public class ProfielModel {
         FirebaseAuth.getInstance().getCurrentUser().updateProfile(builder.build());
 
     }
+
     public void changeBio(String name) {
         FirebaseDatabase.getInstance().getReference("Users")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())

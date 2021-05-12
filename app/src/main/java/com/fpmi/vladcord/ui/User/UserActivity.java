@@ -94,7 +94,7 @@ public class UserActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.VISIBLE);
 
-        vListOfUsers =  findViewById(R.id.users_list);
+        vListOfUsers = findViewById(R.id.users_list);
         listOfUsers = new ArrayList<>();
         vlistOfAddFriends = new ArrayList<>();
         registerForContextMenu(search_view);
@@ -107,9 +107,9 @@ public class UserActivity extends AppCompatActivity {
         buttonTap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for(int i = 0; i < listOfAddFriends.size(); ++i){
-                    usersViewModel.addFriend(listOfAddFriends.get(i));
+                for (int i = 0; i < listOfAddFriends.size(); ++i) {
                     vlistOfAddFriends.get(i).findViewById(R.id.user_chosed).setVisibility(View.GONE);
+                    usersViewModel.addFriend(listOfAddFriends.get(i));
                 }
                 Toast.makeText(usersActivity, R.string.send_request_for_add_friend, Toast.LENGTH_LONG)
                         .show();
@@ -119,20 +119,18 @@ public class UserActivity extends AppCompatActivity {
         usersAdapter = new UsersAdapter(new RecycleUserClick() {
             @Override
             public void onClick(String friendId, View view) {
-                if(view.findViewById(R.id.user_chosed).getVisibility() == View.GONE){
+                if (view.findViewById(R.id.user_chosed).getVisibility() == View.GONE) {
                     listOfAddFriends.add(friendId);
                     vlistOfAddFriends.add(view);
                     view.findViewById(R.id.user_chosed).setVisibility(View.VISIBLE);
-                }
-                else{
+                } else {
                     listOfAddFriends.remove(friendId);
                     vlistOfAddFriends.remove(view);
                     view.findViewById(R.id.user_chosed).setVisibility(View.GONE);
                 }
-                if(listOfAddFriends.size() != 0){
+                if (listOfAddFriends.size() != 0) {
                     buttonTap.setText(R.string.invite_friends);
-                }
-                else{
+                } else {
                     buttonTap.setText(R.string.tap_to_choose_friend);
                 }
             }
@@ -140,6 +138,7 @@ public class UserActivity extends AppCompatActivity {
         vListOfUsers.setAdapter(usersAdapter);
         vListOfUsers.setLayoutManager(new LinearLayoutManager(usersActivity));
         usersViewModel = new UsersViewModel(usersAdapter, progressBar);
+
         usersViewModel.getDataFromDB(listOfUsers);
 
         setSupportActionBar(toolbar);
@@ -150,20 +149,19 @@ public class UserActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-            if(toolbar.findViewById(R.id.search_name_input).getVisibility() == View.VISIBLE){
-                toolbar.findViewById(R.id.search_name_input).setVisibility(View.GONE);
-                toolbar.findViewById(R.id.search_view).setVisibility(View.VISIBLE);
-                toolbar.findViewById(R.id.title_toolbar).setVisibility(View.VISIBLE);
-            }
-            else if(toolbar.findViewById(R.id.search_email_input).getVisibility() == View.VISIBLE){
-                toolbar.findViewById(R.id.search_email_input).setVisibility(View.GONE);
-                toolbar.findViewById(R.id.search_view).setVisibility(View.VISIBLE);
-                toolbar.findViewById(R.id.title_toolbar).setVisibility(View.VISIBLE);
-            }
-            else {
-                super.onBackPressed();
-            }
+        if (toolbar.findViewById(R.id.search_name_input).getVisibility() == View.VISIBLE) {
+            toolbar.findViewById(R.id.search_name_input).setVisibility(View.GONE);
+            toolbar.findViewById(R.id.search_view).setVisibility(View.VISIBLE);
+            toolbar.findViewById(R.id.title_toolbar).setVisibility(View.VISIBLE);
+        } else if (toolbar.findViewById(R.id.search_email_input).getVisibility() == View.VISIBLE) {
+            toolbar.findViewById(R.id.search_email_input).setVisibility(View.GONE);
+            toolbar.findViewById(R.id.search_view).setVisibility(View.VISIBLE);
+            toolbar.findViewById(R.id.title_toolbar).setVisibility(View.VISIBLE);
+        } else {
+            super.onBackPressed();
+        }
     }
+
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
@@ -204,14 +202,12 @@ public class UserActivity extends AppCompatActivity {
     }
 
 
-
-
-    private void initEventListeners(Activity usersActivity)
-    {
+    private void initEventListeners(Activity usersActivity) {
 
         userEmailSearch.addTextChangedListener(new TextWatcher() {
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
 
             @Override
             public void beforeTextChanged(CharSequence s, int start,
@@ -221,7 +217,7 @@ public class UserActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start,
                                       int before, int count) {
-                if(s.length() != 0) {
+                if (s.length() != 0) {
 
                     vListOfUsers.setAdapter(new UsersAdapter(new RecycleUserClick() {
                         @Override
@@ -231,8 +227,7 @@ public class UserActivity extends AppCompatActivity {
                         }
                     }, usersActivity.getApplicationContext(),
                             usersViewModel.sortEmailUsers(listOfUsers, s.toString())));
-                }
-                else{
+                } else {
                     vListOfUsers.setAdapter(new UsersAdapter(new RecycleUserClick() {
                         @Override
                         public void onClick(String friendId, View view) {
@@ -247,7 +242,8 @@ public class UserActivity extends AppCompatActivity {
 
         userNameSearch.addTextChangedListener(new TextWatcher() {
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
 
             @Override
             public void beforeTextChanged(CharSequence s, int start,
@@ -257,8 +253,7 @@ public class UserActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start,
                                       int before, int count) {
-                if(s.length() != 0) {
-
+                if (s.length() != 0) {
                     vListOfUsers.setAdapter(new UsersAdapter(new RecycleUserClick() {
                         @Override
                         public void onClick(String friendId, View view) {
@@ -267,8 +262,7 @@ public class UserActivity extends AppCompatActivity {
                         }
                     }, usersActivity.getApplicationContext(),
                             usersViewModel.sortNameUsers(listOfUsers, s.toString())));
-                }
-                else{
+                } else {
                     vListOfUsers.setAdapter(new UsersAdapter(new RecycleUserClick() {
                         @Override
                         public void onClick(String friendId, View view) {
@@ -283,9 +277,10 @@ public class UserActivity extends AppCompatActivity {
 
 
     }
+
     @Override
     protected void onPause() {
-        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             usersViewModel.setStatusOffline(getString(R.string.last_seen));
         }
         super.onPause();
