@@ -1,5 +1,6 @@
 package com.fpmi.vladcord;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -137,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         toolbar = findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
-        DrawerLayout drawer = findViewById(R.id.activity_main);
+         DrawerLayout drawer = findViewById(R.id.activity_main);
 
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(

@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.fpmi.vladcord">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -15,6 +16,7 @@
         android:theme="@style/Theme.Vladcord">
         <activity
             android:name=".ui.groups.GroupsActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_groups"
             android:theme="@style/Theme.Vladcord.NoActionBar">
             <meta-data
@@ -23,6 +25,7 @@
         </activity>
         <activity
             android:name=".ui.groups.GroupAddActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_group"
             android:theme="@style/Theme.Vladcord.NoActionBar">
             <meta-data
@@ -31,6 +34,7 @@
         </activity>
         <activity
             android:name=".ui.profile.BioChangeActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_email_change"
             android:theme="@style/Theme.Vladcord.NoActionBar">
             <meta-data
@@ -39,6 +43,7 @@
         </activity>
         <activity
             android:name=".ui.profile.NameChangeActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_name_change"
             android:theme="@style/Theme.Vladcord.NoActionBar">
             <meta-data
@@ -47,6 +52,7 @@
         </activity>
         <activity
             android:name=".ui.friends_request_list.FriendReqActivity"
+            android:configChanges="orientation|screenSize"
             android:theme="@style/Theme.Vladcord.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -54,6 +60,7 @@
         </activity>
         <activity
             android:name=".ui.User.UserActivity"
+            android:configChanges="orientation|screenSize"
             android:theme="@style/Theme.Vladcord.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -61,19 +68,22 @@
         </activity>
         <activity
             android:name=".ui.profile.ProfileActivity"
-            android:label=""
+            android:configChanges="orientation|screenSize"
             android:theme="@style/Theme.Vladcord.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-        <activity android:name=".ui.messages_list.MessageActivity">
+        <activity
+            android:name=".ui.messages_list.MessageActivity"
+            android:configChanges="orientation|screenSize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.messages_list.MessageActivity" />
         </activity>
         <activity
             android:name=".MainActivity"
+            android:configChanges="orientation|screenSize"
             android:theme="@style/Theme.Vladcord.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -60,17 +60,6 @@ public class FriendsFragment extends Fragment {
     }
 
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        int MESSAGE_LIST = 2;
-        if (requestCode == MESSAGE_LIST) {
-            if (resultCode == RESULT_OK) {
-            }
-        }
-    }
-
     //Инициализация Views, toolbar and others
     private void init(View root, Activity friendsActivity) {
         //Инициализация View из toolbar

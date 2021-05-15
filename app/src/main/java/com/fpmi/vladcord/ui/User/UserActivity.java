@@ -3,8 +3,11 @@ package com.fpmi.vladcord.ui.User;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -30,7 +33,6 @@ import com.fpmi.vladcord.R;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -69,16 +71,6 @@ public class UserActivity extends AppCompatActivity {
         usersViewModel.setStatusOnline();
     }
 
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        int MESSAGE_LIST = 2;
-        if (requestCode == MESSAGE_LIST) {
-            if (resultCode == RESULT_OK) {
-            }
-        }
-    }
 
     private void init(Activity usersActivity) {
 
@@ -285,6 +277,5 @@ public class UserActivity extends AppCompatActivity {
         }
         super.onPause();
     }
-
 
 }
