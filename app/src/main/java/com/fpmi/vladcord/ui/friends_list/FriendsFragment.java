@@ -14,7 +14,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -25,13 +24,9 @@ import com.fpmi.vladcord.R;
 import com.fpmi.vladcord.ui.User.User;
 import com.fpmi.vladcord.ui.messages_list.MessageActivity;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.app.Activity.RESULT_OK;
 
 public class FriendsFragment extends Fragment {
     //Список пользователей, его адаптер, а также экзэмпляр ViewModel

@@ -11,7 +11,6 @@ import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
-import com.fpmi.vladcord.MainActivity;
 import com.fpmi.vladcord.R;
 import com.fpmi.vladcord.ui.messages_list.MessageActivity;
 import com.google.firebase.auth.FirebaseAuth;

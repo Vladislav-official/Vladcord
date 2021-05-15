@@ -1,30 +1,21 @@
 package com.fpmi.vladcord.ui.friends_request_list;
 
-import androidx.appcompat.app.ActionBar;
+import android.app.Activity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ProgressBar;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.text.format.DateFormat;
-import android.view.Menu;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.ProgressBar;
-
 import com.fpmi.vladcord.R;
 import com.fpmi.vladcord.ui.User.User;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class FriendReqActivity extends AppCompatActivity {

@@ -2,24 +2,21 @@ package com.fpmi.vladcord.ui.groups;
 
 import android.app.Activity;
 import android.os.Bundle;
-
-import com.fpmi.vladcord.ui.User.RecycleUserClick;
-import com.fpmi.vladcord.ui.User.User;
-import com.fpmi.vladcord.ui.User.UsersAdapter;
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.View;
-import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.fpmi.vladcord.R;
+import com.fpmi.vladcord.ui.User.RecycleUserClick;
+import com.fpmi.vladcord.ui.User.User;
+import com.fpmi.vladcord.ui.User.UsersAdapter;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;

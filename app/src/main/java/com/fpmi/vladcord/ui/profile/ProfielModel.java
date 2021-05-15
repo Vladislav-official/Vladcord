@@ -4,7 +4,6 @@ import android.text.format.DateFormat;
 
 import androidx.annotation.NonNull;
 
-import com.fpmi.vladcord.R;
 import com.fpmi.vladcord.ui.User.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserProfileChangeRequest;

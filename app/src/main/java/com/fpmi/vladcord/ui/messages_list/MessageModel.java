@@ -1,16 +1,11 @@
 package com.fpmi.vladcord.ui.messages_list;
 
-import android.app.Activity;
 import android.text.format.DateFormat;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import com.fpmi.vladcord.R;
-import com.fpmi.vladcord.ui.friends_list.Friend;
-import com.fpmi.vladcord.ui.groups.Group;
 import com.fpmi.vladcord.ui.messages_list.Notifications.Client;
 import com.fpmi.vladcord.ui.messages_list.Notifications.Data;
 import com.fpmi.vladcord.ui.messages_list.Notifications.MyResponse;
@@ -25,9 +20,6 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;

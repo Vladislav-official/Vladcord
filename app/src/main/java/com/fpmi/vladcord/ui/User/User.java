@@ -1,11 +1,5 @@
 package com.fpmi.vladcord.ui.User;
 
-import android.net.Uri;
-
-import com.fpmi.vladcord.ui.friends_list.Friend;
-
-import java.util.HashMap;
-import java.util.List;
 import java.util.Objects;
 
 public class User {

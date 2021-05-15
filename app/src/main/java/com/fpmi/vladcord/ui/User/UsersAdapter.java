@@ -1,29 +1,20 @@
 package com.fpmi.vladcord.ui.User;
 
 import android.content.Context;
-import android.net.Uri;
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.fpmi.vladcord.R;
-import com.fpmi.vladcord.ui.friends_list.Friend;
-import com.fpmi.vladcord.ui.friends_list.RecycleFriendClick;
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import me.fahmisdk6.avatarview.AvatarView;
 
 public class UsersAdapter extends RecyclerView.Adapter {
 

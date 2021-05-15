@@ -1,17 +1,11 @@
 package com.fpmi.vladcord.ui.friends_request_list;
 
-import android.net.Uri;
 import android.text.format.DateFormat;
-import android.view.View;
-import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 
-import com.fpmi.vladcord.R;
 import com.fpmi.vladcord.ui.User.User;
 import com.fpmi.vladcord.ui.friends_list.Friend;
-import com.fpmi.vladcord.ui.friends_list.FriendsAdapter;
-import com.fpmi.vladcord.ui.friends_list.FriendsViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

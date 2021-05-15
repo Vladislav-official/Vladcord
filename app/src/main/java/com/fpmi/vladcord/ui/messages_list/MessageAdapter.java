@@ -1,19 +1,15 @@
 package com.fpmi.vladcord.ui.messages_list;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.daasuu.bl.ArrowDirection;
 import com.daasuu.bl.BubbleLayout;
 import com.fpmi.vladcord.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,7 +18,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.sql.Connection;
 import java.util.List;
 
 public class MessageAdapter extends RecyclerView.Adapter {

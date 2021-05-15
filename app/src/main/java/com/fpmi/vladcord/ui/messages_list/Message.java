@@ -1,6 +1,5 @@
 package com.fpmi.vladcord.ui.messages_list;
 
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class Message {

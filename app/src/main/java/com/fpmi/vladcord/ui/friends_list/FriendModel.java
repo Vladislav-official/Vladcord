@@ -1,17 +1,7 @@
 package com.fpmi.vladcord.ui.friends_list;
 
-import android.app.Activity;
-import android.net.Uri;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.firebase.ui.database.FirebaseListAdapter;
-import com.fpmi.vladcord.R;
 import com.fpmi.vladcord.ui.User.User;
 import com.fpmi.vladcord.ui.messages_list.Message;
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,9 +12,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class FriendModel {
     //Путь в базе данных к нужным нам данным
