@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.format.DateFormat;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -60,8 +61,10 @@ public class ProfileActivity extends AppCompatActivity {
     private StorageReference storageReference;
     public final Activity activity = getParent();
     private final int PICK_IMAGE_REQUEST = 2;
+
     private static final int SIGN_IN_CODE = 1;
-    private static final int SIGN_IN_CODEIN = 3;
+    private static final int RUSSIAN = 3;
+    private static final int ENGLISH = 4;
     private static final int STORAGE_PERMISSION_CODE = 911;
     private ProfileViewModel profileViewModel;
 
@@ -75,6 +78,7 @@ public class ProfileActivity extends AppCompatActivity {
     private LinearLayout nameChangerLayout;
     private LinearLayout emailChangerLayout;
     private LinearLayout bioChangerLayout;
+    private LinearLayout languageLayout;
     private CollapsingToolbarLayout toolBarLayout;
     private FloatingActionButton loadPhoto;
 
@@ -171,8 +175,39 @@ public class ProfileActivity extends AppCompatActivity {
                 requestStoragePermission();
             }
         });
+
+        languageLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openContextMenu(languageLayout);
+            }
+        });
+    }
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        if (v.getId() == R.id.language){
+            menu.add(Menu.NONE, RUSSIAN, Menu.NONE, R.string.russian);
+            menu.add(Menu.NONE, ENGLISH, Menu.NONE, R.string.english);
+        }
+        //menu.add(Menu.NONE, ADDING_FRIEND, Menu.NONE, R.string.ask_add_friend);
     }
 
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case RUSSIAN:
+                LocaleHelper.setLocale(ProfileActivity.this, "ru");
+                recreate();
+                return true;
+            case ENGLISH:
+                LocaleHelper.setLocale(ProfileActivity.this, "en");
+                recreate();
+                return true;
+        }
+        return super.onContextItemSelected(item);
+    }
     void init() {
         toolbar = (Toolbar) findViewById(R.id.toolbar_profile);
 
@@ -187,7 +222,8 @@ public class ProfileActivity extends AppCompatActivity {
         nameChangerLayout = findViewById(R.id.name_changer);
         emailChangerLayout = findViewById(R.id.email_changer);
         bioChangerLayout = findViewById(R.id.bio_changer);
-
+        languageLayout = findViewById(R.id.language);
+        registerForContextMenu(languageLayout);
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
 

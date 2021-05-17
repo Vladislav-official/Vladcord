@@ -2,9 +2,11 @@ package com.fpmi.vladcord;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -38,7 +40,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.annotations.Nullable;
 import com.squareup.picasso.Picasso;
 
+import org.intellij.lang.annotations.Language;
+
 import java.util.Date;
+import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -147,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationUI.setupWithNavController(navigationView, navController);
         navController.navigate(R.id.nav_friends);
         navigationView.setNavigationItemSelectedListener(this);
+
     }
 
 

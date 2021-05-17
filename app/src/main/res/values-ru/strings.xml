@@ -49,6 +49,9 @@
     <string name="create_group">Создать группу</string>
     <string name="tap_to_choose_friend">Нажмите на друзей, которых хотите добавить</string>
 
+    <string name="russian">Русский</string>
+    <string name="english">Английский</string>
+
     <string name="galochka">✔</string>
     <string name="waiting_for_network">Ожидание интернета</string>
     <string name="friends_title">Друзья</string>
