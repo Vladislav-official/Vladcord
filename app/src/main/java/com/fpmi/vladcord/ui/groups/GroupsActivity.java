@@ -1,7 +1,10 @@
 package com.fpmi.vladcord.ui.groups;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -10,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.fpmi.vladcord.R;
 import com.fpmi.vladcord.ui.friends_list.RecycleFriendClick;
@@ -27,6 +31,7 @@ public class GroupsActivity extends AppCompatActivity {
     private GroupsAdapter groupAdapter;
     //Views
     private RecyclerView vListOfGroups;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private ProgressBar progressBar;
 
 
@@ -35,7 +40,12 @@ public class GroupsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_groups);
         Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.groups_title);
+        if(hasConnection(getApplicationContext())) {
+            toolbar.setTitle(R.string.groups_title);
+        }
+        else{
+            toolbar.setTitle(R.string.waiting_for_network);
+        }
         setSupportActionBar(toolbar);
         init(this);
 
@@ -48,12 +58,29 @@ public class GroupsActivity extends AppCompatActivity {
 
         vListOfGroups = findViewById(R.id.groups_list);
         progressBar = findViewById(R.id.progress_bar);
+        swipeRefreshLayout = findViewById(R.id.swipe_container);
+
         listOfGroups = new ArrayList<>();
         //Делаем так, чтобы спинер был виден(будет скрыт при загрузке данных из базы)
         progressBar.setVisibility(View.VISIBLE);
 
         //Обработка клика на элемент из списка друзей, переопределена через интерфейс RecycleFriendClick
         //В FriendsAdapter описан метод заполнения списка
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if(!hasConnection(getApplicationContext())){
+                    getSupportActionBar().setTitle(R.string.waiting_for_network);
+                }
+                else{
+                    getSupportActionBar().setTitle(R.string.groups_title);
+                    vListOfGroups.setAdapter(groupAdapter);
+                    vListOfGroups.setLayoutManager(new LinearLayoutManager(friendsActivity));
+                    groupsViewModel = new GroupsViewModel(groupAdapter, progressBar);
+                }
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
         groupAdapter = new GroupsAdapter(new RecycleFriendClick() {
             @Override
             public void onClick(String friendId, String friendName, String groupName) {
@@ -87,5 +114,21 @@ public class GroupsActivity extends AppCompatActivity {
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             groupsViewModel.setStatusOffline(getString(R.string.last_seen));
         }
+    }
+    public static boolean hasConnection(final Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        if (wifiInfo != null && wifiInfo.isConnected()) {
+            return true;
+        }
+        wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        if (wifiInfo != null && wifiInfo.isConnected()) {
+            return true;
+        }
+        wifiInfo = cm.getActiveNetworkInfo();
+        if (wifiInfo != null && wifiInfo.isConnected()) {
+            return true;
+        }
+        return false;
     }
 }

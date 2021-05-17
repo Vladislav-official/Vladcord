@@ -2,6 +2,8 @@ package com.fpmi.vladcord.ui.User;
 
 import android.app.Activity;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,8 +22,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.fpmi.vladcord.R;
+import com.fpmi.vladcord.ui.groups.GroupsViewModel;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -39,6 +43,7 @@ public class UserActivity extends AppCompatActivity {
     private TextView title_view;
     private ImageView search_view;
     private Toolbar toolbar;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private ExtendedFloatingActionButton buttonTap;
 
     //content
@@ -47,6 +52,8 @@ public class UserActivity extends AppCompatActivity {
     private List<User> listOfUsers;
     private List<String> listOfAddFriends;
     private List<View> vlistOfAddFriends;
+    private UsersAdapter usersAdapter;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,15 +69,22 @@ public class UserActivity extends AppCompatActivity {
     private void init(Activity usersActivity) {
 
         toolbar = (Toolbar) findViewById(R.id.toolbar_users);
+        if(hasConnection(getApplicationContext())) {
+            toolbar.setTitle(R.string.invite_friends);
+        }
+        else{
+            toolbar.setTitle(R.string.waiting_for_network);
+        }
         title_view = usersActivity.findViewById(R.id.title_toolbar);
         search_view = usersActivity.findViewById(R.id.search_view);
         userNameSearch = usersActivity.findViewById(R.id.search_name_input);
         userEmailSearch = usersActivity.findViewById(R.id.search_email_input);
+        swipeRefreshLayout = findViewById(R.id.users_fragment);
         buttonTap = findViewById(R.id.button_tap);
 
         listOfAddFriends = new ArrayList<>();
 
-        ProgressBar progressBar = findViewById(R.id.progress_bar);
+         progressBar = findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.VISIBLE);
 
         vListOfUsers = findViewById(R.id.users_list);
@@ -95,7 +109,7 @@ public class UserActivity extends AppCompatActivity {
                 buttonTap.setText(R.string.tap_to_choose_friend);
             }
         });
-        UsersAdapter usersAdapter = new UsersAdapter(new RecycleUserClick() {
+         usersAdapter = new UsersAdapter(new RecycleUserClick() {
             @Override
             public void onClick(String friendId, View view) {
                 if (view.findViewById(R.id.user_chosed).getVisibility() == View.GONE) {
@@ -180,7 +194,21 @@ public class UserActivity extends AppCompatActivity {
 
 
     private void initEventListeners(Activity usersActivity) {
-
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if(!hasConnection(getApplicationContext())){
+                    title_view.setText(R.string.waiting_for_network);
+                }
+                else{
+                    title_view.setText(R.string.invite_friends);
+                    vListOfUsers.setAdapter(usersAdapter);
+                    vListOfUsers.setLayoutManager(new LinearLayoutManager(usersActivity));
+                    usersViewModel = new UsersViewModel(usersAdapter, progressBar);
+                }
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
         userEmailSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -250,7 +278,22 @@ public class UserActivity extends AppCompatActivity {
 
 
     }
-
+    public static boolean hasConnection(final Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        if (wifiInfo != null && wifiInfo.isConnected()) {
+            return true;
+        }
+        wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        if (wifiInfo != null && wifiInfo.isConnected()) {
+            return true;
+        }
+        wifiInfo = cm.getActiveNetworkInfo();
+        if (wifiInfo != null && wifiInfo.isConnected()) {
+            return true;
+        }
+        return false;
+    }
     @Override
     protected void onPause() {
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {

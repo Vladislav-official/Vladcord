@@ -1,6 +1,9 @@
 package com.fpmi.vladcord.ui.friends_request_list;
 
 import android.app.Activity;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -10,9 +13,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.fpmi.vladcord.R;
 import com.fpmi.vladcord.ui.User.User;
+import com.fpmi.vladcord.ui.friends_list.FriendsViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
@@ -26,6 +31,7 @@ public class FriendReqActivity extends AppCompatActivity {
     private FriendsReqAdapter friendsAdapter;
     //Views
     private RecyclerView vListOfFriends;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private EditText friendSearch;
     private ProgressBar progressBar;
     private Toolbar toolbar;
@@ -42,12 +48,17 @@ public class FriendReqActivity extends AppCompatActivity {
 
     private void init(Activity friendsActivity) {
 
-
-        setTitle(getString(R.string.friends_requests_title));
+        if(hasConnection(getApplicationContext())) {
+            setTitle(getString(R.string.friends_requests_title));
+        }
+        else{
+            setTitle(getString(R.string.waiting_for_network));
+        }
         toolbar = (Toolbar) findViewById(R.id.toolbar_friends_requests);
 
         vListOfFriends = findViewById(R.id.friends_request_list);
         friendSearch = findViewById(R.id.search_input);
+        swipeRefreshLayout = findViewById(R.id.swipe_container);
         progressBar = findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.VISIBLE);
         listOfFriends = new ArrayList<>();
@@ -74,7 +85,21 @@ public class FriendReqActivity extends AppCompatActivity {
 
 
     private void initEventListeners(Activity friendsActivity) {
-
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if(!hasConnection(getApplicationContext())){
+                    getSupportActionBar().setTitle(R.string.waiting_for_network);
+                }
+                else{
+                    getSupportActionBar().setTitle(R.string.friends_requests_title);
+                    vListOfFriends.setAdapter(friendsAdapter);
+                    vListOfFriends.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                    friendsViewModel = new FriendsReqViewModel(friendsAdapter, progressBar);
+                }
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
         /*friendSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -97,6 +122,23 @@ public class FriendReqActivity extends AppCompatActivity {
                 }
             }
         });*/
+    }
+
+    public static boolean hasConnection(final Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        if (wifiInfo != null && wifiInfo.isConnected()) {
+            return true;
+        }
+        wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        if (wifiInfo != null && wifiInfo.isConnected()) {
+            return true;
+        }
+        wifiInfo = cm.getActiveNetworkInfo();
+        if (wifiInfo != null && wifiInfo.isConnected()) {
+            return true;
+        }
+        return false;
     }
 
     @Override

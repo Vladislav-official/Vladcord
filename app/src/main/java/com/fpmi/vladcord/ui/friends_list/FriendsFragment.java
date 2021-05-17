@@ -124,6 +124,9 @@ public class FriendsFragment extends Fragment {
                 }
                 else{
                     titleToolbar.setText(R.string.friends_title);
+                    vListOfFriends.setAdapter(friendsAdapter);
+                    vListOfFriends.setLayoutManager(new LinearLayoutManager(getActivity()));
+                    friendsViewModel = new FriendsViewModel(friendsAdapter, progressBar);
                 }
                 swipeRefreshLayout.setRefreshing(false);
             }
