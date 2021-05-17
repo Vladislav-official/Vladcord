@@ -37,6 +37,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -87,7 +88,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
         if (requestCode == SIGN_IN_CODE) {
             if (resultCode == RESULT_OK) {
-                recreate();
+
                 setResult(RESULT_OK, null);
                 finish();
             }
@@ -314,6 +315,9 @@ public class ProfileActivity extends AppCompatActivity {
                                                 .load(uri.toString())
                                                 .into(user_avatar);
                                         FirebaseDatabase.getInstance().getReference("Users").child(id).child("urlAva").setValue(uri.toString());
+                                        UserProfileChangeRequest.Builder builder = new UserProfileChangeRequest.Builder();
+                                        builder.setPhotoUri(uri);
+                                        FirebaseAuth.getInstance().getCurrentUser().updateProfile(builder.build());
                                         //Handle whatever you're going to do with the URL here
                                     }
                                 });

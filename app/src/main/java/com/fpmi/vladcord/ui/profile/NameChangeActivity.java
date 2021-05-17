@@ -45,6 +45,7 @@ public class NameChangeActivity extends AppCompatActivity {
                         Toast.makeText(NameChangeActivity.this, "Too long name", Toast.LENGTH_SHORT).show();
                     } else {
                         profielModel.changeName(editText.getText().toString());
+                        getParent().recreate();
                         finish();
                     }
                 } else {

@@ -6,9 +6,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.friends_list.FriendsFragment">
 
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/friends_list"
+        
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:divider="@android:color/transparent"

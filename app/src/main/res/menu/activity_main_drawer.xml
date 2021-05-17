@@ -30,13 +30,6 @@
             android:id="@+id/nav_settings"
             android:icon="@mipmap/ic_action_settings"
             android:title="Settings" />
-        <item
-            android:id="@+id/nav_group_creation"
-            android:icon="@mipmap/ic_action_settings"
-            android:title="Create Group" />
-        <item
-            android:id="@+id/nav_groups"
-            android:icon="@mipmap/ic_action_settings"
-            android:title="Groups" />
+
     </group>
 </menu>

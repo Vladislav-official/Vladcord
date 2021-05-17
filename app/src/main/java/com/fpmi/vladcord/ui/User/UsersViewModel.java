@@ -1,5 +1,6 @@
 package com.fpmi.vladcord.ui.User;
 
+import android.annotation.SuppressLint;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -14,8 +15,9 @@ import java.util.List;
 public class UsersViewModel extends ViewModel implements FirebaseChangeInterface {
 
     private final UsersModel usersModel;
-    private ProgressBar progressBar;
-    private UsersAdapter adapter;
+    @SuppressLint("StaticFieldLeak")
+    private  ProgressBar progressBar;
+    private final UsersAdapter adapter;
 
     public UsersViewModel(UsersAdapter usersAdapter, ProgressBar progressBar) {
         usersModel = new UsersModel(this);
@@ -65,7 +67,7 @@ public class UsersViewModel extends ViewModel implements FirebaseChangeInterface
 
     @Override
     public void DataChanged() {
-        progressBar.setVisibility(View.GONE);
+            progressBar.setVisibility(View.GONE);
         adapter.notifyDataSetChanged();
     }
 }

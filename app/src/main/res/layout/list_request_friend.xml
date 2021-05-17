@@ -4,19 +4,28 @@
     android:orientation="horizontal">
 
 
-
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
     <de.hdodenhof.circleimageview.CircleImageView
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="50dp"
+        android:layout_width="55dp"
+        android:src="@mipmap/vladsmile"
+        android:layout_height="55dp"
         android:id="@+id/friend_avatar"
         />
 
     <TextView
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
         android:id="@+id/friend_name"
+        android:gravity="center"
+        android:layout_marginLeft="20dp"
+        android:text="Vlad Shihutin"
         android:textStyle="normal|bold"/>
 
     <TextView
@@ -34,20 +43,31 @@
         android:layout_weight="1"
         android:visibility="gone" />
     <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:text="@string/ask_add_friend"
-        android:padding="10dp" />
+        android:padding="10dp"
+        android:gravity="center"
+        android:layout_gravity="end"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
     <Button
         android:layout_width="wrap_content"
         android:id="@+id/add_friend"
         android:layout_height="wrap_content"
-        android:text="@string/add_friend"/>
+        android:layout_gravity="left"
+        android:layout_marginRight="40dp"
+        android:text="@string/add_friend_yes"/>
     <Button
         android:layout_width="wrap_content"
         android:id="@+id/not_add_friend"
         android:layout_height="wrap_content"
         android:text="@string/not_add_friend"/>
+    </LinearLayout>
+</LinearLayout>
 
 </LinearLayout>

@@ -47,9 +47,6 @@ public class UserActivity extends AppCompatActivity {
     private List<User> listOfUsers;
     private List<String> listOfAddFriends;
     private List<View> vlistOfAddFriends;
-    private UsersAdapter usersAdapter;
-    private ProgressBar progressBar;
-    private String friendClicked;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +70,7 @@ public class UserActivity extends AppCompatActivity {
 
         listOfAddFriends = new ArrayList<>();
 
-        progressBar = findViewById(R.id.progress_bar);
+        ProgressBar progressBar = findViewById(R.id.progress_bar);
         progressBar.setVisibility(View.VISIBLE);
 
         vListOfUsers = findViewById(R.id.users_list);
@@ -98,7 +95,7 @@ public class UserActivity extends AppCompatActivity {
                 buttonTap.setText(R.string.tap_to_choose_friend);
             }
         });
-        usersAdapter = new UsersAdapter(new RecycleUserClick() {
+        UsersAdapter usersAdapter = new UsersAdapter(new RecycleUserClick() {
             @Override
             public void onClick(String friendId, View view) {
                 if (view.findViewById(R.id.user_chosed).getVisibility() == View.GONE) {
@@ -148,11 +145,9 @@ public class UserActivity extends AppCompatActivity {
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        switch (v.getId()) {
-            case R.id.search_view:
+        if (v.getId() == R.id.search_view){
                 menu.add(Menu.NONE, SEARCH_BY_NAME, Menu.NONE, "Search by name");
                 menu.add(Menu.NONE, SEARCH_BY_EMAIL, Menu.NONE, "Search by email");
-                break;
         }
         //menu.add(Menu.NONE, ADDING_FRIEND, Menu.NONE, R.string.ask_add_friend);
     }
@@ -205,7 +200,6 @@ public class UserActivity extends AppCompatActivity {
                         @Override
                         public void onClick(String friendId, View view) {
                             registerForContextMenu(view);
-                            friendClicked = friendId;
                         }
                     }, usersActivity.getApplicationContext(),
                             usersViewModel.sortEmailUsers(listOfUsers, s.toString())));
@@ -214,7 +208,6 @@ public class UserActivity extends AppCompatActivity {
                         @Override
                         public void onClick(String friendId, View view) {
                             registerForContextMenu(view);
-                            friendClicked = friendId;
                         }
                     }, usersActivity.getApplicationContext(),
                             usersViewModel.sortEmailUsers(listOfUsers, "")));
@@ -240,7 +233,6 @@ public class UserActivity extends AppCompatActivity {
                         @Override
                         public void onClick(String friendId, View view) {
                             registerForContextMenu(view);
-                            friendClicked = friendId;
                         }
                     }, usersActivity.getApplicationContext(),
                             usersViewModel.sortNameUsers(listOfUsers, s.toString())));
@@ -249,7 +241,6 @@ public class UserActivity extends AppCompatActivity {
                         @Override
                         public void onClick(String friendId, View view) {
                             registerForContextMenu(view);
-                            friendClicked = friendId;
                         }
                     }, usersActivity.getApplicationContext(),
                             usersViewModel.sortNameUsers(listOfUsers, "")));

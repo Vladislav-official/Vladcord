@@ -1,6 +1,5 @@
 package com.fpmi.vladcord;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -10,7 +9,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -45,6 +43,7 @@ import java.util.Date;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
 
@@ -56,7 +55,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private AppBarConfiguration mAppBarConfiguration;
     private static final int SIGN_IN_CODE = 1;
     private static final int SIGN_IN_CODEIN = 3;
-    private NavigationView navigationView;
     private Toolbar toolbar;
     private DrawerLayout activity_main;
     private DrawerLayout drawer;
@@ -81,7 +79,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (requestCode == SIGN_IN_CODEIN) {
             if (resultCode == RESULT_OK) {
                 recreate();
-                navController.navigate(R.id.nav_friends);
             }
         }
     }
@@ -109,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         activity_main = findViewById(R.id.activity_main);
-        navigationView = findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         progressBar = navigationView.getHeaderView(0).findViewById(R.id.progress_bar);
         user_name = navigationView.getHeaderView(0).findViewById(R.id.user_main_name);
         user_email = navigationView.getHeaderView(0).findViewById(R.id.user_main_email);
@@ -138,12 +135,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         toolbar = findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
-         DrawerLayout drawer = findViewById(R.id.activity_main);
+        DrawerLayout drawer = activity_main;
 
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_friends, R.id.nav_users, R.id.nav_friends_request)
-                .setDrawerLayout(drawer)
+                .setOpenableLayout(drawer)
                 .build();
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
@@ -203,34 +200,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    public void getCurUser() {
-        FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        User userD = snapshot.getValue(User.class);
-                        if (userD != null) {
-                            user = userD;
-                            user_name.setText(user.getName());
-                            user_email.setText(user.getEmail());
-                            Picasso.get()
-                                    .load(user.getUrlAva())
-                                    .into(user_avatar);
-                            user_name.setVisibility(View.VISIBLE);
-                            user_email.setVisibility(View.VISIBLE);
-                            user_avatar.setVisibility(View.VISIBLE);
-                            progressBar.setVisibility(View.GONE);
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-
-    }
-
     public void setAndCheckCurUser() {
         FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .addValueEventListener(new ValueEventListener() {
@@ -273,35 +242,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
-        switch (id) {
-            case R.id.nav_settings:
-                if (user != null) {
-                    Intent intent = new Intent(this, ProfileActivity.class);
-                    intent.putExtra("profileName", user.getName());
-                    intent.putExtra("profileAvatar", user.getUrlAva());
-                    intent.putExtra("profileStatus", user.getStatus());
-                    intent.putExtra("profileEmail", user.getEmail());
-                    intent.putExtra("profileBio", user.getBio());
-                    intent.putExtra("profileId", user.getuID());
-                    startActivityForResult(intent, SIGN_IN_CODEIN);
-                }
-                break;
-            case R.id.nav_friends:
-                navController.navigate(R.id.nav_friends);
-                break;
-            case R.id.nav_users:
-                Intent intent1 = new Intent(this, UserActivity.class);
-                startActivity(intent1);
-                break;
-            case R.id.nav_friends_request:
-                startActivity(new Intent(MainActivity.this, FriendReqActivity.class));
-                break;
-            case R.id.nav_group_creation:
-                startActivity(new Intent(MainActivity.this, GroupAddActivity.class));
-                break;
-            case R.id.nav_groups:
-                startActivity(new Intent(MainActivity.this, GroupsActivity.class));
-                break;
+        if (id == R.id.nav_settings) {
+            if (user != null) {
+                Intent intent = new Intent(this, ProfileActivity.class);
+                intent.putExtra("profileName", user.getName());
+                intent.putExtra("profileAvatar", user.getUrlAva());
+                intent.putExtra("profileStatus", user.getStatus());
+                intent.putExtra("profileEmail", user.getEmail());
+                intent.putExtra("profileBio", user.getBio());
+                intent.putExtra("profileId", user.getuID());
+                startActivityForResult(intent, SIGN_IN_CODEIN);
+            }
+        }
+        if (id == R.id.nav_friends) {
+            navController.navigate(R.id.nav_friends);
+        }
+        if (id == R.id.nav_users) {
+            Intent intent1 = new Intent(this, UserActivity.class);
+            startActivity(intent1);
+        }
+        if (id == R.id.nav_friends_request) {
+            startActivity(new Intent(MainActivity.this, FriendReqActivity.class));
+        }
+        if (id == R.id.nav_group_creation) {
+            startActivity(new Intent(MainActivity.this, GroupAddActivity.class));
+        }
+        if (id == R.id.nav_groups) {
+            startActivity(new Intent(MainActivity.this, GroupsActivity.class));
         }
         return true;
     }

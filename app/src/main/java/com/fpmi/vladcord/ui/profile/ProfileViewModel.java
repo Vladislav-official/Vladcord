@@ -1,5 +1,6 @@
 package com.fpmi.vladcord.ui.profile;
 
+import android.annotation.SuppressLint;
 import android.widget.TextView;
 
 import androidx.lifecycle.ViewModel;

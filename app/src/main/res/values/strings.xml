@@ -18,8 +18,8 @@
     <string name="button_friends_list">Friends list</string>
     <string name="button_friends_requests_list">Friends Requests</string>
 
-    <string name="add_friend_yes">Yes</string>
-    <string name="not_add_friend">No</string>
+    <string name="add_friend_yes">Accept invite</string>
+    <string name="not_add_friend">Decline invite</string>
     <string name="ask_add_friend">Add friend?</string>
     <string name="mute_friend">Mute</string>
     <string name="unmute_friend">Unmute</string>

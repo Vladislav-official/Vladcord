@@ -3,6 +3,7 @@ package com.fpmi.vladcord.ui.messages_list;
 import android.text.format.DateFormat;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -19,11 +20,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.squareup.picasso.Picasso;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -339,6 +342,23 @@ public class MessageModel {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         textView.setText(snapshot.getValue(String.class));
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+    }
+    public void getSenderAvatar(CircleImageView imageView, String id) {
+        FirebaseDatabase.getInstance().getReference("Users").child(id).child("urlAva")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        String url = snapshot.getValue(String.class);
+                        Picasso.get()
+                                .load(url)
+                                .into(imageView);
                     }
 
                     @Override

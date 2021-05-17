@@ -10,6 +10,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class MessageViewModel extends ViewModel implements FirebaseChangeInterface {
 
     private MessageModel messageModel;
@@ -92,5 +94,8 @@ public class MessageViewModel extends ViewModel implements FirebaseChangeInterfa
 
     public void getSender(TextView textView, String id) {
         messageModel.getSender(textView, id);
+    }
+    public void getSenderAvatar(CircleImageView imageView, String id) {
+        messageModel.getSenderAvatar(imageView, id);
     }
 }

@@ -20,6 +20,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class MessageAdapter extends RecyclerView.Adapter {
 
     public static final int MSG_TYPE_LEFT = 0;
@@ -46,6 +48,7 @@ public class MessageAdapter extends RecyclerView.Adapter {
         BubbleLayout bubbleLayout;
         TextView messageDate;
         TextView txtSeen;
+        CircleImageView avatar;
         TextView messageSender;
 
 
@@ -56,12 +59,14 @@ public class MessageAdapter extends RecyclerView.Adapter {
             bubbleLayout = itemView.findViewById(R.id.bubble_layout);
             messageDate = itemView.findViewById(R.id.message_date);
             txtSeen = itemView.findViewById(R.id.txt_seen);
+            avatar = itemView.findViewById(R.id.friend_avatar);
         }
 
         void bind(Message message) {
             this.text.setText(message.getTextMessage());
             this.messageDate.setText(DateFormat.format("HH:mm", message.getMessageTime()));
             messageViewModel.getSender(messageSender, message.getSender());
+            messageViewModel.getSenderAvatar(avatar, message.getSender());
         }
     }
 
