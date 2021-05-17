@@ -45,7 +45,6 @@
                 android:layout_gravity="start"
                 android:layout_marginRight="38dp"
                 android:layout_marginLeft="5dp"
-                android:text="MyName"
                 android:textColor="#fff" />
 
             <TextView
@@ -55,7 +54,6 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
                 android:layout_gravity="end|bottom"
-                android:text="12:22"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:textColor="#404040" />
         </com.daasuu.bl.BubbleLayout>

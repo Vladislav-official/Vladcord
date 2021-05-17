@@ -35,7 +35,7 @@
         <activity
             android:name=".ui.profile.BioChangeActivity"
             android:configChanges="orientation|screenSize"
-            android:label="@string/title_activity_email_change"
+            android:label="@string/title_activity_bio_change"
             android:theme="@style/Theme.Vladcord.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

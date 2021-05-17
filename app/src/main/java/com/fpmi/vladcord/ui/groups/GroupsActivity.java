@@ -35,7 +35,7 @@ public class GroupsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_groups);
         Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("Groups");
+        toolbar.setTitle(R.string.groups_title);
         setSupportActionBar(toolbar);
         init(this);
 

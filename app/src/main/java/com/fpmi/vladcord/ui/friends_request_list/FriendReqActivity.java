@@ -43,7 +43,7 @@ public class FriendReqActivity extends AppCompatActivity {
     private void init(Activity friendsActivity) {
 
 
-        setTitle("Friend requests");
+        setTitle(getString(R.string.friends_requests_title));
         toolbar = (Toolbar) findViewById(R.id.toolbar_friends_requests);
 
         vListOfFriends = findViewById(R.id.friends_request_list);

@@ -40,16 +40,15 @@ public class NameChangeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (!editText.getText().equals("")) {
                     if (editText.getText().length() < 5) {
-                        Toast.makeText(NameChangeActivity.this, "Too short name", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(NameChangeActivity.this, getString(R.string.too_short_name), Toast.LENGTH_SHORT).show();
                     } else if (editText.getText().length() > 21) {
-                        Toast.makeText(NameChangeActivity.this, "Too long name", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(NameChangeActivity.this, getString(R.string.too_long_name), Toast.LENGTH_SHORT).show();
                     } else {
                         profielModel.changeName(editText.getText().toString());
-                        getParent().recreate();
                         finish();
                     }
                 } else {
-                    Toast.makeText(NameChangeActivity.this, "Empty field", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(NameChangeActivity.this, getString(R.string.empty_field), Toast.LENGTH_SHORT).show();
                 }
             }
         });

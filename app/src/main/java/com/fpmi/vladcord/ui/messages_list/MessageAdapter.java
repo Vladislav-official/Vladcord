@@ -91,7 +91,7 @@ public class MessageAdapter extends RecyclerView.Adapter {
             if (message.isIsseen()) {
                 ((ViewHolder) holder).txtSeen.setText(R.string.seen_message);
             } else {
-                ((ViewHolder) holder).txtSeen.setText("No connection\nDelivering...");
+                ((ViewHolder) holder).txtSeen.setText(R.string.delivering);
                 FirebaseDatabase.getInstance().getReference(".info/connected")
                         .addValueEventListener(new ValueEventListener() {
                             @Override

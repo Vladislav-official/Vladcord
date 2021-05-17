@@ -52,7 +52,6 @@
             android:layout_gravity="start"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="40dp"
-            android:text="YOYO"
 
             android:textColor="#FFFFFF" />
 
@@ -63,7 +62,6 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_gravity="end|bottom"
-            android:text="12:22"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:textColor="#404040" />
 

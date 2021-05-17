@@ -25,7 +25,6 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-
         SharedPreferences preferences1 = getSharedPreferences("PREFS", MODE_PRIVATE);
         String currentUser = preferences1.getString("current_user", "none");
         SharedPreferences preferences2 = getSharedPreferences("PREFSSTATUS", MODE_PRIVATE);
@@ -35,8 +34,6 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
         String sented = remoteMessage.getData().get("sented");
 
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        System.out.println(currentUser);
-        System.out.println(sented);
         if (firebaseUser != null && sented.equals(firebaseUser.getUid())) {
             if (!currentUser.equals(user) && currentStatus.equals(getString(R.string.mute_friend))) {
                 sendNotification(remoteMessage);

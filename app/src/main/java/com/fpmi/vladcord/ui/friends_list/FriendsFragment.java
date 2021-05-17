@@ -3,6 +3,8 @@ package com.fpmi.vladcord.ui.friends_list;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -19,6 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.fpmi.vladcord.R;
 import com.fpmi.vladcord.ui.User.User;
@@ -34,6 +37,7 @@ public class FriendsFragment extends Fragment {
     private List<User> listOfFriends;
     private FriendsAdapter friendsAdapter;
     //Views
+    private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView vListOfFriends;
     private TextView titleToolbar;
     private EditText friendSearch;
@@ -61,9 +65,16 @@ public class FriendsFragment extends Fragment {
         search_view = friendsActivity.findViewById(R.id.search_view);
         friendSearch = friendsActivity.findViewById(R.id.search_input);
         titleToolbar = friendsActivity.findViewById(R.id.title_toolbar);
-
+        if(!hasConnection(getContext())){
+            titleToolbar.setTextSize(25);
+            titleToolbar.setText(R.string.waiting_for_network);
+        }
+        else{
+            titleToolbar.setText(R.string.friends_title);
+        }
         vListOfFriends = root.findViewById(R.id.friends_list);
         progressBar = root.findViewById(R.id.progress_bar);
+        swipeRefreshLayout = root.findViewById(R.id.swipe_container);
         listOfFriends = new ArrayList<>();
         //Делаем так, чтобы спинер был виден(будет скрыт при загрузке данных из базы)
         progressBar.setVisibility(View.VISIBLE);
@@ -87,8 +98,36 @@ public class FriendsFragment extends Fragment {
         //Инициализация события изменения списка друзей, а также получения их списка
         friendsViewModel.getDataFromDB(listOfFriends);
     }
-
+    public static boolean hasConnection(final Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        if (wifiInfo != null && wifiInfo.isConnected()) {
+            return true;
+        }
+        wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        if (wifiInfo != null && wifiInfo.isConnected()) {
+            return true;
+        }
+        wifiInfo = cm.getActiveNetworkInfo();
+        if (wifiInfo != null && wifiInfo.isConnected()) {
+            return true;
+        }
+        return false;
+    }
     private void initEventListeners(View root, Activity friendsActivity) {
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if(!hasConnection(getContext())){
+                    titleToolbar.setTextSize(25);
+                    titleToolbar.setText(R.string.waiting_for_network);
+                }
+                else{
+                    titleToolbar.setText(R.string.friends_title);
+                }
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
         //обработка событий нажатия на кнопку поиска, а также обработка ввода в поле поиска текста
         search_view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,7 +140,6 @@ public class FriendsFragment extends Fragment {
                 imm.showSoftInput(friendSearch, InputMethodManager.SHOW_IMPLICIT);
             }
         });
-
         friendSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {

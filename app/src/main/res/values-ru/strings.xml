@@ -1,0 +1,96 @@
+<resources>
+    <string name="app_name">Vladcord</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Настройки</string>
+
+    <string name="delete_friend">Удалить чат</string>
+
+    <string name="button_friends_list">Список друзей</string>
+    <string name="button_friends_requests_list">Запросы в друзья</string>
+
+    <string name="add_friend_yes">Принять приглашение</string>
+    <string name="not_add_friend">Отказать</string>
+    <string name="ask_add_friend">Добавить друга?</string>
+    <string name="mute_friend">Заглушить</string>
+    <string name="unmute_friend">Включить звук</string>
+    <string name="seen_message">✔</string>
+    <string name="send_request_for_add_friend">Запрос в друзья отправлен</string>
+    <string name="send_request_for_add_friend_false">Вы уже отправляли запрос</string>
+
+
+    <string name="last_seen">Был(а) </string>
+    <string name="you_logged">Вы зарегистрированы</string>
+    <string name="you_not_logged">Вы не зарегестрированы, проверьте соединение</string>
+    <string name="choose_image">Выберите фото</string>
+    <string name="has_rights_for_reading">Права доступа разрешены.</string>
+    <string name="hasnt_rights_for_reading">В правах доступа отказано.</string>
+    <string name="delivered">Отправлено</string>
+    <string name="mute">Заглушить</string>
+
+    <string name="account_label_settings">Профиль</string>
+    <string name="tap_to_change_email">Нажмите для подтверждения почты</string>
+    <string name="change_your_name">Поменяйте свое имя</string>
+    <string name="add_edit_bio_settings">Добавьте пару слов о тебе</string>
+    <string name="settings_profile">Настройки</string>
+    <string name="language_settings">Языки</string>
+    <string name="uploading">Загрузка</string>
+    <string name="uploaded">Загружено</string>
+    <string name="failed">\"Ошибка \"</string>
+    <string name="bio">BIO</string>
+    <string name="false_sented">ошибка</string>
+
+
+    <string name="add_friend">Добавить друга</string>
+    <string name="invite_friends">Пригласить друзей</string>
+    <string name="create_group">Создать группу</string>
+    <string name="tap_to_choose_friend">Нажмите на друзей, которых хотите добавить</string>
+
+    <string name="galochka">✔</string>
+    <string name="waiting_for_network">Ожидание интернета</string>
+    <string name="friends_title">Друзья</string>
+    <string name="friends_requests_title">Запросы в друзья</string>
+    <string name="create_group_title">Создание группы</string>
+    <string name="forget_name_of_group">Пожалуйста дайте имя вашей группе</string>
+    <string name="group_with_name">\"Группа с именем \"</string>
+    <string name="created">\" создана\"</string>
+    <string name="groups_title">Группы</string>
+    <string name="delivering">Нет соединения\nОтправка...</string>
+    <string name="too_short_name">Слишком короткое имя</string>
+    <string name="too_long_name">Слишком длинное имя</string>
+    <string name="empty_field">Пустое поле</string>
+    <string name="email_verification">Подтверждение почты</string>
+    <string name="verification_sent">\"Подтверждение отправлено на почту \"</string>
+    <string name="failed_verification_sent">Ошибка подтверждения.</string>
+    <string name="already_veryfied_email">Вы уже подтвердили почту</string>
+    <string name="no_internet_connection">Нет соединения с интернетом</string>
+    <string name="download_photo_after_connecion">Фото будет загружено после восстановления связи</string>
+    <string name="add_few_words_yourself">Добавьте пару слов о тебе</string>
+    <string name="search_by_name">Поиск по имени</string>
+    <string name="search_by_email">Поиск по почте</string>
+    <string name="tap_to_choose_friend_to_invite">Нажмите на друзей, которых хотите добавить</string>
+    <string name="change_bio">Поменять информацию о себе</string>
+    <string name="change_name">Поменять имя</string>
+    <string name="friends">Друзья</string>
+    <string name="input_name_of_your_group">Введите имя вашей группы</string>
+    <string name="your_bio">Информация о вас</string>
+    <string name="you_can_add_a_few_lines_about_yourself">Вы можете добавить пару слов о себе.</string>
+    <string name="your_username">Ваше имя</string>
+    <string name="minimum_length_is_5_characters_maximum_is_21_n_people_will_be_able_to_find_you_by_this_username">Минимальное кол-во сиволов 5. Максимально 21 \n Люди смогут отыскать вас по этому имени.</string>
+    <string name="you_want_verify_your_email">Хотите подтвердить свою почту?</string>
+    <string name="sure">Да</string>
+    <string name="friend_requests">Запросы в друзья</string>
+    <string name="groups">Группы</string>
+    <string name="settings">Настройки</string>
+    <string name="sign_out">Выйти из профиля</string>
+    <string name="add_friends">Добавить друга</string>
+    <string name="leave_chat">Покинуть чат</string>
+
+    <string name="title_activity_name_change">Поменять имя</string>
+    <string name="title_activity_bio_change">Поменять инфо о себе</string>
+    <string name="title_activity_group">Создать группу</string>
+    <string name="title_activity_groups">Группы</string>
+</resources>

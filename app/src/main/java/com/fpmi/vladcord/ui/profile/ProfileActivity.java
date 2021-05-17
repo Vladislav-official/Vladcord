@@ -124,7 +124,7 @@ public class ProfileActivity extends AppCompatActivity {
                 if (!FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()) {
                     Dialog dialog = new Dialog(ProfileActivity.this);
                     dialog.setContentView(R.layout.dialog_verification_view);
-                    dialog.setTitle("Email Verification");
+                    dialog.setTitle(R.string.email_verification);
 
                     dialog.findViewById(R.id.button_verify).setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -135,11 +135,11 @@ public class ProfileActivity extends AppCompatActivity {
                                         public void onComplete(@NonNull Task task) {
                                             if (task.isSuccessful()) {
                                                 Toast.makeText(ProfileActivity.this,
-                                                        "Verification email sent to " + profileEmail.getText(),
+                                                        getString(R.string.verification_sent) + profileEmail.getText(),
                                                         Toast.LENGTH_SHORT).show();
                                             } else {
                                                 Toast.makeText(ProfileActivity.this,
-                                                        "Failed to send verification email.",
+                                                        getString(R.string.failed_verification_sent),
                                                         Toast.LENGTH_SHORT).show();
                                             }
                                         }
@@ -149,7 +149,7 @@ public class ProfileActivity extends AppCompatActivity {
                     dialog.show();
                 } else {
                     Toast.makeText(ProfileActivity.this,
-                            "You've already verify email",
+                            getString(R.string.already_veryfied_email),
                             Toast.LENGTH_SHORT).show();
                 }
             }
@@ -191,14 +191,13 @@ public class ProfileActivity extends AppCompatActivity {
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
 
-
+        setSupportActionBar(toolbar);
         id = FirebaseAuth.getInstance().getCurrentUser().getUid();
         profileViewModel = new ProfileViewModel(id, profileEmail, profileName, profileBio,
-                bioDiscription, user_avatar, toolbar);
+                bioDiscription, user_avatar, getSupportActionBar());
         profileViewModel.getCurUser();
+        getSupportActionBar().setTitle(getIntent().getStringExtra("profileName"));
 
-
-        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -227,7 +226,7 @@ public class ProfileActivity extends AppCompatActivity {
                 FirebaseAuth.getInstance().signOut();
                 startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().setIsSmartLockEnabled(false).build(), SIGN_IN_CODE);
             } else {
-                Toast.makeText(this, "No Internet Connection", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show();
             }
         }
         return super.onOptionsItemSelected(item);
@@ -342,7 +341,7 @@ public class ProfileActivity extends AppCompatActivity {
                         });
             }
         } else {
-            Toast.makeText(this, "Photo will be download when connection will be available", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.download_photo_after_connecion), Toast.LENGTH_SHORT).show();
         }
     }
 

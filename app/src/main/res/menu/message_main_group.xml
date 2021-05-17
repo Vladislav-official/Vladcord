@@ -11,13 +11,12 @@
     <item
         android:id="@+id/add_friend"
         android:orderInCategory="100"
-        android:title="Add friends"
-        app:showAsAction="never"
-        />
+        android:title="@string/add_friends"
+        app:showAsAction="never" />
     <item
         android:id="@+id/action_leave"
         android:orderInCategory="100"
-        android:title="Leave Chat"
+        android:title="@string/leave_chat"
         app:showAsAction="never" />
 
 

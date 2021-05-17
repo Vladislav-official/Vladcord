@@ -7,7 +7,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Input name of your group"
+        android:hint="@string/input_name_of_your_group"
         android:id="@+id/group_name"
         app:layout_constraintBottom_toTopOf="@id/users_list"
         />

@@ -32,7 +32,7 @@
                     android:layout_alignParentBottom="true"
                     android:gravity="center"
                     android:layout_marginLeft="10dp"
-                    android:text="Friends"
+                    android:text="@string/friends"
                     android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                     android:textColor="#F8F8F8" />
                 <EditText

@@ -1,10 +1,12 @@
 package com.fpmi.vladcord.ui.profile;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.widget.TextView;
 
 import androidx.lifecycle.ViewModel;
 
+import com.fpmi.vladcord.R;
 import com.fpmi.vladcord.ui.FirebaseChangeInterface;
 import com.fpmi.vladcord.ui.User.User;
 import com.squareup.picasso.Picasso;
@@ -19,7 +21,7 @@ public class ProfileViewModel extends ViewModel implements FirebaseChangeInterfa
     private final TextView profileBio;
     private final TextView bioDiscription;
     private final CircleImageView user_avatar;
-    private final androidx.appcompat.widget.Toolbar toolbar;
+    private final androidx.appcompat.app.ActionBar toolbar;
     private final ProfielModel profielModel;
 
     public String getId() {
@@ -27,7 +29,7 @@ public class ProfileViewModel extends ViewModel implements FirebaseChangeInterfa
     }
 
     public ProfileViewModel(String id, TextView profileEmail, TextView profileName, TextView profileBio,
-                            TextView bioDiscription, CircleImageView user_avatar, androidx.appcompat.widget.Toolbar toolbar) {
+                            TextView bioDiscription, CircleImageView user_avatar, androidx.appcompat.app.ActionBar toolbar) {
         this.id = id;
         this.profileEmail = profileEmail;
         this.profileName = profileName;
@@ -61,7 +63,7 @@ public class ProfileViewModel extends ViewModel implements FirebaseChangeInterfa
         } else {
             profileBio.setText("");
             profileBio.setHint("Bio");
-            bioDiscription.setText("Add a few words about yourself");
+            bioDiscription.setText(R.string.add_few_words_yourself);
         }
         toolbar.setTitle(user.getName());
     }

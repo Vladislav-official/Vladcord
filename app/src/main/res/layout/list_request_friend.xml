@@ -25,7 +25,6 @@
         android:id="@+id/friend_name"
         android:gravity="center"
         android:layout_marginLeft="20dp"
-        android:text="Vlad Shihutin"
         android:textStyle="normal|bold"/>
 
     <TextView

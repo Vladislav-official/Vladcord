@@ -7,7 +7,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Your bio"
+        android:hint="@string/your_bio"
         android:id="@+id/edit_bio"
         app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintTop_toTopOf="@id/edit_bio_description"
@@ -18,5 +18,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
-        android:text="You can add a few lines about yourself."/>
+        android:text="@string/you_can_add_a_few_lines_about_yourself"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

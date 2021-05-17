@@ -146,8 +146,8 @@ public class UserActivity extends AppCompatActivity {
                                     ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
         if (v.getId() == R.id.search_view){
-                menu.add(Menu.NONE, SEARCH_BY_NAME, Menu.NONE, "Search by name");
-                menu.add(Menu.NONE, SEARCH_BY_EMAIL, Menu.NONE, "Search by email");
+                menu.add(Menu.NONE, SEARCH_BY_NAME, Menu.NONE, R.string.search_by_name);
+                menu.add(Menu.NONE, SEARCH_BY_EMAIL, Menu.NONE, R.string.search_by_email);
         }
         //menu.add(Menu.NONE, ADDING_FRIEND, Menu.NONE, R.string.ask_add_friend);
     }

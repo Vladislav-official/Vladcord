@@ -29,8 +29,8 @@
                     android:layout_alignParentBottom="true"
 
                     android:gravity="center"
-                    android:text="Change Email"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                    android:text="@string/change_bio"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="#FFFFFF" />
                 <ImageView
                     android:layout_width="30dp"
@@ -39,7 +39,7 @@
                     android:src="@drawable/ic_check"
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentTop="true"
-                    android:layout_marginRight="15dp"
+                    android:layout_marginEnd="15dp"
 
                     android:layout_alignParentEnd="true"
                     />

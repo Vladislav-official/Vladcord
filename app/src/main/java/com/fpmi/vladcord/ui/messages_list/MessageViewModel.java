@@ -1,5 +1,6 @@
 package com.fpmi.vladcord.ui.messages_list;
 
+import android.app.Activity;
 import android.view.MenuItem;
 import android.widget.TextView;
 
@@ -42,12 +43,12 @@ public class MessageViewModel extends ViewModel implements FirebaseChangeInterfa
         messageModel.muteGroup(status);
     }
 
-    public void getNotificationsStatus(MenuItem item) {
-        messageModel.getNotificationStatus(item);
+    public void getNotificationsStatus(Activity activity, MenuItem item) {
+        messageModel.getNotificationStatus(activity, item);
     }
 
-    public void getGroupNotificationsStatus(MenuItem item) {
-        messageModel.getGroupNotificationStatus(item);
+    public void getGroupNotificationsStatus(Activity activity, MenuItem item) {
+        messageModel.getGroupNotificationStatus(activity, item);
     }
 
     public void sendMessage(String userId, ValueEventListener seenListener) {
@@ -95,6 +96,7 @@ public class MessageViewModel extends ViewModel implements FirebaseChangeInterfa
     public void getSender(TextView textView, String id) {
         messageModel.getSender(textView, id);
     }
+
     public void getSenderAvatar(CircleImageView imageView, String id) {
         messageModel.getSenderAvatar(imageView, id);
     }

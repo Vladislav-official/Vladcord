@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.fpmi.vladcord.R;
 import com.fpmi.vladcord.ui.User.User;
 import com.fpmi.vladcord.ui.friends_list.Friend;
 import com.google.firebase.auth.FirebaseAuth;
@@ -59,7 +60,7 @@ public class GroupAddModel {
                     FirebaseDatabase.getInstance().getReference("Users")
                             .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                             .child("Groups").child(String.valueOf(name.hashCode())).setValue(new Group(name, "Mute"));
-                    Toast.makeText(activity, "Group with name " + name + " created", Toast.LENGTH_LONG)
+                    Toast.makeText(activity, activity.getString(R.string.group_with_name) + name + activity.getString(R.string.created), Toast.LENGTH_LONG)
                             .show();
                 }
 

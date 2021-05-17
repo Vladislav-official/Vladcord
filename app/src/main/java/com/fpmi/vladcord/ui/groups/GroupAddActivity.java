@@ -43,7 +43,7 @@ public class GroupAddActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_group);
         Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("Create Group");
+        toolbar.setTitle(R.string.create_group_title);
         setSupportActionBar(toolbar);
         Activity usersActivity = this;
 
@@ -74,7 +74,7 @@ public class GroupAddActivity extends AppCompatActivity {
 
                         group_name.setText("");
                     } else {
-                        Toast.makeText(usersActivity, "Please enter name of group", Toast.LENGTH_LONG)
+                        Toast.makeText(usersActivity, getString(R.string.forget_name_of_group), Toast.LENGTH_LONG)
                                 .show();
                     }
                 }

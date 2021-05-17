@@ -1,5 +1,7 @@
 package com.fpmi.vladcord.ui.messages_list;
 
+import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.text.format.DateFormat;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -7,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.fpmi.vladcord.R;
 import com.fpmi.vladcord.ui.messages_list.Notifications.Client;
 import com.fpmi.vladcord.ui.messages_list.Notifications.Data;
 import com.fpmi.vladcord.ui.messages_list.Notifications.MyResponse;
@@ -19,7 +22,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.squareup.picasso.Picasso;
 
 import java.util.Date;
@@ -200,7 +205,7 @@ public class MessageModel {
                 .child("groupNotificationStatus").setValue(status);
     }
 
-    public void getNotificationStatus(MenuItem item) {
+    public void getNotificationStatus(Activity activity, MenuItem item) {
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users")
                 .child(currentUserId)
@@ -211,7 +216,11 @@ public class MessageModel {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String status = snapshot.getValue(String.class);
                 if (status != null) {
-                    item.setTitle(status);
+                    if (status.equals(activity.getString(R.string.mute))) {
+                        item.setTitle(activity.getString(R.string.mute));
+                    } else {
+                        item.setTitle(activity.getString(R.string.unmute_friend));
+                    }
                 }
             }
 
@@ -224,7 +233,7 @@ public class MessageModel {
         databaseReference.addValueEventListener(valueEventListener);
     }
 
-    public void getGroupNotificationStatus(MenuItem item) {
+    public void getGroupNotificationStatus(Activity activity, MenuItem item) {
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Users")
                 .child(currentUserId)
@@ -234,7 +243,11 @@ public class MessageModel {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String status = snapshot.getValue(String.class);
                 if (status != null) {
-                    item.setTitle(status);
+                    if (status.equals(activity.getString(R.string.mute))) {
+                        item.setTitle(activity.getString(R.string.mute));
+                    } else {
+                        item.setTitle(activity.getString(R.string.unmute_friend));
+                    }
                 }
 
             }
@@ -264,7 +277,7 @@ public class MessageModel {
                                 String friend = ds.getValue(String.class);
                                 if (!friend.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                                     sendNotification(friend, FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), msg);
-                                    updateToken(FirebaseInstanceId.getInstance().getToken());
+                                    updateToken(FirebaseMessaging.getInstance().getToken().getResult());
                                 }
                             }
 
@@ -350,6 +363,7 @@ public class MessageModel {
                     }
                 });
     }
+
     public void getSenderAvatar(CircleImageView imageView, String id) {
         FirebaseDatabase.getInstance().getReference("Users").child(id).child("urlAva")
                 .addValueEventListener(new ValueEventListener() {

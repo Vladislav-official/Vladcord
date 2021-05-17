@@ -69,7 +69,7 @@
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/button_tap"
-        android:text="Tap to choose friend to invite"
+        android:text="@string/tap_to_choose_friend_to_invite"
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

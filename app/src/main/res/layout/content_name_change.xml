@@ -8,7 +8,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Your Username"
+        android:hint="@string/your_username"
         android:id="@+id/edit_name"
         app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintTop_toTopOf="@id/edit_name_description"
@@ -19,6 +19,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
-        android:text="Minimum length is 5 characters. Maximum is 21
- \n People will be able to find you by this username."/>
+        android:text="@string/minimum_length_is_5_characters_maximum_is_21_n_people_will_be_able_to_find_you_by_this_username"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

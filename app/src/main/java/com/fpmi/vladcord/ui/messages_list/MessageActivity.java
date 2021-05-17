@@ -198,9 +198,9 @@ public class MessageActivity extends AppCompatActivity implements
             getMenuInflater().inflate(R.menu.message_main_group, menu);
         }
         if (privateMessage.equals("true")) {
-            messageViewModel.getNotificationsStatus(menu.findItem(R.id.muteNotifications));
+            messageViewModel.getNotificationsStatus(this, menu.findItem(R.id.muteNotifications));
         } else {
-            messageViewModel.getGroupNotificationsStatus(menu.findItem(R.id.muteNotifications));
+            messageViewModel.getGroupNotificationsStatus(this, menu.findItem(R.id.muteNotifications));
         }
         currentNotificationsStatus(menu.findItem(R.id.muteNotifications).getTitle().toString());
         return true;
