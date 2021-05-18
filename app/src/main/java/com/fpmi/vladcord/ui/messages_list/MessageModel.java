@@ -59,8 +59,13 @@ public class MessageModel {
 
     public MessageModel(String friendId, MessageViewModel messageViewModel, String groupName) {
         this.friendsRef = FirebaseDatabase.getInstance().getReference("Chats");
-        this.groupRef = FirebaseDatabase.getInstance().getReference("Groups").child(String.valueOf(groupName.hashCode()))
-                .child("Chat");
+        if(groupName != null) {
+            this.groupRef = FirebaseDatabase.getInstance().getReference("Groups").child(String.valueOf(groupName.hashCode()))
+                    .child("Chat");
+        }
+        else{
+            groupRef = null;
+        }
         this.myId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         this.friendId = friendId;
         this.groupName = groupName;
@@ -118,16 +123,7 @@ public class MessageModel {
         groupRef.addValueEventListener(vListener);
     }
 
-    public void addMessage(Message message) {
-        if (!message.getTextMessage().equals("")) {
-            notify = true;
-            FirebaseDatabase.getInstance().getReference("Chats").push().setValue(message);
-            apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
-            final String msg = message.getTextMessage();
-            sendNotification(friendId, FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), msg);
-            updateToken(FirebaseInstanceId.getInstance().getToken());
-        }
-    }
+
 
     public void deleteChat() {
         FirebaseDatabase.getInstance().getReference("Users")
@@ -148,7 +144,7 @@ public class MessageModel {
 
     }
 
-    public void sendNotification(String receiver, String username, String message) {
+    public void sendNotification(String receiver, String username, String message, String privateMessage) {
         DatabaseReference tokens = FirebaseDatabase.getInstance().getReference("Tokens");
         Query query = tokens.orderByKey().equalTo(receiver);
         query.addValueEventListener(new ValueEventListener() {
@@ -157,7 +153,7 @@ public class MessageModel {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Token token = snapshot.getValue(Token.class);
                     Data data = new Data(FirebaseAuth.getInstance().getCurrentUser().getUid(),
-                            message, username, receiver);
+                            message, username, receiver, privateMessage, groupName);
                     Sender sender = new Sender(data, token.getToken());
                     apiService.sendNotification(sender).enqueue(new Callback<MyResponse>() {
                         @Override
@@ -261,23 +257,22 @@ public class MessageModel {
         databaseReference.addValueEventListener(valueEventListener);
     }
 
-    public void addGroupMessage(Message message) {
+    public void addGroupMessage(String privateMessage, Message message) {
         if (!message.getTextMessage().equals("")) {
             notify = true;
             FirebaseDatabase.getInstance().getReference("Groups").child(String.valueOf(groupName.hashCode())).
                     child("Chat").push().setValue(message);
             apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
             final String msg = message.getTextMessage();
-
-            FirebaseDatabase.getInstance().getReference("Groups").child(groupName).child("Users")
+            FirebaseDatabase.getInstance().getReference("Groups").child(String.valueOf(groupName.hashCode())).child("Users")
                     .addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                 String friend = ds.getValue(String.class);
                                 if (!friend.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                                    sendNotification(friend, FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), msg);
-                                    updateToken(FirebaseMessaging.getInstance().getToken().getResult());
+                                    sendNotification(friend, FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), msg, privateMessage);
+                                    updateToken(FirebaseInstanceId.getInstance().getToken());
                                 }
                             }
 
@@ -287,10 +282,18 @@ public class MessageModel {
                         public void onCancelled(@NonNull DatabaseError databaseError) {
                         }
                     });
-
         }
     }
-
+    public void addMessage(String privateMessage, Message message) {
+        if (!message.getTextMessage().equals("")) {
+            notify = true;
+            FirebaseDatabase.getInstance().getReference("Chats").push().setValue(message);
+            apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
+            final String msg = message.getTextMessage();
+            sendNotification(friendId, FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), msg, privateMessage);
+            updateToken(FirebaseInstanceId.getInstance().getToken());
+        }
+    }
     public void sendMessage(String userId) {
         seenListener = friendsRef.addValueEventListener(new ValueEventListener() {
             @Override

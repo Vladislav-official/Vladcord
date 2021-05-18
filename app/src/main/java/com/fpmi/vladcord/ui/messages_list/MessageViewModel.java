@@ -67,12 +67,12 @@ public class MessageViewModel extends ViewModel implements FirebaseChangeInterfa
         messageModel.setStatusOffline(status);
     }
 
-    public void addMessage(Message message) {
-        messageModel.addMessage(message);
+    public void addMessage(String privateMessage, Message message) {
+        messageModel.addMessage(privateMessage, message);
     }
 
-    public void addGroupMessage(Message message) {
-        messageModel.addGroupMessage(message);
+    public void addGroupMessage(String privateMessage, Message message) {
+        messageModel.addGroupMessage(privateMessage, message);
     }
 
     public void removeSeenListener() {

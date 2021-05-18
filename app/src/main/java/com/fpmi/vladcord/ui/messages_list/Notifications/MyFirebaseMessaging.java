@@ -46,14 +46,30 @@ public class MyFirebaseMessaging extends FirebaseMessagingService {
     private void sendNotification(RemoteMessage remoteMessage) {
         String user = remoteMessage.getData().get("user");
         String title = remoteMessage.getData().get("title");
+        String privateMessage = remoteMessage.getData().get("privateMessage");
         String body = remoteMessage.getData().get("body");
+        String groupName = remoteMessage.getData().get("groupName");
 
         RemoteMessage.Notification notification = remoteMessage.getNotification();
         int j = Integer.parseInt(user.replaceAll("[\\D]", ""));
-        Intent intent = new Intent(this, MessageActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra("friendId", user);
-        intent.putExtra("friendName", title);
+        Intent intent;
+        if (privateMessage.equals("true")) {
+            intent = new Intent(this, MessageActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra("friendId", user);
+            intent.putExtra("friendName", title);
+            intent.putExtra("groupName", "");
+            intent.putExtra("privateMessage", privateMessage);
+        }
+        else{
+            intent = new Intent(this, MessageActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra("friendId", "");
+            intent.putExtra("friendName", "");
+            intent.putExtra("groupName", groupName);
+            intent.putExtra("privateMessage", privateMessage);
+        }
+
 
         PendingIntent contentIntent = PendingIntent.getActivity(this,
                 j, intent,

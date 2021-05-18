@@ -14,9 +14,11 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class FriendModel {
     //Путь в базе данных к нужным нам данным
     private final DatabaseReference friendsRef;
+
     //Экземпляр ViewModel для оповещения об изменении
     private final FriendsViewModel friendsViewModel;
 

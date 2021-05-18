@@ -67,11 +67,11 @@ public class MessageActivity extends AppCompatActivity implements
             public void onClick(View view) {
                 if (emojiconEditText.getText() != null) {
                     if (privateMessage.equals("true")) {
-                        messageViewModel.addMessage(new Message(FirebaseAuth.getInstance().getCurrentUser()
+                        messageViewModel.addMessage(privateMessage, new Message(FirebaseAuth.getInstance().getCurrentUser()
                                 .getUid(), friendId, FirebaseAuth.getInstance().getCurrentUser()
                                 .getDisplayName(), emojiconEditText.getText().toString(), false));
                     } else {
-                        messageViewModel.addGroupMessage(new Message(FirebaseAuth.getInstance().getCurrentUser()
+                        messageViewModel.addGroupMessage(privateMessage, new Message(FirebaseAuth.getInstance().getCurrentUser()
                                 .getUid(), null, FirebaseAuth.getInstance().getCurrentUser()
                                 .getDisplayName(), emojiconEditText.getText().toString(), false));
                     }

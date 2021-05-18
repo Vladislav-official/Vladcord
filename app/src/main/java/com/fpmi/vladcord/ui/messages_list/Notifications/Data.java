@@ -5,12 +5,16 @@ public class Data {
     private String body;
     private String title;
     private String sented;
+    private String privateMessage;
+    private String groupName;
 
-    public Data(String user, String body, String title, String sented) {
+    public Data(String user, String body, String title, String sented, String privateMessage, String groupName) {
         this.user = user;
         this.body = body;
         this.title = title;
         this.sented = sented;
+        this.privateMessage = privateMessage;
+        this.groupName = groupName;
     }
 
     public Data() {
@@ -24,6 +28,13 @@ public class Data {
         this.user = user;
     }
 
+    public String getPrivateMessage() {
+        return privateMessage;
+    }
+
+    public void setPrivateMessage(String privateMessage) {
+        this.privateMessage = privateMessage;
+    }
 
     public String getBody() {
         return body;
