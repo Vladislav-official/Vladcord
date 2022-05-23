@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.profile.NameChangeActivity"
-    android:id="@+id/activity_name_change">
+    android:id="@+id/activity_name_change"
+    android:background="@drawable/main_background_selector">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -31,7 +32,7 @@
 
                     android:gravity="center"
                     android:text="@string/change_name"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                    android:textAppearance="@style/RobotoBoldTextAppearance"
                     android:textColor="#FFFFFF" />
             <ImageView
                 android:layout_width="30dp"

@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/account_label_settings"
-            android:textColor="@color/teal_200" />
+            android:textColor="@color/black" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -98,11 +98,12 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginTop="30dp">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/teal_200"
-            android:text="@string/settings_profile"/>
+            android:text="@string/settings_profile"
+            android:textColor="@color/black" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -110,15 +111,40 @@
             android:orientation="horizontal"
             android:id="@+id/language"
             android:layout_marginTop="20dp">
+
             <ImageView
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:src="@mipmap/language_change_icon"
-                />
+                android:backgroundTint="#EAEEFA"
+                android:backgroundTintMode="src_atop"
+                android:src="@drawable/emoji_1f310"
+                android:tint="#121010" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/language_settings"
+                android:layout_gravity="center"
+                android:layout_marginLeft="30dp"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/theme"
+            android:layout_marginTop="20dp">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:foregroundTint="#FBFBFB"
+                android:src="@drawable/style_themes"
+                android:tint="#0B0A0A"
+                android:tintMode="src_in" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Change theme"
                 android:layout_gravity="center"
                 android:layout_marginLeft="30dp"
                 />

@@ -2,9 +2,11 @@ package com.fpmi.vladcord.ui.messages_list;
 
 import android.app.Activity;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.lifecycle.ViewModel;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.fpmi.vladcord.ui.FirebaseChangeInterface;
 import com.google.firebase.database.ValueEventListener;
@@ -22,7 +24,7 @@ public class MessageViewModel extends ViewModel implements FirebaseChangeInterfa
         messageModel = new MessageModel();
     }
 
-    public void setChat(String friendId, MessageAdapter adapter, String groupName) {
+    public void setChat(String friendId, MessageAdapter adapter, String groupName, RecyclerView recycleView) {
         messageModel = new MessageModel(friendId, this, groupName);
         this.adapter = adapter;
     }
@@ -91,13 +93,14 @@ public class MessageViewModel extends ViewModel implements FirebaseChangeInterfa
     @Override
     public void DataChanged() {
         adapter.notifyDataSetChanged();
+//        recycleView.scrollToPosition(adapter.messages.size());
     }
 
     public void getSender(TextView textView, String id) {
         messageModel.getSender(textView, id);
     }
 
-    public void getSenderAvatar(CircleImageView imageView, String id) {
+    public void getSenderAvatar(ImageView imageView, String id) {
         messageModel.getSenderAvatar(imageView, id);
     }
 }

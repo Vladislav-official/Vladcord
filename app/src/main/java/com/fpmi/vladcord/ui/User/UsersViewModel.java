@@ -4,6 +4,9 @@ import android.annotation.SuppressLint;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.fpmi.vladcord.ui.FirebaseChangeInterface;
@@ -12,22 +15,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 //think about ListAdapter and diffUtil and ViewHolder
-public class UsersViewModel extends ViewModel implements FirebaseChangeInterface {
+public class UsersViewModel extends ViewModel {
 
     private final UsersModel usersModel;
-    @SuppressLint("StaticFieldLeak")
-    private  ProgressBar progressBar;
-    private final UsersAdapter adapter;
 
-    public UsersViewModel(UsersAdapter usersAdapter, ProgressBar progressBar) {
+    private final MutableLiveData<Integer> progressBarLive = new MutableLiveData<>();
+    private final MutableLiveData<List<User>> listOfUsersLive = new MutableLiveData<>();
+
+
+
+    public UsersViewModel() {
         usersModel = new UsersModel(this);
-        this.progressBar = progressBar;
-        this.adapter = usersAdapter;
+        listOfUsersLive.setValue(new ArrayList<>());
+        this.progressBarLive.setValue(View.VISIBLE);
     }
 
-    public void getDataFromDB(List<User> listOfUsers) {
-        usersModel.getDataFromDB(listOfUsers);
+    public LiveData<Integer> getProgressBarLive() {
+        return progressBarLive;
     }
+
+
+    public void getDataFromDB() {
+        usersModel.getDataFromDB(listOfUsersLive);
+    }
+
+    public LiveData<List<User>> getUsers() { return listOfUsersLive; }
 
     public void setStatusOnline() {
         usersModel.setStatusOnline();
@@ -65,9 +77,4 @@ public class UsersViewModel extends ViewModel implements FirebaseChangeInterface
     }
 
 
-    @Override
-    public void DataChanged() {
-            progressBar.setVisibility(View.GONE);
-        adapter.notifyDataSetChanged();
-    }
 }

@@ -48,6 +48,7 @@ public class FriendReqActivity extends AppCompatActivity {
 
     private void init(Activity friendsActivity) {
 
+
         if(hasConnection(getApplicationContext())) {
             setTitle(getString(R.string.friends_requests_title));
         }
@@ -55,7 +56,6 @@ public class FriendReqActivity extends AppCompatActivity {
             setTitle(getString(R.string.waiting_for_network));
         }
         toolbar = (Toolbar) findViewById(R.id.toolbar_friends_requests);
-
         vListOfFriends = findViewById(R.id.friends_request_list);
         friendSearch = findViewById(R.id.search_input);
         swipeRefreshLayout = findViewById(R.id.swipe_container);

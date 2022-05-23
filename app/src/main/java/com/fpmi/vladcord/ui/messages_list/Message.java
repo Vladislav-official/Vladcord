@@ -7,19 +7,32 @@ public class Message {
     private String receiver;
     private String userName;
     private String textMessage;
+    private String type;
     private boolean isseen;
     private Date messageTime;
 
     public Message() {
     }
 
-    public Message(String sender, String receiver, String userName, String textMessage, boolean isseen) {
+    public Message(String sender, String receiver, String userName, String type, String textMessage, boolean isseen) {
         this.sender = sender;
         this.receiver = receiver;
         this.userName = userName;
         this.textMessage = textMessage;
         this.messageTime = new Date();
         this.isseen = isseen;
+        this.type = type;
+    }
+
+    public String getType() {
+        if (type == null){
+            return "textMessage";
+        }
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public boolean isIsseen() {

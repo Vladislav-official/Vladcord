@@ -18,8 +18,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelStore;
+import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -49,11 +57,12 @@ public class UserActivity extends AppCompatActivity {
     //content
     private UsersViewModel usersViewModel;
     private RecyclerView vListOfUsers;
-    private List<User> listOfUsers;
+    private LiveData<List<User>> listOfUsers;
     private List<String> listOfAddFriends;
     private List<View> vlistOfAddFriends;
     private UsersAdapter usersAdapter;
     private ProgressBar progressBar;
+    private LiveData<Integer> progressBarLiveData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,26 +78,45 @@ public class UserActivity extends AppCompatActivity {
     private void init(Activity usersActivity) {
 
         toolbar = (Toolbar) findViewById(R.id.toolbar_users);
+        toolbar.setTitleTextAppearance(this, R.style.RobotoBoldTextAppearance);
         if(hasConnection(getApplicationContext())) {
             toolbar.setTitle(R.string.invite_friends);
         }
         else{
             toolbar.setTitle(R.string.waiting_for_network);
         }
+
         title_view = usersActivity.findViewById(R.id.title_toolbar);
         search_view = usersActivity.findViewById(R.id.search_view);
         userNameSearch = usersActivity.findViewById(R.id.search_name_input);
         userEmailSearch = usersActivity.findViewById(R.id.search_email_input);
         swipeRefreshLayout = findViewById(R.id.users_fragment);
         buttonTap = findViewById(R.id.button_tap);
+        //Get ViewModel
+        usersViewModel = new ViewModelProvider(this).get(UsersViewModel.class);
 
+        listOfUsers = usersViewModel.getUsers();
+        listOfUsers.observe(this, new Observer<List<User>>() {
+            @Override
+            public void onChanged(List<User> users) {
+                    usersAdapter.notifyDataSetChanged();
+                    progressBar.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        progressBarLiveData = usersViewModel.getProgressBarLive();
+        progressBarLiveData.observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                progressBar.setVisibility(integer);
+            }
+        });
         listOfAddFriends = new ArrayList<>();
 
-         progressBar = findViewById(R.id.progress_bar);
-        progressBar.setVisibility(View.VISIBLE);
+
 
         vListOfUsers = findViewById(R.id.users_list);
-        listOfUsers = new ArrayList<>();
+
         vlistOfAddFriends = new ArrayList<>();
         registerForContextMenu(search_view);
         search_view.setOnClickListener(new View.OnClickListener() {
@@ -100,6 +128,9 @@ public class UserActivity extends AppCompatActivity {
         buttonTap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (listOfAddFriends.size() == 0) {
+                    return;
+                }
                 for (int i = 0; i < listOfAddFriends.size(); ++i) {
                     vlistOfAddFriends.get(i).findViewById(R.id.user_chosed).setVisibility(View.GONE);
                     usersViewModel.addFriend(listOfAddFriends.get(i));
@@ -127,12 +158,15 @@ public class UserActivity extends AppCompatActivity {
                     buttonTap.setText(R.string.tap_to_choose_friend);
                 }
             }
-        }, usersActivity, listOfUsers);
+        }, usersActivity, listOfUsers.getValue());
+
         vListOfUsers.setAdapter(usersAdapter);
         vListOfUsers.setLayoutManager(new LinearLayoutManager(usersActivity));
-        usersViewModel = new UsersViewModel(usersAdapter, progressBar);
 
-        usersViewModel.getDataFromDB(listOfUsers);
+        progressBar = findViewById(R.id.progress_bar);
+        progressBar.setVisibility(View.VISIBLE);
+
+        usersViewModel.getDataFromDB();
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -204,7 +238,7 @@ public class UserActivity extends AppCompatActivity {
                     title_view.setText(R.string.invite_friends);
                     vListOfUsers.setAdapter(usersAdapter);
                     vListOfUsers.setLayoutManager(new LinearLayoutManager(usersActivity));
-                    usersViewModel = new UsersViewModel(usersAdapter, progressBar);
+                    //usersViewModel = new ViewModelProvider(UserActivity.this).get(UsersViewModel.class);
                 }
                 swipeRefreshLayout.setRefreshing(false);
             }
@@ -230,7 +264,7 @@ public class UserActivity extends AppCompatActivity {
                             registerForContextMenu(view);
                         }
                     }, usersActivity.getApplicationContext(),
-                            usersViewModel.sortEmailUsers(listOfUsers, s.toString())));
+                            usersViewModel.sortEmailUsers(listOfUsers.getValue(), s.toString())));
                 } else {
                     vListOfUsers.setAdapter(new UsersAdapter(new RecycleUserClick() {
                         @Override
@@ -238,7 +272,7 @@ public class UserActivity extends AppCompatActivity {
                             registerForContextMenu(view);
                         }
                     }, usersActivity.getApplicationContext(),
-                            usersViewModel.sortEmailUsers(listOfUsers, "")));
+                            usersViewModel.sortEmailUsers(listOfUsers.getValue(), "")));
                 }
             }
         });
@@ -263,7 +297,7 @@ public class UserActivity extends AppCompatActivity {
                             registerForContextMenu(view);
                         }
                     }, usersActivity.getApplicationContext(),
-                            usersViewModel.sortNameUsers(listOfUsers, s.toString())));
+                            usersViewModel.sortNameUsers(listOfUsers.getValue(), s.toString())));
                 } else {
                     vListOfUsers.setAdapter(new UsersAdapter(new RecycleUserClick() {
                         @Override
@@ -271,7 +305,7 @@ public class UserActivity extends AppCompatActivity {
                             registerForContextMenu(view);
                         }
                     }, usersActivity.getApplicationContext(),
-                            usersViewModel.sortNameUsers(listOfUsers, "")));
+                            usersViewModel.sortNameUsers(listOfUsers.getValue(), "")));
                 }
             }
         });

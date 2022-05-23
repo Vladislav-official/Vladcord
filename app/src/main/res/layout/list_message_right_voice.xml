@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/message_sender"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:orientation="horizontal"
+            android:paddingTop="15dp">
+
+            <TextView
+                android:id="@+id/message_text_friend"
+                style="@style/Widget.AppCompat.TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="40dp"
+                android:textColor="#FFFFFF"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/friend_avatar"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:paddingRight="9dp"
+                android:src="@mipmap/vladsmile"
+                app:avvy_badge_radius="0dp"
+                android:visibility="gone"
+                app:avvy_border_thickness="0dp"
+                app:avvy_distance_to_border="0dp" />
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#98d7c2"
+                android:minWidth="100dp">
+
+
+                <ImageView
+                    android:id="@+id/audio_play"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentBottom="true"
+                    android:src="@drawable/ic_baseline_play_arrow_24" />
+
+                <ImageView
+                    android:id="@+id/audio_stop"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentBottom="true"
+                    android:src="@drawable/ic_baseline_pause_24"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|right"
+                    android:orientation="horizontal"
+                    android:paddingEnd="9dp"
+                    android:paddingBottom="3dp">
+
+                    <TextView
+                        android:id="@+id/message_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:elegantTextHeight="false"
+                        android:fontFamily="@font/lucidagrande"
+                        android:paddingRight="6dp"
+                        android:paddingBottom="2dp"
+                        android:layout_marginLeft="9dp"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                        android:textColor="#733C3C3C"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:id="@+id/txt_seen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/lucidagrande"
+                        android:paddingRight="6dp"
+                        android:text="@string/seen_message"
+                        android:textColor="#733C3C3C"
+                        android:textSize="15sp"
+                        android:textStyle="normal" />
+                </LinearLayout>
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -19,7 +19,7 @@
     <string name="ask_add_friend">Add friend?</string>
     <string name="mute_friend">Mute</string>
     <string name="unmute_friend">Unmute</string>
-    <string name="seen_message">✔</string>
+    <string name="seen_message">seen</string>
     <string name="send_request_for_add_friend">Request send to friends</string>
     <string name="send_request_for_add_friend_false">You already send a request</string>
 
@@ -30,7 +30,7 @@
     <string name="choose_image">Select an image</string>
     <string name="has_rights_for_reading">Read permissions granted.</string>
     <string name="hasnt_rights_for_reading">No read rights were granted.</string>
-    <string name="delivered">Delivered</string>
+    <string name="delivered">delivered</string>
     <string name="mute">Mute</string>
 
     <string name="account_label_settings">Account</string>
@@ -64,7 +64,7 @@
     <string name="group_with_name">\"Group with name \"</string>
     <string name="created">\" created\"</string>
     <string name="groups_title">Groups</string>
-    <string name="delivering">No connection\nDelivering...</string>
+    <string name="delivering"> </string>
     <string name="too_short_name">Too short name</string>
     <string name="too_long_name">Too long name</string>
     <string name="empty_field">Empty field</string>
@@ -98,4 +98,6 @@
     <string name="title_activity_bio_change">Change Bio</string>
     <string name="title_activity_group">Create Group</string>
     <string name="title_activity_groups">Groups</string>
+    <string name="private_call">Private call</string>
+    <string name="search">Search</string>
 </resources>

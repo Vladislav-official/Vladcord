@@ -51,10 +51,12 @@ public class GroupsAdapter extends RecyclerView.Adapter {
         TextView nameOfLastMessage;
         TextView lastMessage;
         TextView timeOfLastMessage;
+        TextView dots;
 
         ViewHolder(final View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.group_name);
+            dots = itemView.findViewById(R.id.dots);
             nameOfLastMessage = itemView.findViewById(R.id.name_of_last_message);
             lastMessage = itemView.findViewById(R.id.last_message);
             timeOfLastMessage = itemView.findViewById(R.id.time_of_last_message);
@@ -75,6 +77,9 @@ public class GroupsAdapter extends RecyclerView.Adapter {
         @Override
         public void DataChanged(Message message) {
             if (message != null) {
+                if(message.getTextMessage().length()>= 35){
+                    dots.setVisibility(View.VISIBLE);
+                }
                 lastMessageText = message.getTextMessage();
                 lastMessageTimeText = DateFormat.format("HH:mm", message.getMessageTime().getTime()).toString();
                 lastMessageSender = message.getSender();

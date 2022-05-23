@@ -32,6 +32,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FriendsFragment extends Fragment {
+
+
+    final private FriendsFragment friendsFragment = this;
     //Список пользователей, его адаптер, а также экзэмпляр ViewModel
     private FriendsViewModel friendsViewModel;
     private List<User> listOfFriends;
@@ -50,7 +53,7 @@ public class FriendsFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_friends, container, false);
         //Если пользователь не зарегестрирован, показываем пустой фрагмент
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+        if (FirebaseAuth.getInstance().getCurrentUser() != null && this.getActivity() != null) {
             init(root, this.getActivity());
             initEventListeners(root, getActivity());
         }
@@ -65,11 +68,10 @@ public class FriendsFragment extends Fragment {
         search_view = friendsActivity.findViewById(R.id.search_view);
         friendSearch = friendsActivity.findViewById(R.id.search_input);
         titleToolbar = friendsActivity.findViewById(R.id.title_toolbar);
-        if(!hasConnection(getContext())){
-            titleToolbar.setTextSize(25);
+        titleToolbar.setTextAppearance(R.style.RobotoBoldTextAppearance);
+        if (getContext() != null && hasConnection(getContext())) {
             titleToolbar.setText(R.string.waiting_for_network);
-        }
-        else{
+        } else {
             titleToolbar.setText(R.string.friends_title);
         }
         vListOfFriends = root.findViewById(R.id.friends_list);
@@ -94,39 +96,40 @@ public class FriendsFragment extends Fragment {
         }, friendsActivity, listOfFriends);
         vListOfFriends.setAdapter(friendsAdapter);
         vListOfFriends.setLayoutManager(new LinearLayoutManager(friendsActivity));
-        friendsViewModel = new FriendsViewModel(friendsAdapter, progressBar);
+        friendsViewModel = new FriendsViewModel(friendsFragment, friendsAdapter, progressBar);
         //Инициализация события изменения списка друзей, а также получения их списка
         friendsViewModel.getDataFromDB(listOfFriends);
     }
+
     public static boolean hasConnection(final Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         if (wifiInfo != null && wifiInfo.isConnected()) {
-            return true;
+            return false;
         }
         wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
         if (wifiInfo != null && wifiInfo.isConnected()) {
-            return true;
+            return false;
         }
         wifiInfo = cm.getActiveNetworkInfo();
         if (wifiInfo != null && wifiInfo.isConnected()) {
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
+
     private void initEventListeners(View root, Activity friendsActivity) {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if(!hasConnection(getContext())){
+                if (hasConnection(getContext())) {
                     titleToolbar.setTextSize(25);
                     titleToolbar.setText(R.string.waiting_for_network);
-                }
-                else{
+                } else {
                     titleToolbar.setText(R.string.friends_title);
                     vListOfFriends.setAdapter(friendsAdapter);
                     vListOfFriends.setLayoutManager(new LinearLayoutManager(getActivity()));
-                    friendsViewModel = new FriendsViewModel(friendsAdapter, progressBar);
+                    friendsViewModel = new FriendsViewModel(friendsFragment, friendsAdapter, progressBar);
                 }
                 swipeRefreshLayout.setRefreshing(false);
             }
@@ -183,5 +186,10 @@ public class FriendsFragment extends Fragment {
                 }
             }
         });
+    }
+
+
+    public void offProgressBar() {
+        progressBar.setVisibility(View.GONE);
     }
 }

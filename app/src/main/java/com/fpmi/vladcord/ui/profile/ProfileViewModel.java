@@ -2,6 +2,7 @@ package com.fpmi.vladcord.ui.profile;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.lifecycle.ViewModel;
@@ -20,7 +21,7 @@ public class ProfileViewModel extends ViewModel implements FirebaseChangeInterfa
     private final TextView profileName;
     private final TextView profileBio;
     private final TextView bioDiscription;
-    private final CircleImageView user_avatar;
+    private final ImageView user_avatar;
     private final androidx.appcompat.app.ActionBar toolbar;
     private final ProfielModel profielModel;
 
@@ -29,7 +30,7 @@ public class ProfileViewModel extends ViewModel implements FirebaseChangeInterfa
     }
 
     public ProfileViewModel(String id, TextView profileEmail, TextView profileName, TextView profileBio,
-                            TextView bioDiscription, CircleImageView user_avatar, androidx.appcompat.app.ActionBar toolbar) {
+                            TextView bioDiscription, ImageView user_avatar, androidx.appcompat.app.ActionBar toolbar) {
         this.id = id;
         this.profileEmail = profileEmail;
         this.profileName = profileName;

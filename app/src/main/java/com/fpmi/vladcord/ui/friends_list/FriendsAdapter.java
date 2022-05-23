@@ -5,6 +5,7 @@ import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -49,10 +50,11 @@ public class FriendsAdapter extends RecyclerView.Adapter {
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements FirebaseChangeInterface {
-        CircleImageView ava;
+        ImageView ava;
         CircleImageView status;
         TextView name;
         TextView email;
+        TextView dots;
         TextView id;
         TextView lastMessage;
         TextView timeLastMessage;
@@ -63,6 +65,7 @@ public class FriendsAdapter extends RecyclerView.Adapter {
             name = itemView.findViewById(R.id.friend_name);
             email = itemView.findViewById(R.id.friend_email);
             id = itemView.findViewById(R.id.friend_id);
+            dots = itemView.findViewById(R.id.dots);
             ava = itemView.findViewById(R.id.friend_avatar);
             status = itemView.findViewById(R.id.status_circle);
             lastMessage = itemView.findViewById(R.id.last_message);
@@ -93,7 +96,14 @@ public class FriendsAdapter extends RecyclerView.Adapter {
         @Override
         public void DataChanged(Message message) {
             if (message != null) {
-                lastMessageText = message.getTextMessage();
+                if (message.getType().equals("voiceMessage")) {
+                    lastMessageText = "Voice message";
+                } else {
+                    if(message.getTextMessage().length() >= 35){
+                        dots.setVisibility(View.VISIBLE);
+                    }
+                    lastMessageText = message.getTextMessage();
+                }
                 lastMessageTimeText = DateFormat.format("HH:mm", message.getMessageTime().getTime()).toString();
                 lastMessageSender = message.getSender();
                 lastMessageStatus = message.isIsseen();

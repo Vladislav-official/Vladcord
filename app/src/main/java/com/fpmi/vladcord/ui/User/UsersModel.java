@@ -1,8 +1,10 @@
 package com.fpmi.vladcord.ui.User;
 
 import android.text.format.DateFormat;
+import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.MutableLiveData;
 
 import com.fpmi.vladcord.ui.friends_list.Friend;
 import com.google.firebase.auth.FirebaseAuth;
@@ -12,35 +14,35 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 //think about ListAdapter and diffUtil and ViewHolder
 public class UsersModel {
     private final DatabaseReference userRef;
-    private final UsersViewModel usersViewModel;
 
     public UsersModel(UsersViewModel usersViewModel) {
         this.userRef = FirebaseDatabase.getInstance().getReference("Users");
-        this.usersViewModel = usersViewModel;
     }
 
-    public void getDataFromDB(List<User> listOfUsers) {
+    public void getDataFromDB(MutableLiveData<List<User>> listOfUsers) {
         ValueEventListener vListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                    if (listOfUsers.size() != 0) listOfUsers.clear();
+                    if (listOfUsers.getValue().size() != 0) listOfUsers.setValue(new ArrayList<>());
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
 
                         User user = ds.getValue(User.class);
                         if (user.getuID() != null) {
                             if (!user.getuID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-                                listOfUsers.add(new User(user));
+                                List<User> list = listOfUsers.getValue();
+                                list.add(new User(user));
+                                listOfUsers.setValue(list);
                             }
                         }
                     }
-                    usersViewModel.DataChanged();
                 }
             }
 

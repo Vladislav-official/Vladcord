@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.profile.BioChangeActivity">
+    tools:context=".ui.profile.BioChangeActivity"
+    android:background="@drawable/main_background_selector">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -27,10 +28,9 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentBottom="true"
-
                     android:gravity="center"
                     android:text="@string/change_bio"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textAppearance="@style/RobotoBoldTextAppearance"
                     android:textColor="#FFFFFF" />
                 <ImageView
                     android:layout_width="30dp"

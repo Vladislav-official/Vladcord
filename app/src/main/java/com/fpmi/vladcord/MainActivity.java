@@ -139,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         toolbar = findViewById(R.id.toolbar_main);
+        toolbar.setTitleTextAppearance(this, R.style.RobotoBoldTextAppearance);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = activity_main;
 

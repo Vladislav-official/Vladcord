@@ -18,6 +18,7 @@ import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -72,7 +73,7 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView profileName;
     private TextView profileBio;
     private TextView bioDiscription;
-    private CircleImageView user_avatar;
+    private ImageView user_avatar;
 
     private Toolbar toolbar;
     private LinearLayout nameChangerLayout;

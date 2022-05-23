@@ -1,6 +1,5 @@
 package com.fpmi.vladcord.ui.friends_list;
 
-import android.view.View;
 import android.widget.ProgressBar;
 
 import androidx.lifecycle.ViewModel;
@@ -15,13 +14,14 @@ public class FriendsViewModel extends ViewModel implements FirebaseChangeInterfa
     //экземпляр модели
     private final FriendModel friendModel;
     //View которые будут меняться при изменении данных
-    private ProgressBar progressBar;
-    private FriendsAdapter adapter;
 
-    public FriendsViewModel(FriendsAdapter adapter, ProgressBar progressBar) {
+    final private FriendsFragment friendsFragment;
+    final private FriendsAdapter adapter;
+
+    public FriendsViewModel(FriendsFragment friendsFragment, FriendsAdapter adapter, ProgressBar progressBar) {
         friendModel = new FriendModel(this);
+        this.friendsFragment = friendsFragment;
         this.adapter = adapter;
-        this.progressBar = progressBar;
     }
 
     public void getDataFromDB(List<User> listOfFriends) {
@@ -44,6 +44,6 @@ public class FriendsViewModel extends ViewModel implements FirebaseChangeInterfa
     @Override
     public void DataChanged() {
         adapter.notifyDataSetChanged();
-        progressBar.setVisibility(View.GONE);
+        friendsFragment.offProgressBar();
     }
 }
