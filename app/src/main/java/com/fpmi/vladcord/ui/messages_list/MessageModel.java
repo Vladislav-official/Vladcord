@@ -3,6 +3,7 @@ package com.fpmi.vladcord.ui.messages_list;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.media.Image;
+import android.net.Uri;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.MenuItem;
@@ -18,7 +19,11 @@ import com.fpmi.vladcord.ui.messages_list.Notifications.Data;
 import com.fpmi.vladcord.ui.messages_list.Notifications.MyResponse;
 import com.fpmi.vladcord.ui.messages_list.Notifications.Sender;
 import com.fpmi.vladcord.ui.messages_list.Notifications.Token;
+import com.fpmi.vladcord.ui.profile.ProfileActivity;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,6 +33,10 @@ import com.google.firebase.database.ValueEventListener;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.util.Date;
@@ -44,6 +53,8 @@ public class MessageModel {
     private final DatabaseReference groupRef;
     private final String friendId;
     private final String myId;
+    private FirebaseStorage storage;
+    private StorageReference storageReference;
     private final String groupName;
     private final MessageViewModel messageViewModel;
 
@@ -72,6 +83,8 @@ public class MessageModel {
         this.myId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         this.friendId = friendId;
         this.groupName = groupName;
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
         this.messageViewModel = messageViewModel;
     }
 
@@ -269,7 +282,7 @@ public class MessageModel {
         databaseReference.addValueEventListener(valueEventListener);
     }
 
-    public void addGroupMessage(String privateMessage, Message message) {
+    public void addGroupMessage(String privateMessage, Message message, Uri attachedPic) {
         if (!message.getTextMessage().equals("")) {
             notify = true;
             String chatId = FirebaseDatabase.getInstance().getReference("Groups").child(String.valueOf(groupName.hashCode())).
@@ -299,8 +312,43 @@ public class MessageModel {
                     });
         }
     }
-    public void addMessage(String privateMessage, Message message) {
-        if (!message.getTextMessage().equals("")) {
+    public void addMessage(String privateMessage, Message message, Uri attachedPic) {
+        if (attachedPic != null) {
+            String chatId = FirebaseDatabase.getInstance().getReference("Chats").push().getKey();
+            message.setChatId(chatId);
+            StorageReference ref = storageReference.child("Images").child("Chats").child(message.getChatId());
+            ref.putFile(attachedPic)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                            storageReference.child("Images").child("Chats").child(message.getChatId()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    message.setAttachedPic(uri.toString());
+                                    notify = true;
+                                    FirebaseDatabase.getInstance().getReference("Chats").child(message.getChatId()).setValue(message);
+                                    apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
+                                    final String msg = message.getTextMessage();
+                                    sendNotification(message.getType(), friendId, FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), msg, privateMessage);
+                                    updateToken(FirebaseInstanceId.getInstance().getToken());
+                                    //Handle whatever you're going to do with the URL here
+                                }
+                            });
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                        }
+                    });
+        }
+        else if (!message.getTextMessage().equals("")) {
             notify = true;
             String chatId = FirebaseDatabase.getInstance().getReference("Chats").push().getKey();
             message.setChatId(chatId);
@@ -316,6 +364,12 @@ public class MessageModel {
         FirebaseDatabase.getInstance().getReference("Chats").child(chatId).child("textMessage")
                 .setValue(privateMessage);
     }
+
+    public void editGroupMessage(String privateMessage, String chatId) {
+        FirebaseDatabase.getInstance().getReference("Groups").child(String.valueOf(groupName.hashCode())).
+                child("Chat").child(chatId).child("textMessage").setValue(privateMessage);
+    }
+
     public void sendMessage(String userId) {
         seenListener = friendsRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -360,6 +414,20 @@ public class MessageModel {
 
     public void deleteMessage(Message message) {
         Query deleteQuery = friendsRef.child(message.getChatId());
+        deleteQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                deleteQuery.getRef().removeValue();
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public void deleteGroupMessage(Message message) {
+        Query deleteQuery = groupRef.child(message.getChatId());
         deleteQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

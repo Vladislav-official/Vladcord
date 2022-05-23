@@ -38,9 +38,19 @@
                 app:avvy_distance_to_border="0dp"
                 android:paddingRight="9dp"/>
             <com.google.android.material.card.MaterialCardView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:cardBackgroundColor="#98d7c2"
                 android:layout_marginTop="15dp">
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:scaleType="fitXY"
+                    android:id="@+id/attached_photo"
+                    android:layout_height="wrap_content"/>
             <com.daasuu.bl.BubbleLayout
                 android:id="@+id/bubble_layout"
                 android:layout_width="wrap_content"
@@ -107,6 +117,7 @@
                 </LinearLayout>
 
             </com.daasuu.bl.BubbleLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
         </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
 

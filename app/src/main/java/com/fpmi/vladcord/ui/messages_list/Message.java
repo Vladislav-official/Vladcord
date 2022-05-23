@@ -1,9 +1,21 @@
 package com.fpmi.vladcord.ui.messages_list;
 
+import android.net.Uri;
+
 import java.util.Date;
 
 public class Message {
     private String chatId;
+    private String attachedPic;
+
+    public String getAttachedPic() {
+        return attachedPic;
+    }
+
+    public void setAttachedPic(String attachedPic) {
+        this.attachedPic = attachedPic;
+    }
+
     private String sender;
     private String receiver;
     private String userName;
@@ -16,7 +28,7 @@ public class Message {
     }
 
     public Message(String sender, String receiver, String userName, String type, String textMessage,
-                   boolean isseen, String chatId) {
+                   boolean isseen, String chatId, String attachedPic) {
         this.sender = sender;
         this.receiver = receiver;
         this.userName = userName;
@@ -25,6 +37,7 @@ public class Message {
         this.isseen = isseen;
         this.type = type;
         this.chatId = chatId;
+        this.attachedPic = attachedPic;
     }
 
     public String getType() {

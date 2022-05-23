@@ -1,10 +1,13 @@
 package com.fpmi.vladcord.ui.messages_list;
 
 import android.app.Activity;
+import android.net.Uri;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,6 +23,8 @@ public class MessageViewModel extends ViewModel implements FirebaseChangeInterfa
     private MessageModel messageModel;
     private MessageAdapter adapter;
     private RecyclerView recyclerView;
+    private MutableLiveData<Uri> _attachedUri;
+    LiveData<Uri> attachedUri = _attachedUri;
 
     public MessageViewModel() {
         messageModel = new MessageModel();
@@ -71,16 +76,20 @@ public class MessageViewModel extends ViewModel implements FirebaseChangeInterfa
         messageModel.setStatusOffline(status);
     }
 
-    public void addMessage(String privateMessage, Message message) {
-        messageModel.addMessage(privateMessage, message);
+    public void addMessage(String privateMessage, Message message, Uri attachedPic) {
+        messageModel.addMessage(privateMessage, message, attachedPic);
     }
 
     public void editMessage(String privateMessage, String chatId) {
         messageModel.editMessage(privateMessage, chatId);
     }
 
-    public void addGroupMessage(String privateMessage, Message message) {
-        messageModel.addGroupMessage(privateMessage, message);
+    public void editGroupMessage(String privateMessage, String chatId) {
+        messageModel.editGroupMessage(privateMessage, chatId);
+    }
+
+    public void addGroupMessage(String privateMessage, Message message, Uri attachedPic) {
+        messageModel.addGroupMessage(privateMessage, message, attachedPic);
     }
 
     public void removeSeenListener() {
@@ -89,6 +98,10 @@ public class MessageViewModel extends ViewModel implements FirebaseChangeInterfa
 
     public void deleteMessage(Message message) {
         messageModel.deleteMessage(message);
+    }
+
+    public void deleteGroupMessage(Message message) {
+        messageModel.deleteGroupMessage(message);
     }
 
     public void deleteChat() {

@@ -6,9 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.daasuu.bl.BubbleLayout;
@@ -23,6 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -69,6 +72,7 @@ public class MessageAdapter extends RecyclerView.Adapter {
         BubbleLayout bubbleLayout;
         TextView messageDate;
         TextView txtSeen;
+        ImageView attachedPic;
         ImageView avatar;
         TextView messageSender;
         OnMyMessageClickListener onMyMessageClickListener;
@@ -82,6 +86,7 @@ public class MessageAdapter extends RecyclerView.Adapter {
             messageDate = itemView.findViewById(R.id.message_date);
             txtSeen = itemView.findViewById(R.id.txt_seen);
             avatar = itemView.findViewById(R.id.friend_avatar);
+            attachedPic = itemView.findViewById(R.id.attached_photo);
 
             this.onMyMessageClickListener = onMyMessageClickListener;
             itemView.setOnClickListener(this);
@@ -92,6 +97,17 @@ public class MessageAdapter extends RecyclerView.Adapter {
             this.messageDate.setText(DateFormat.format("HH:mm", message.getMessageTime()));
             messageViewModel.getSender(messageSender, message.getSender());
             messageViewModel.getSenderAvatar(avatar, message.getSender());
+            if (message.getAttachedPic() != null) {
+                Picasso.get()
+                        .load(message.getAttachedPic())
+                        .resize(400, 400)
+                        .centerCrop()
+                        .into(attachedPic);
+
+            }
+            else {
+                Picasso.get().cancelRequest(attachedPic);
+            }
         }
 
         @Override
@@ -108,6 +124,7 @@ public class MessageAdapter extends RecyclerView.Adapter {
         TextView txtSeen;
         ImageView avatar;
         TextView messageSender;
+        ImageView attachedPic;
 
 
         ViewHolderVoice(final View itemView) {
@@ -120,6 +137,7 @@ public class MessageAdapter extends RecyclerView.Adapter {
             txtSeen = itemView.findViewById(R.id.txt_seen);
             text = itemView.findViewById(R.id.message_text_friend);
             avatar = itemView.findViewById(R.id.friend_avatar);
+            attachedPic = itemView.findViewById(R.id.attached_photo);
         }
 
         void bind(Message message) {
@@ -127,6 +145,16 @@ public class MessageAdapter extends RecyclerView.Adapter {
             this.messageDate.setText(DateFormat.format("HH:mm", message.getMessageTime()));
             messageViewModel.getSender(messageSender, message.getSender());
             messageViewModel.getSenderAvatar(avatar, message.getSender());
+            if (message.getAttachedPic() != null) {
+                Picasso.get()
+                        .load(message.getAttachedPic())
+                        .resize(400, 400)
+                        .centerCrop()
+                        .into(attachedPic);
+            }
+            else {
+                Picasso.get().cancelRequest(attachedPic);
+            }
             voiceOn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

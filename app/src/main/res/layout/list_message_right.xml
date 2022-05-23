@@ -5,16 +5,9 @@
     android:layout_height="wrap_content"
     android:paddingLeft="100dp">
 
-    <RadioButton
-        android:id="@+id/radio"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
-
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/radio">
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/message_sender"
@@ -25,7 +18,7 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
             android:layout_marginRight="10dp"
             android:orientation="horizontal">
@@ -42,12 +35,19 @@
                 app:avvy_distance_to_border="0dp" />
 
             <com.google.android.material.card.MaterialCardView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#98d7c2"
                 app:cardBackgroundColor="#98d7c2"
                 android:layout_marginTop="15dp">
-
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:scaleType="fitXY"
+                    android:id="@+id/attached_photo"
+                    android:layout_height="wrap_content"/>
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -112,6 +112,7 @@
 
 
                 </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
 

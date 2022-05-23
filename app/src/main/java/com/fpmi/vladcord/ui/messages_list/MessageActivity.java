@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -42,6 +43,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -56,21 +58,26 @@ import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
 public class MessageActivity extends AppCompatActivity implements
         Application.ActivityLifecycleCallbacks, MessageAdapter.OnMyMessageClickListener {
     private String friendId;
+    public static final int PICK_IMAGE = 1;
     private boolean check = false;
     private String editing = null;
+    private boolean editingGroup = false;
     private String privateMessage;
     private final AppVoiceRecorder appVoiceRecorder = new AppVoiceRecorder();
     private MessageViewModel messageViewModel;
     private ImageView submitButton, emojiButton;
     private ImageView micButton;
+    private ImageView selectedPhoto;
     private EmojIconActions emojIconActions;
     private EmojiconEditText emojiconEditText;
+    private ImageView galleryChooser;
     private List<Message> listOfMessages;
     private MessageAdapter messageAdapter;
     private RecyclerView vListOfMessages;
     private FirebaseDatabase firebaseDatabase;
     private String key;
     private StorageReference ref;
+    private Uri selectedPhotoUri;
 
     private FirebaseStorage storage;
     private StorageReference storageReference;
@@ -108,8 +115,14 @@ public class MessageActivity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
                 if (editing != null) {
-                    messageViewModel.editMessage(emojiconEditText.getText().toString(), editing);
+                    if (editingGroup) {
+                        messageViewModel.editGroupMessage(emojiconEditText.getText().toString(), editing);
+                    }
+                    else {
+                        messageViewModel.editMessage(emojiconEditText.getText().toString(), editing);
+                    }
                     editing = null;
+                    editingGroup = false;
                     submitButton.setImageDrawable(getDrawable(R.drawable.ic_menu_send));
                     emojiconEditText.setText("");
                     return;
@@ -118,13 +131,17 @@ public class MessageActivity extends AppCompatActivity implements
                     if (privateMessage.equals("true")) {
                         messageViewModel.addMessage(privateMessage, new Message(FirebaseAuth.getInstance().getCurrentUser()
                                 .getUid(), friendId, FirebaseAuth.getInstance().getCurrentUser()
-                                .getDisplayName(), "textMessage", emojiconEditText.getText().toString(), false, null));
+                                .getDisplayName(), "textMessage",
+                                emojiconEditText.getText().toString(), false, null, null), selectedPhotoUri);
                     } else {
                         messageViewModel.addGroupMessage(privateMessage, new Message(FirebaseAuth.getInstance().getCurrentUser()
                                 .getUid(), null, FirebaseAuth.getInstance().getCurrentUser()
-                                .getDisplayName(), "textMessage", emojiconEditText.getText().toString(), false, null));
+                                .getDisplayName(), "textMessage",
+                                emojiconEditText.getText().toString(), false, null, null), selectedPhotoUri);
                     }
                     emojiconEditText.setText("");
+                    selectedPhoto.setImageResource(0);
+                    selectedPhotoUri = null;
                 }
 
             }
@@ -153,11 +170,13 @@ public class MessageActivity extends AppCompatActivity implements
                     if (privateMessage.equals("true")) {
                         messageViewModel.addMessage(privateMessage, new Message(FirebaseAuth.getInstance().getCurrentUser()
                                 .getUid(), friendId, FirebaseAuth.getInstance().getCurrentUser()
-                                .getDisplayName(), "voiceMessage", key, false, null));
+                                .getDisplayName(), "voiceMessage", key,
+                                false, null, null), selectedPhotoUri);
                     } else {
                         messageViewModel.addGroupMessage(privateMessage, new Message(FirebaseAuth.getInstance().getCurrentUser()
                                 .getUid(), null, FirebaseAuth.getInstance().getCurrentUser()
-                                .getDisplayName(), "voiceMessage", key, false, null));
+                                .getDisplayName(), "voiceMessage", key,
+                                false, null, null), selectedPhotoUri);
                     }
                     check = false;
                     key = firebaseDatabase.getReference().push().getKey();
@@ -165,8 +184,30 @@ public class MessageActivity extends AppCompatActivity implements
                 }
             }
         });
+        galleryChooser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
+            }
+        });
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE) {
+            Picasso.get()
+                    .load(data.getData().toString())
+                    .resize(400, 400)
+                    .centerCrop()
+                    .into(selectedPhoto);
+            selectedPhotoUri = data.getData();
+        }
+    }
 
     private void init(String friendId) {
         messageViewModel = new MessageViewModel();
@@ -174,8 +215,11 @@ public class MessageActivity extends AppCompatActivity implements
         getDir("voices", MODE_PRIVATE);
         submitButton = findViewById(R.id.submit_button);
         emojiconEditText = findViewById(R.id.message_text);
+        galleryChooser = findViewById(R.id.gallery_chooser);
         emojiButton = findViewById(R.id.emoji_button);
         micButton = findViewById(R.id.mic_button);
+        selectedPhoto = findViewById(R.id.selected_photos);
+
         emojIconActions = new EmojIconActions(getApplicationContext(), findViewById(R.id.private_message),
                 emojiconEditText, emojiButton);
         emojIconActions.ShowEmojIcon();
@@ -387,9 +431,17 @@ public class MessageActivity extends AppCompatActivity implements
                             emojiconEditText.setText(message.getTextMessage());
                             editing = message.getChatId();
                             submitButton.setImageDrawable(getDrawable(R.drawable.ic_baseline_edit_24));
+                            if (message.getReceiver() == null) {
+                                editingGroup = true;
+                            }
                             break;
                         case R.id.action_delete_message:
-                            messageViewModel.deleteMessage(message);
+                            if (message.getReceiver() == null) {
+                                messageViewModel.deleteGroupMessage(message);
+                            }
+                            else {
+                                messageViewModel.deleteMessage(message);
+                            }
                             break;
                     }
                     return true;
