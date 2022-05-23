@@ -2,4 +2,7 @@
 <resources>
     <string name="private_call">Private call</string>
     <string name="search">Search</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="change_theme">Change theme</string>
 </resources>

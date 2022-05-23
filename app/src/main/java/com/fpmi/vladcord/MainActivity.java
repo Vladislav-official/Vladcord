@@ -1,7 +1,10 @@
 package com.fpmi.vladcord;
 
 import android.app.Activity;
+import android.app.UiModeManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,11 +12,13 @@ import android.text.format.DateFormat;
 import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -64,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout activity_main;
     private DrawerLayout drawer;
     private User user = null;
+    private ImageButton changeTheme;
 
     static boolean calledAlready = false;
 
@@ -116,6 +122,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         user_name = navigationView.getHeaderView(0).findViewById(R.id.user_main_name);
         user_email = navigationView.getHeaderView(0).findViewById(R.id.user_main_email);
         user_avatar = navigationView.getHeaderView(0).findViewById(R.id.user_main_avatar);
+        changeTheme = navigationView.getHeaderView(0).findViewById(R.id.change_theme);
+        changeTheme.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                } else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                }
+            }
+        });
 
         Activity mainActivity = this;
 

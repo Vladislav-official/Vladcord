@@ -3,6 +3,7 @@ package com.fpmi.vladcord.ui.messages_list;
 import java.util.Date;
 
 public class Message {
+    private String chatId;
     private String sender;
     private String receiver;
     private String userName;
@@ -14,7 +15,8 @@ public class Message {
     public Message() {
     }
 
-    public Message(String sender, String receiver, String userName, String type, String textMessage, boolean isseen) {
+    public Message(String sender, String receiver, String userName, String type, String textMessage,
+                   boolean isseen, String chatId) {
         this.sender = sender;
         this.receiver = receiver;
         this.userName = userName;
@@ -22,18 +24,25 @@ public class Message {
         this.messageTime = new Date();
         this.isseen = isseen;
         this.type = type;
+        this.chatId = chatId;
     }
 
     public String getType() {
-        if (type == null){
+        if (type == null) {
             return "textMessage";
         }
         return type;
     }
 
+    public void setChatId(String chatId) {
+        this.chatId = chatId;
+    }
+
     public void setType(String type) {
         this.type = type;
     }
+
+    public String getChatId() { return chatId; }
 
     public boolean isIsseen() {
         return isseen;

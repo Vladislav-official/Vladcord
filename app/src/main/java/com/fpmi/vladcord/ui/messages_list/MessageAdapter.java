@@ -49,9 +49,10 @@ public class MessageAdapter extends RecyclerView.Adapter {
     int mineColor;
     private FirebaseStorage storage;
     private StorageReference storageReference;
+    private OnMyMessageClickListener onMyMessageClickListener;
 
 
-    MessageAdapter(Context context, List<Message> messages) {
+    MessageAdapter(Context context, List<Message> messages, OnMyMessageClickListener onMyMessageClickListener) {
         this.messages = messages;
         this.inflater = LayoutInflater.from(context);
         this.context = context;
@@ -60,26 +61,30 @@ public class MessageAdapter extends RecyclerView.Adapter {
         messageViewModel = new MessageViewModel();
         friendColor = context.getResources().getColor(R.color.friend_message);
         mineColor = context.getResources().getColor(R.color.mine_message);
+        this.onMyMessageClickListener = onMyMessageClickListener;
     }
 
-    private class ViewHolder extends RecyclerView.ViewHolder {
+    private class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView text;
         BubbleLayout bubbleLayout;
         TextView messageDate;
         TextView txtSeen;
         ImageView avatar;
         TextView messageSender;
+        OnMyMessageClickListener onMyMessageClickListener;
 
 
-        ViewHolder(final View itemView) {
+        ViewHolder(final View itemView, OnMyMessageClickListener onMyMessageClickListener) {
             super(itemView);
-
             messageSender = itemView.findViewById(R.id.message_sender);
             text = itemView.findViewById(R.id.message_text_friend);
             bubbleLayout = itemView.findViewById(R.id.bubble_layout);
             messageDate = itemView.findViewById(R.id.message_date);
             txtSeen = itemView.findViewById(R.id.txt_seen);
             avatar = itemView.findViewById(R.id.friend_avatar);
+
+            this.onMyMessageClickListener = onMyMessageClickListener;
+            itemView.setOnClickListener(this);
         }
 
         void bind(Message message) {
@@ -87,6 +92,11 @@ public class MessageAdapter extends RecyclerView.Adapter {
             this.messageDate.setText(DateFormat.format("HH:mm", message.getMessageTime()));
             messageViewModel.getSender(messageSender, message.getSender());
             messageViewModel.getSenderAvatar(avatar, message.getSender());
+        }
+
+        @Override
+        public void onClick(View v) {
+            onMyMessageClickListener.onMyMessageClick(getAdapterPosition(), v);
         }
     }
 
@@ -152,7 +162,6 @@ public class MessageAdapter extends RecyclerView.Adapter {
         }
     }
 
-
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -160,10 +169,10 @@ public class MessageAdapter extends RecyclerView.Adapter {
         switch(viewType){
             case MSG_TYPE_RIGHT:
                 view = LayoutInflater.from(context).inflate(R.layout.list_message_right, parent, false);
-                return new ViewHolder(view);
+                return new ViewHolder(view, onMyMessageClickListener);
             case MSG_TYPE_LEFT:
                 view = LayoutInflater.from(context).inflate(R.layout.list_message_left, parent, false);
-                return new ViewHolder(view);
+                return new ViewHolder(view, onMyMessageClickListener);
             case MSG_TYPE_RIGHT_VOICE:
                 view = LayoutInflater.from(context).inflate(R.layout.list_message_right_voice, parent, false);
                 return new ViewHolderVoice(view);
@@ -171,7 +180,7 @@ public class MessageAdapter extends RecyclerView.Adapter {
                 view = LayoutInflater.from(context).inflate(R.layout.list_message_left_voice, parent, false);
                 return new ViewHolderVoice(view);
             default:
-                return new ViewHolder(null);
+                return new ViewHolder(null, null);
         }
     }
 
@@ -265,5 +274,9 @@ public class MessageAdapter extends RecyclerView.Adapter {
                 return MSG_TYPE_LEFT_VOICE;
             }
         }
+    }
+
+    public interface OnMyMessageClickListener {
+        void onMyMessageClick(int position, View v);
     }
 }

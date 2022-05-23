@@ -272,8 +272,11 @@ public class MessageModel {
     public void addGroupMessage(String privateMessage, Message message) {
         if (!message.getTextMessage().equals("")) {
             notify = true;
+            String chatId = FirebaseDatabase.getInstance().getReference("Groups").child(String.valueOf(groupName.hashCode())).
+                    child("Chat").push().getKey();
+            message.setChatId(chatId);
             FirebaseDatabase.getInstance().getReference("Groups").child(String.valueOf(groupName.hashCode())).
-                    child("Chat").push().setValue(message);
+                    child("Chat").child(message.getChatId()).setValue(message);
             apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
             final String msg = message.getTextMessage();
             FirebaseDatabase.getInstance().getReference("Groups").child(String.valueOf(groupName.hashCode())).child("Users")
@@ -299,12 +302,19 @@ public class MessageModel {
     public void addMessage(String privateMessage, Message message) {
         if (!message.getTextMessage().equals("")) {
             notify = true;
-            FirebaseDatabase.getInstance().getReference("Chats").push().setValue(message);
+            String chatId = FirebaseDatabase.getInstance().getReference("Chats").push().getKey();
+            message.setChatId(chatId);
+            FirebaseDatabase.getInstance().getReference("Chats").child(message.getChatId()).setValue(message);
             apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService.class);
             final String msg = message.getTextMessage();
             sendNotification(message.getType(), friendId, FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), msg, privateMessage);
             updateToken(FirebaseInstanceId.getInstance().getToken());
         }
+    }
+
+    public void editMessage(String privateMessage, String chatId) {
+        FirebaseDatabase.getInstance().getReference("Chats").child(chatId).child("textMessage")
+                .setValue(privateMessage);
     }
     public void sendMessage(String userId) {
         seenListener = friendsRef.addValueEventListener(new ValueEventListener() {
@@ -341,6 +351,20 @@ public class MessageModel {
                 }
             }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public void deleteMessage(Message message) {
+        Query deleteQuery = friendsRef.child(message.getChatId());
+        deleteQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                deleteQuery.getRef().removeValue();
+            }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 

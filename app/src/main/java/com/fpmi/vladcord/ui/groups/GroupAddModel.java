@@ -43,27 +43,22 @@ public class GroupAddModel {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String groupName = snapshot.getValue(String.class);
-                if (groupName != null) {
-                    Toast.makeText(activity, "Group with this name is already exist", Toast.LENGTH_SHORT).show();
-                } else {
-                    for (int i = 0; i < list.size(); ++i) {
-                        FirebaseDatabase.getInstance().getReference("Groups").child(String.valueOf(name.hashCode()))
-                                .child("Users").child(list.get(i)).setValue(list.get(i));
-                        FirebaseDatabase.getInstance().getReference("Groups").child(String.valueOf(name.hashCode()))
-                                .child("GroupName").setValue(name);
-                        FirebaseDatabase.getInstance().getReference("Users").child(list.get(i))
-                                .child("Groups").child(String.valueOf(name.hashCode())).setValue(new Group(name, "Mute"));
-                    }
-                    FirebaseDatabase.getInstance().getReference("Groups").child(String.valueOf(name.hashCode())).child("Creator")
-                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                            .setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
-                    FirebaseDatabase.getInstance().getReference("Users")
-                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                for (int i = 0; i < list.size(); ++i) {
+                    FirebaseDatabase.getInstance().getReference("Groups").child(String.valueOf(name.hashCode()))
+                            .child("Users").child(list.get(i)).setValue(list.get(i));
+                    FirebaseDatabase.getInstance().getReference("Groups").child(String.valueOf(name.hashCode()))
+                            .child("GroupName").setValue(name);
+                    FirebaseDatabase.getInstance().getReference("Users").child(list.get(i))
                             .child("Groups").child(String.valueOf(name.hashCode())).setValue(new Group(name, "Mute"));
-                    Toast.makeText(activity, activity.getString(R.string.group_with_name) + name + activity.getString(R.string.created), Toast.LENGTH_LONG)
-                            .show();
                 }
-
+                FirebaseDatabase.getInstance().getReference("Groups").child(String.valueOf(name.hashCode())).child("Creator")
+                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                        .setValue(FirebaseAuth.getInstance().getCurrentUser().getUid());
+                FirebaseDatabase.getInstance().getReference("Users")
+                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                        .child("Groups").child(String.valueOf(name.hashCode())).setValue(new Group(name, "Mute"));
+                Toast.makeText(activity, activity.getString(R.string.group_with_name) + name + activity.getString(R.string.created), Toast.LENGTH_LONG)
+                        .show();
             }
 
             @Override

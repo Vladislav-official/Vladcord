@@ -22,7 +22,7 @@
     <string name="send_request_for_add_friend_false">Вы уже отправляли запрос</string>
 
 
-    <string name="last_seen">Last_seen\</string>
+    <string name="last_seen">Был в последний раз\</string>
     <string name="you_logged">Вы зарегистрированы</string>
     <string name="you_not_logged">Вы не зарегестрированы, проверьте соединение</string>
     <string name="choose_image">Выберите фото</string>
@@ -96,6 +96,9 @@
     <string name="title_activity_bio_change">Поменять инфо о себе</string>
     <string name="title_activity_group">Создать группу</string>
     <string name="title_activity_groups">Группы</string>
-    <string name="private_call">Private call</string>
-    <string name="search">Search</string>
+    <string name="private_call">Приватный звонок</string>
+    <string name="search">Поиск</string>
+    <string name="edit">Редактировать</string>
+    <string name="delete">Удалить</string>
+    <string name="change_theme">Поменять тему</string>
 </resources>

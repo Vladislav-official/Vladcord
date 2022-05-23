@@ -7,6 +7,7 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,6 +30,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -44,15 +47,17 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import hani.momanii.supernova_emoji_library.Actions.EmojIconActions;
 import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
 
 public class MessageActivity extends AppCompatActivity implements
-        Application.ActivityLifecycleCallbacks {
+        Application.ActivityLifecycleCallbacks, MessageAdapter.OnMyMessageClickListener {
     private String friendId;
     private boolean check = false;
+    private String editing = null;
     private String privateMessage;
     private final AppVoiceRecorder appVoiceRecorder = new AppVoiceRecorder();
     private MessageViewModel messageViewModel;
@@ -71,6 +76,7 @@ public class MessageActivity extends AppCompatActivity implements
     private StorageReference storageReference;
 
     private Toolbar mActionBarToolbar;
+    private String friendName;
 
     private final MessageActivity messageActivity = this;
     ValueEventListener seenListener;
@@ -85,7 +91,7 @@ public class MessageActivity extends AppCompatActivity implements
         storageReference = storage.getReference();
 
         String friendId = getIntent().getStringExtra("friendId");
-        String friendName = getIntent().getStringExtra("friendName");
+        this.friendName = getIntent().getStringExtra("friendName");
         privateMessage = getIntent().getStringExtra("privateMessage");
         setupActionBar();
 
@@ -101,18 +107,26 @@ public class MessageActivity extends AppCompatActivity implements
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (editing != null) {
+                    messageViewModel.editMessage(emojiconEditText.getText().toString(), editing);
+                    editing = null;
+                    submitButton.setImageDrawable(getDrawable(R.drawable.ic_menu_send));
+                    emojiconEditText.setText("");
+                    return;
+                }
                 if (emojiconEditText.getText() != null) {
                     if (privateMessage.equals("true")) {
                         messageViewModel.addMessage(privateMessage, new Message(FirebaseAuth.getInstance().getCurrentUser()
                                 .getUid(), friendId, FirebaseAuth.getInstance().getCurrentUser()
-                                .getDisplayName(), "textMessage", emojiconEditText.getText().toString(), false));
+                                .getDisplayName(), "textMessage", emojiconEditText.getText().toString(), false, null));
                     } else {
                         messageViewModel.addGroupMessage(privateMessage, new Message(FirebaseAuth.getInstance().getCurrentUser()
                                 .getUid(), null, FirebaseAuth.getInstance().getCurrentUser()
-                                .getDisplayName(), "textMessage", emojiconEditText.getText().toString(), false));
+                                .getDisplayName(), "textMessage", emojiconEditText.getText().toString(), false, null));
                     }
                     emojiconEditText.setText("");
                 }
+
             }
         });
         firebaseDatabase = FirebaseDatabase.getInstance();
@@ -139,11 +153,11 @@ public class MessageActivity extends AppCompatActivity implements
                     if (privateMessage.equals("true")) {
                         messageViewModel.addMessage(privateMessage, new Message(FirebaseAuth.getInstance().getCurrentUser()
                                 .getUid(), friendId, FirebaseAuth.getInstance().getCurrentUser()
-                                .getDisplayName(), "voiceMessage", key, false));
+                                .getDisplayName(), "voiceMessage", key, false, null));
                     } else {
                         messageViewModel.addGroupMessage(privateMessage, new Message(FirebaseAuth.getInstance().getCurrentUser()
                                 .getUid(), null, FirebaseAuth.getInstance().getCurrentUser()
-                                .getDisplayName(), "voiceMessage", key, false));
+                                .getDisplayName(), "voiceMessage", key, false, null));
                     }
                     check = false;
                     key = firebaseDatabase.getReference().push().getKey();
@@ -165,23 +179,23 @@ public class MessageActivity extends AppCompatActivity implements
         emojIconActions = new EmojIconActions(getApplicationContext(), findViewById(R.id.private_message),
                 emojiconEditText, emojiButton);
         emojIconActions.ShowEmojIcon();
+        emojIconActions.setIconsIds(R.drawable.ic_baseline_emoji_emotions_24, R.drawable.ic_baseline_emoji_emotions_24);
 
         listOfMessages = new ArrayList<>();
         vListOfMessages = findViewById(R.id.message_list);
-        messageAdapter = new MessageAdapter(this, listOfMessages);
+        messageAdapter = new MessageAdapter(this, listOfMessages, this);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         linearLayoutManager.setStackFromEnd(true);
         vListOfMessages.setLayoutManager(linearLayoutManager);
         vListOfMessages.setAdapter(messageAdapter);
+        vListOfMessages.setHasFixedSize(true);
 
         messageViewModel.setChat(friendId, messageAdapter, getIntent().getStringExtra("groupName"), vListOfMessages);
         if (privateMessage.equals("true")) {
             messageViewModel.getDatatFromDB(listOfMessages);
-            vListOfMessages.scrollToPosition(listOfMessages.size());
         } else {
             messageViewModel.getGroupChatDataFromDB(listOfMessages);
-            vListOfMessages.scrollToPosition(listOfMessages.size());
         }
 
         sendMessage(friendId);
@@ -355,5 +369,32 @@ public class MessageActivity extends AppCompatActivity implements
     protected void onDestroy() {
         appVoiceRecorder.releaseRecorder();
         super.onDestroy();
+    }
+
+    @Override
+    public void onMyMessageClick(int position, View v) {
+        Message message = listOfMessages.get(position);
+        if (!message.getUserName().equals(friendName)) {
+            PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
+            this.getMenuInflater().inflate(R.menu.menu_message_actions, popupMenu.getMenu());
+            popupMenu.show();
+            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+
+                    switch (item.getItemId()) {
+                        case R.id.action_edit_message:
+                            emojiconEditText.setText(message.getTextMessage());
+                            editing = message.getChatId();
+                            submitButton.setImageDrawable(getDrawable(R.drawable.ic_baseline_edit_24));
+                            break;
+                        case R.id.action_delete_message:
+                            messageViewModel.deleteMessage(message);
+                            break;
+                    }
+                    return true;
+                }
+            });
+        }
     }
 }

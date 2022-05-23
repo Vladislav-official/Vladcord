@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="150dp">
+    android:paddingLeft="100dp">
 
     <RadioButton
         android:id="@+id/radio"
@@ -22,10 +22,12 @@
             android:layout_height="wrap_content"
             android:visibility="gone" />
 
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
+            android:layout_marginRight="10dp"
             android:orientation="horizontal">
 
             <de.hdodenhof.circleimageview.CircleImageView
@@ -39,83 +41,79 @@
                 app:avvy_border_thickness="0dp"
                 app:avvy_distance_to_border="0dp" />
 
-            <LinearLayout
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:background="#98d7c2"
+                app:cardBackgroundColor="#98d7c2"
+                android:layout_marginTop="15dp">
 
-                <com.daasuu.bl.BubbleLayout
-                    android:id="@+id/bubble_layout"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    app:bl_arrowDirection="right"
-                    app:bl_arrowHeight="0dp"
-                    app:bl_arrowPosition="23dp"
-                    app:bl_arrowWidth="0dp"
-                    app:bl_bubbleColor="#98d7c2"
-                    app:bl_cornersRadius="0dp"
-                    app:bl_strokeWidth="0dp">
+                    android:orientation="vertical">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:minWidth="100dp"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/message_text_friend"
-                            style="@style/Widget.AppCompat.TextView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="start"
-                            android:fontFamily="@font/roboto_regular"
-                            android:lineSpacingExtra="5sp"
-                            android:paddingLeft="9dp"
-                            android:paddingTop="6dp"
-                            android:paddingRight="8dp"
-                            android:text=""
-                            android:textColor="#050505"
-                            android:textStyle="normal" />
 
                         <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="end|right"
-                            android:orientation="horizontal"
-                            android:paddingRight="9dp"
-                            android:paddingBottom="3dp">
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:minWidth="100dp"
+                            android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/message_date"
+                                android:id="@+id/message_text_friend"
+                                style="@style/Widget.AppCompat.TextView"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:elegantTextHeight="false"
-                                android:fontFamily="@font/lucidagrande"
-                                android:paddingRight="6dp"
-                                android:paddingBottom="2dp"
+                                android:layout_gravity="start"
+                                android:fontFamily="@font/roboto_regular"
+                                android:lineSpacingExtra="5sp"
                                 android:paddingLeft="9dp"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                                android:textColor="#733C3C3C"
-                                android:textSize="11sp" />
+                                android:paddingTop="6dp"
+                                android:paddingRight="8dp"
+                                android:text=""
+                                android:textColor="#050505"
+                                android:textStyle="normal" />
 
-                            <TextView
-                                android:id="@+id/txt_seen"
+                            <LinearLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:fontFamily="@font/lucidagrande"
-                                android:paddingRight="6dp"
-                                android:text="@string/seen_message"
-                                android:textColor="#733C3C3C"
-                                android:textSize="15sp"
-                                android:textStyle="normal" />
+                                android:layout_gravity="end|right"
+                                android:orientation="horizontal"
+                                android:paddingRight="9dp"
+                                android:paddingBottom="3dp">
+
+                                <TextView
+                                    android:id="@+id/message_date"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:elegantTextHeight="false"
+                                    android:fontFamily="@font/lucidagrande"
+                                    android:paddingLeft="9dp"
+                                    android:paddingRight="6dp"
+                                    android:paddingBottom="2dp"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                    android:textColor="#733C3C3C"
+                                    android:textSize="11sp" />
+
+                                <TextView
+                                    android:id="@+id/txt_seen"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/lucidagrande"
+                                    android:paddingRight="6dp"
+                                    android:text="@string/seen_message"
+                                    android:textColor="#733C3C3C"
+                                    android:textSize="15sp"
+                                    android:textStyle="normal" />
+                            </LinearLayout>
                         </LinearLayout>
-                    </LinearLayout>
-
-                </com.daasuu.bl.BubbleLayout>
 
 
-            </LinearLayout>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
+
     </RelativeLayout>
 </RelativeLayout>

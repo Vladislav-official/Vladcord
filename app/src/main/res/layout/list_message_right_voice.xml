@@ -44,7 +44,11 @@
                 app:avvy_border_thickness="0dp"
                 app:avvy_distance_to_border="0dp" />
 
-
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="10dp">
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -101,7 +105,7 @@
                 </LinearLayout>
             </LinearLayout>
 
-
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
     </RelativeLayout>
 

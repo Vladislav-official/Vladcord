@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -80,6 +81,7 @@ public class ProfileActivity extends AppCompatActivity {
     private LinearLayout emailChangerLayout;
     private LinearLayout bioChangerLayout;
     private LinearLayout languageLayout;
+    private LinearLayout themeLayout;
     private CollapsingToolbarLayout toolBarLayout;
     private FloatingActionButton loadPhoto;
 
@@ -170,6 +172,16 @@ public class ProfileActivity extends AppCompatActivity {
 
             }
         });
+        themeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                } else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                }
+            }
+        });
         loadPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -212,7 +224,7 @@ public class ProfileActivity extends AppCompatActivity {
     void init() {
         toolbar = (Toolbar) findViewById(R.id.toolbar_profile);
 
-
+        themeLayout = findViewById(R.id.theme);
         user_avatar = findViewById(R.id.user_avatar);
         toolBarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout_profile);
         loadPhoto = (FloatingActionButton) findViewById(R.id.make_photo);

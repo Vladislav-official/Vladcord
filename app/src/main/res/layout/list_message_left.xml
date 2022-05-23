@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingRight="150dp">
+    android:paddingRight="100dp">
     <RadioButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -37,12 +37,14 @@
                 app:avvy_border_thickness="0dp"
                 app:avvy_distance_to_border="0dp"
                 android:paddingRight="9dp"/>
-
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp">
             <com.daasuu.bl.BubbleLayout
                 android:id="@+id/bubble_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
                 app:bl_arrowDirection="left_center"
                 app:bl_arrowHeight="0dp"
                 app:bl_arrowPosition="0dp"
@@ -105,8 +107,9 @@
                 </LinearLayout>
 
             </com.daasuu.bl.BubbleLayout>
-
+        </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
+
     </RelativeLayout>
 
 </RelativeLayout>

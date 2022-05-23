@@ -118,7 +118,7 @@
                 android:backgroundTint="#EAEEFA"
                 android:backgroundTintMode="src_atop"
                 android:src="@drawable/emoji_1f310"
-                android:tint="#121010" />
+                app:tint="#121010" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -139,12 +139,12 @@
                 android:layout_height="40dp"
                 android:foregroundTint="#FBFBFB"
                 android:src="@drawable/style_themes"
-                android:tint="#0B0A0A"
+                app:tint="#0B0A0A"
                 android:tintMode="src_in" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Change theme"
+                android:text="@string/change_theme"
                 android:layout_gravity="center"
                 android:layout_marginLeft="30dp"
                 />

@@ -19,6 +19,7 @@ public class MessageViewModel extends ViewModel implements FirebaseChangeInterfa
 
     private MessageModel messageModel;
     private MessageAdapter adapter;
+    private RecyclerView recyclerView;
 
     public MessageViewModel() {
         messageModel = new MessageModel();
@@ -26,6 +27,7 @@ public class MessageViewModel extends ViewModel implements FirebaseChangeInterfa
 
     public void setChat(String friendId, MessageAdapter adapter, String groupName, RecyclerView recycleView) {
         messageModel = new MessageModel(friendId, this, groupName);
+        this.recyclerView = recycleView;
         this.adapter = adapter;
     }
 
@@ -73,13 +75,20 @@ public class MessageViewModel extends ViewModel implements FirebaseChangeInterfa
         messageModel.addMessage(privateMessage, message);
     }
 
+    public void editMessage(String privateMessage, String chatId) {
+        messageModel.editMessage(privateMessage, chatId);
+    }
+
     public void addGroupMessage(String privateMessage, Message message) {
         messageModel.addGroupMessage(privateMessage, message);
     }
 
     public void removeSeenListener() {
         messageModel.removeSeen();
+    }
 
+    public void deleteMessage(Message message) {
+        messageModel.deleteMessage(message);
     }
 
     public void deleteChat() {
@@ -93,7 +102,7 @@ public class MessageViewModel extends ViewModel implements FirebaseChangeInterfa
     @Override
     public void DataChanged() {
         adapter.notifyDataSetChanged();
-//        recycleView.scrollToPosition(adapter.messages.size());
+       // recyclerView.scrollToPosition(adapter.messages.size() - 1);
     }
 
     public void getSender(TextView textView, String id) {
